@@ -1,24 +1,24 @@
 import { XMarkIcon } from "@heroicons/react/20/solid";
-import { SurveyDetailsProps } from "../interfaces";
-import SurveyActions from "./EventActions";
-import { Survey } from "../types";
+import { EventDetailsProps } from "../interfaces";
+import EventActions from "./EventActions";
+import { Event } from "../types";
 
-const EventDetails: React.FC<SurveyDetailsProps> = ({
+const EventDetails: React.FC<EventDetailsProps> = ({
   isOpen,
   setOpen,
   setReFetch,
-  setSurveyToEdit,
-  setSurveyToClone,
-  survey,
-  surveyTitle,
+  setEventToEdit,
+  setEventToClone,
+  event,
+  eventTitle,
   setOpenEdit,
 }) => {
-  const editSurvey = (survey: Survey) => {
-    setSurveyToEdit(survey);
+  const editEvent = (event: Event) => {
+    setEventToEdit(event);
   };
 
-  const cloneSurvey = (survey: Survey) => {
-    setSurveyToClone(survey);
+  const cloneEvent = (event: Event) => {
+    setEventToClone(event);
   };
 
   return (
@@ -29,15 +29,15 @@ const EventDetails: React.FC<SurveyDetailsProps> = ({
       <div className='bg-white h-3 w-28 rounded-full absolute top-2 left-1/2 -translate-x-1/2'></div>
       <div className='w-full flex justify-between items-center'>
         <h3 className='font-bold text-xl lg:text-3xl text-gray-900'>
-          Survey Details: {surveyTitle}
+          Event Details: {eventTitle}
         </h3>
         <div className='flex gap-x-2 items-center'>
-          <SurveyActions
-            survey={survey}
+          <EventActions
+            event={event}
             displayDetails={false}
             setReFetch={setReFetch}
-            setSurveyToEdit={editSurvey}
-            setSurveyToClone={cloneSurvey}
+            setEventToEdit={editEvent}
+            setEventToClone={cloneEvent}
             setOpenEdit={() => {
               setOpen();
               setOpenEdit();
@@ -57,7 +57,7 @@ const EventDetails: React.FC<SurveyDetailsProps> = ({
               Intro Prompt
             </h4>
             <p className='text-sm lg:text-base text-gray-500'>
-              {survey.introPrompt}
+              {event.introPrompt}
             </p>
           </div>
           <div className='w-1/2'>
@@ -65,7 +65,7 @@ const EventDetails: React.FC<SurveyDetailsProps> = ({
               Outro Prompt
             </h4>
             <p className='text-sm lg:text-base text-gray-500'>
-              {survey.outroPrompt}
+              {event.outroPrompt}
             </p>
           </div>
         </div>
@@ -76,7 +76,7 @@ const EventDetails: React.FC<SurveyDetailsProps> = ({
                 Start Date
               </h4>
               <p className='text-sm lg:text-base text-gray-500'>
-                {new Date(survey.startDate).toDateString()}
+                {new Date(event.startDate).toDateString()}
               </p>
             </div>
             <div className='w-1/2'>
@@ -84,7 +84,7 @@ const EventDetails: React.FC<SurveyDetailsProps> = ({
                 End Date
               </h4>
               <p className='text-sm lg:text-base text-gray-500'>
-                {new Date(survey.endDate).toDateString()}
+                {new Date(event.endDate).toDateString()}
               </p>
             </div>
           </div>
@@ -93,7 +93,7 @@ const EventDetails: React.FC<SurveyDetailsProps> = ({
               Description
             </h4>
             <p className='text-sm lg:text-base text-gray-500'>
-              {survey.description}
+              {event.description}
             </p>
           </div>
         </div>
@@ -128,8 +128,8 @@ const EventDetails: React.FC<SurveyDetailsProps> = ({
                   </tr>
                 </thead>
                 <tbody className='bg-white'>
-                  {survey.questions?.length > 0 ? (
-                    survey.questions.map((question, index) => (
+                  {event.questions?.length > 0 ? (
+                    event.questions.map((question, index) => (
                       <QuestionRow
                         key={question.questionNumber}
                         index={index}

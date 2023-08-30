@@ -1,26 +1,26 @@
-import SurveyRow from "./EventRow";
-import { Survey } from "../types";
-import CreateSurvey from "./CreateEvent";
+import EventRow from "./EventRow";
+import { Event, Search } from "../types";
+import CreateEvent from "./CreateEvent";
 import { useEffect, useState } from "react";
 import axios from "axios";
 import { MagnifyingGlassIcon, XMarkIcon } from "@heroicons/react/20/solid";
 import { useForm } from "react-hook-form";
 
-const events = [
+const defaultEvents: Event[] = [
   {
-    "Event ID": "1234",
-    StartDate: "2023-08-28",
-    Type: "C",
-    Description: "August Bank Holiday",
-    Message:
+    eventId: "1234",
+    startDateTime: "2023-08-28",
+    eventType: "C",
+    description: "August Bank Holiday",
+    message:
       "Sorry we're closed for August Bank Holiday, please call back tomorrow",
-    Active: true,
-    CreatedBy: "Nigel Ryan",
+    active: true,
+    createdBy: "Nigel Ryan",
   },
   {
-    "Event ID": "1235",
-    StartDate: "2021-04-01",
-    EndDate: "2021-04-30",
+    eventId: "1235",
+    startDateTime: "2021-04-01",
+    endDate: "2021-04-30",
     Type: "M2",
     Description: "April Promotion",
     Message: "We have a promotion for April, ask for details",
@@ -28,8 +28,8 @@ const events = [
     CreatedBy: "Nigel Ryan",
   },
   {
-    "Event ID": "1236",
-    Weekday: "Monday",
+    eventId: "1236",
+    weekday: "Monday",
     Type: "M1",
     Description: "Monday Message",
     Message: "Hello, it’s Monday today, yippee!",
@@ -37,7 +37,7 @@ const events = [
     CreatedBy: "Nigel Ryan",
   },
   {
-    "Event ID": "1237",
+    eventId: "1237",
     Weekday: "Tuesday",
     StartTime: "09:00",
     EndTime: "13:00",
@@ -50,61 +50,55 @@ const events = [
   },
 ];
 
-
-type Search = {
-  search: string;
-  byActive: boolean;
-  byInactive: boolean;
-};
 const EventTable = () => {
-  const [createSurveyOpen, setCreateSurveyOpen] = useState(false);
+  const [createEventOpen, setCreateEventOpen] = useState(false);
   const [loading, setLoading] = useState(false);
-  const [surveys, setSurveys] = useState<Survey[]>([]);
-  const [surveyNames, setSurveyNames] = useState<string[]>([]);
+  const [events, setEvents] = useState<Event[]>([]);
+  const [eventNames, setEventNames] = useState<string[]>([]);
   const [reFetch, setReFetch] = useState(false);
-  const [surveyToEdit, setSurveyToEdit] = useState<Survey | undefined>();
-  const [surveyToClone, setSurveyToClone] = useState<Survey | undefined>();
-  const { register, watch, reset } = useForm<Search>();
-  const [tableData, setTableData] = useState<Survey[]>(surveys || []);
+  const [eventToEdit, setEventToEdit] = useState<Event | undefined>();
+  const [eventToClone, setEventToClone] = useState<Event | undefined>();
+  // const { register, watch, reset } = useForm<Search>();
+  // const [tableData, setTableData] = useState<Event[]>(events || []);
 
   // useEffect(() => {
   //   setLoading(true);
-  //   const getSurveys = async () => {
+  //   const getEvents = async () => {
   //     await axios
   //       .get(
-  //         "https://at2l22ryjg.execute-api.eu-west-2.amazonaws.com/dev/surveys"
+  //         "https://at2l22ryjg.execute-api.eu-west-2.amazonaws.com/dev/events"
   //       )
-  //       .then((res: { data: { body: { content: Survey }[] } }) => {
-  //         const surveysWithoutContent = res.data.body
-  //           .filter((item: { content: Survey }) => item.content)
-  //           .map((item: { content: Survey }) => {
+  //       .then((res: { data: { body: { content: Event }[] } }) => {
+  //         const eventsWithoutContent = res.data.body
+  //           .filter((item: { content: Event }) => item.content)
+  //           .map((item: { content: Event }) => {
   //             const { content } = item;
   //             return content;
   //           });
-  //         setSurveys([...surveysWithoutContent]);
+  //         setEvents([...eventsWithoutContent]);
 
-  //         const surveyNamesGetter = surveysWithoutContent.map(
-  //           (survey) => survey.surveyName
+  //         const eventNamesGetter = eventsWithoutContent.map(
+  //           (event) => event.eventName
   //         );
-  //         setSurveyNames(surveyNamesGetter);
+  //         setEventNames(eventNamesGetter);
   //         setLoading(false);
   //       });
   //   };
-  //   getSurveys();
+  //   getEvents();
   // }, [reFetch]);
 
   // useEffect(() => {
-  //   if (surveyToClone) {
-  //     setCreateSurveyOpen(true);
+  //   if (eventToClone) {
+  //     setCreateEventOpen(true);
   //   }
-  //   if (surveyToEdit) {
-  //     setCreateSurveyOpen(true);
+  //   if (eventToEdit) {
+  //     setCreateEventOpen(true);
   //   }
-  // }, [surveyToEdit, surveyToClone]);
+  // }, [eventToEdit, eventToClone]);
 
-  // const removeEditSurvey = () => {
-  //   setSurveyToEdit(undefined);
-  //   setSurveyToClone(undefined);
+  // const removeEditEvent = () => {
+  //   setEventToEdit(undefined);
+  //   setEventToClone(undefined);
   // };
 
   // const searchValue = watch("search");
@@ -113,49 +107,49 @@ const EventTable = () => {
 
   // useEffect(() => {
   //   if (searchValue || byActive || byInactive) {
-  //     const filteredSurveys = surveys.filter((survey) => {
+  //     const filteredEvents = events.filter((event) => {
   //       if (searchValue && byActive && byInactive) {
   //         return (
-  //           survey.surveyName &&
-  //           survey.surveyName
+  //           event.eventName &&
+  //           event.eventName
   //             .toLowerCase()
   //             .includes(searchValue.toLowerCase()) &&
-  //           survey.surveyActive === true
+  //           event.eventActive === true
   //         );
   //       } else if (searchValue && byActive) {
   //         return (
-  //           survey.surveyName &&
-  //           survey.surveyName
+  //           event.eventName &&
+  //           event.eventName
   //             .toLowerCase()
   //             .includes(searchValue.toLowerCase()) &&
-  //           survey.surveyActive === true
+  //           event.eventActive === true
   //         );
   //       } else if (searchValue && byInactive) {
   //         return (
-  //           survey.surveyName &&
-  //           survey.surveyName
+  //           event.eventName &&
+  //           event.eventName
   //             .toLowerCase()
   //             .includes(searchValue.toLowerCase()) &&
-  //           !survey.surveyActive
+  //           !event.eventActive
   //         );
   //       } else if (searchValue) {
   //         return (
-  //           survey.surveyName &&
-  //           survey.surveyName.toLowerCase().includes(searchValue.toLowerCase())
+  //           event.eventName &&
+  //           event.eventName.toLowerCase().includes(searchValue.toLowerCase())
   //         );
   //       } else if (byActive && byInactive) {
-  //         return survey.surveyActive === true || !survey.surveyActive;
+  //         return event.eventActive === true || !event.eventActive;
   //       } else if (byActive) {
-  //         return survey.surveyActive === true || survey.surveyActive;
+  //         return event.eventActive === true || event.eventActive;
   //       } else if (byInactive) {
-  //         return survey.surveyActive === false || !survey.surveyActive;
+  //         return event.eventActive === false || !event.eventActive;
   //       }
   //     });
-  //     setTableData([...filteredSurveys]);
+  //     setTableData([...filteredEvents]);
   //   } else {
-  //     setTableData([...surveys]);
+  //     setTableData([...events]);
   //   }
-  // }, [searchValue, surveys, byActive, byInactive]);
+  // }, [searchValue, events, byActive, byInactive]);
 
   // const resetSearch = () => {
   //   reset({ search: "" });
@@ -165,24 +159,24 @@ const EventTable = () => {
     <div className='px-4 sm:px-6 lg:px-8 mt-10'>
       <div className='sm:flex sm:items-center'>
         <div className='sm:flex-auto'>
-          <h1 className='text-xl font-semibold text-gray-900'>Surveys</h1>
+          <h1 className='text-xl font-semibold text-gray-900'>Events</h1>
           <p className='mt-2 text-sm text-gray-700'>
-            A list of all the surveys including with this details: Id, Name,
+            A list of all the events including with this details: Id, Name,
             Start Date, End Date, Status and more.
           </p>
         </div>
         <div className='mt-4 sm:mt-0 sm:ml-16 sm:flex-none max-sm:ml-auto max-sm:w-fit'>
-          {/* <CreateSurvey
-            surveyNames={surveyNames}
-            isOpen={createSurveyOpen}
-            setOpen={() => setCreateSurveyOpen(false)}
+          {/* <CreateEvent
+            eventNames={eventNames}
+            isOpen={createEventOpen}
+            setOpen={() => setCreateEventOpen(false)}
             setReFetch={() => setReFetch(!reFetch)}
-            surveyToEdit={surveyToEdit}
-            surveyToClone={surveyToClone}
-            removeDefaultSurvey={removeEditSurvey}
+            eventToEdit={eventToEdit}
+            eventToClone={eventToClone}
+            removeDefaultEvent={removeEditEvent}
           /> */}
           <button
-            onClick={() => setCreateSurveyOpen(true)}
+            onClick={() => setCreateEventOpen(true)}
             type='button'
             className='relative inline-flex items-end justify-start py-3 pl-4 pr-12 overflow-hidden font-semibold text-indigo-600 transition-all duration-150 ease-in-out rounded hover:pl-10 hover:pr-6 bg-gray-100 group'>
             <span className='absolute bottom-0 left-0 w-full h-1 transition-all duration-150 ease-in-out bg-indigo-600 group-hover:h-full'></span>
@@ -215,7 +209,7 @@ const EventTable = () => {
               </svg>
             </span>
             <span className='relative w-full text-left transition-colors duration-200 ease-in-out group-hover:text-white'>
-              Add Survey
+              Add Event
             </span>
           </button>
         </div>
@@ -275,17 +269,17 @@ const EventTable = () => {
                     <th
                       scope='col'
                       className='py-3.5 pl-4 pr-3 text-left text-sm font-semibold text-gray-100 sm:pl-6'>
-                      Id
+                      Event ID
                     </th>
                     <th
                       scope='col'
                       className='py-3.5 pl-4 pr-3 text-left text-sm font-semibold text-gray-100 sm:pl-6'>
-                      Name
+                      Event Name
                     </th>
                     <th
                       scope='col'
                       className='px-3 py-3.5 text-left text-sm font-semibold text-gray-100'>
-                      Start Date
+                      Start Date/Time
                     </th>
                     <th
                       scope='col'
@@ -295,17 +289,22 @@ const EventTable = () => {
                     <th
                       scope='col'
                       className='px-3 py-3.5 text-left text-sm font-semibold text-gray-100'>
-                      Intro Prompt
+                      Weekday
                     </th>
                     <th
                       scope='col'
                       className='px-3 py-3.5 text-left text-sm font-semibold text-gray-100'>
-                      Outro Prompt
+                      Event Type
                     </th>
                     <th
                       scope='col'
                       className='px-3 py-3.5 text-left text-sm font-semibold text-gray-100'>
-                      Questions Count
+                      Message
+                    </th>
+                    <th
+                      scope='col'
+                      className='px-3 py-3.5 text-left text-sm font-semibold text-gray-100'>
+                      Created By
                     </th>
                     <th
                       scope='col'
@@ -328,16 +327,16 @@ const EventTable = () => {
                         Loading...
                       </td>
                     </tr>
-                  ) : tableData?.length > 0 ? (
-                    tableData.map((survey, index) => (
-                      <SurveyRow
-                        key={survey.surveyId}
+                  ) : defaultEvents?.length > 0 ? (
+                    defaultEvents.map((event, index) => (
+                      <EventRow
+                        key={event.eventId}
                         index={index}
-                        survey={survey}
+                        event={event}
                         setReFetch={() => setReFetch(!reFetch)}
-                        setSurveyToEdit={setSurveyToEdit}
-                        setSurveyToClone={setSurveyToClone}
-                        setOpenEdit={() => setCreateSurveyOpen(true)}
+                        setEventToEdit={setEventToEdit}
+                        setEventToClone={setEventToClone}
+                        setOpenEdit={() => setCreateEventOpen(true)}
                       />
                     ))
                   ) : (

@@ -6,19 +6,19 @@ import {
   PencilSquareIcon,
   TrashIcon,
 } from "@heroicons/react/20/solid";
-import { Survey } from "../types";
+import { Event } from "../types";
 import { useClickOutside } from "../hooks/useClickOutside";
 import Swal from "sweetalert2";
 import axios from "axios";
-import { SurveyActionsProps } from "../interfaces";
+import { EventActionsProps } from "../interfaces";
 
-const EventActions: React.FC<SurveyActionsProps> = ({
-  survey,
+const EventActions: React.FC<EventActionsProps> = ({
+  event,
   viewDetails,
   displayDetails,
   setReFetch,
-  setSurveyToEdit,
-  setSurveyToClone,
+  setEventToEdit,
+  setEventToClone,
   setOpenEdit,
   index,
 }) => {
@@ -27,7 +27,7 @@ const EventActions: React.FC<SurveyActionsProps> = ({
     setOpen(false);
   });
 
-  const removeSurvey = (surveyId: number) => {
+  const removeEvent = (eventId: number) => {
     Swal.fire({
       title: "Are you sure?",
       text: "You won't be able to revert this!",
@@ -40,8 +40,8 @@ const EventActions: React.FC<SurveyActionsProps> = ({
       if (result.isConfirmed) {
         axios
           .delete(
-            "https://at2l22ryjg.execute-api.eu-west-2.amazonaws.com/dev/surveys/" +
-              surveyId
+            "https://at2l22ryjg.execute-api.eu-west-2.amazonaws.com/dev/events/" +
+              eventId
           )
           .then((res) => {
             if (res.data.statusCode == 200) {
@@ -54,32 +54,32 @@ const EventActions: React.FC<SurveyActionsProps> = ({
     });
   };
 
-  const editSurvey = (survey: Survey) => {
-    setSurveyToEdit(survey);
+  const editEvent = (event: Event) => {
+    setEventToEdit(event);
     setOpenEdit();
   };
-  const cloneSurvey = (survey: Survey) => {
-    setSurveyToClone(survey);
+  const cloneEvent = (event: Event) => {
+    setEventToClone(event);
     setOpenEdit();
-  }
+  };
 
-  // const duplicate = (survey: Survey) => {
+  // const duplicate = (event: Event) => {
   //   setShowLoader(true);
-  //   const clonedSurvey: Survey = {
-  //     surveyName: survey.surveyName,
-  //     surveyActive: survey.surveyActive,
-  //     startDate: survey.startDate,
-  //     endDate: survey.endDate,
-  //     introPrompt: survey.introPrompt,
-  //     outroPrompt: survey.outroPrompt,
+  //   const clonedEvent: Event = {
+  //     eventName: event.eventName,
+  //     eventActive: event.eventActive,
+  //     startDate: event.startDate,
+  //     endDate: event.endDate,
+  //     introPrompt: event.introPrompt,
+  //     outroPrompt: event.outroPrompt,
   //     CreatedBy: "Mouhcine Daali",
-  //     description: survey.description,
-  //     questions: [...survey.questions],
+  //     description: event.description,
+  //     questions: [...event.questions],
   //   };
   //   axios
   //     .post(
-  //       "https://at2l22ryjg.execute-api.eu-west-2.amazonaws.com/dev/surveys",
-  //       clonedSurvey
+  //       "https://at2l22ryjg.execute-api.eu-west-2.amazonaws.com/dev/events",
+  //       clonedEvent
   //     )
   //     .then((res) => {
   //       setReFetch();
@@ -134,7 +134,7 @@ const EventActions: React.FC<SurveyActionsProps> = ({
         <button
           onClick={() => {
             setOpen(false);
-            editSurvey(survey);
+            editEvent(event);
           }}
           className='w-full flex items-center justify-center px-3 py-2 text-xs text-gray-700 hover:bg-gray-100 hover:text-gray-900'>
           <span>Edit</span>
@@ -143,7 +143,7 @@ const EventActions: React.FC<SurveyActionsProps> = ({
         <button
           onClick={() => {
             setOpen(false);
-            cloneSurvey(survey);
+            cloneEvent(event);
           }}
           className='w-full flex items-center justify-center px-3 py-2 text-xs text-gray-700 hover:bg-gray-100 hover:text-gray-900'>
           <span>Duplicate</span>
@@ -152,7 +152,7 @@ const EventActions: React.FC<SurveyActionsProps> = ({
         <button
           onClick={() => {
             setOpen(false);
-            removeSurvey(survey.surveyId!);
+            removeEvent(event.eventId!);
           }}
           className='w-full flex items-center justify-center px-3 py-2 text-xs text-gray-700 hover:bg-gray-100 hover:text-gray-900'>
           <span>Delete</span>

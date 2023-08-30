@@ -1,37 +1,32 @@
 import { useForm } from "react-hook-form";
-import {
-  Question,
-  Survey,
-  createQuestionForm,
-  createSurveyForm,
-} from "../types";
+import { Question, Event, createQuestionForm, createEventForm } from "../types";
 import { useEffect, useState } from "react";
 import { PencilIcon, TrashIcon, XMarkIcon } from "@heroicons/react/20/solid";
 import Swal from "sweetalert2";
 import axios from "axios";
-import { CreateSurveyProps } from "../interfaces";
+import { CreateEventProps } from "../interfaces";
 
-const CreateEvent: React.FC<CreateSurveyProps> = ({
-  surveyNames,
+const CreateEvent: React.FC<CreateEventProps> = ({
+  eventNames,
   isOpen,
   setOpen,
   setReFetch,
-  surveyToEdit,
-  surveyToClone,
-  removeDefaultSurvey,
+  eventToEdit,
+  eventToClone,
+  removeDefaultEvent,
 }) => {
   const [questions, setQuestions] = useState<Question[]>([]);
   const [questionOnEdit, setQuestionOnEdit] = useState<number>(0);
 
   const {
-    register: registerSurvey,
-    handleSubmit: handleSubmitSurvey,
-    reset: resetSurvey,
-    watch: watchSurvey,
-    setError: setErrorSurvey,
-    clearErrors: clearErrorsSurvey,
-    formState: { errors: errorsSurvey },
-  } = useForm<createSurveyForm>();
+    register: registerEvent,
+    handleSubmit: handleSubmitEvent,
+    reset: resetEvent,
+    watch: watchEvent,
+    setError: setErrorEvent,
+    clearErrors: clearErrorsEvent,
+    formState: { errors: errorsEvent },
+  } = useForm<createEventForm>();
   const {
     register: registerQuestion,
     handleSubmit: handleSubmitQuestion,
@@ -43,48 +38,45 @@ const CreateEvent: React.FC<CreateSurveyProps> = ({
   } = useForm<createQuestionForm>();
 
   useEffect(() => {
-    setQuestions(surveyToEdit?.questions || surveyToClone?.questions || []);
-    resetSurvey({
-      surveyName: surveyToEdit?.surveyName || "",
-      startDate: surveyToEdit?.startDate
-        ? new Date(surveyToEdit.startDate).toISOString().substr(0, 10)
-        : surveyToClone?.startDate
-        ? new Date(surveyToClone.startDate).toISOString().substr(0, 10)
+    setQuestions(eventToEdit?.questions || eventToClone?.questions || []);
+    resetEvent({
+      eventName: eventToEdit?.eventName || "",
+      startDate: eventToEdit?.startDate
+        ? new Date(eventToEdit.startDate).toISOString().substr(0, 10)
+        : eventToClone?.startDate
+        ? new Date(eventToClone.startDate).toISOString().substr(0, 10)
         : "",
-      endDate: surveyToEdit?.endDate
-        ? new Date(surveyToEdit.endDate).toISOString().substr(0, 10)
-        : surveyToClone?.endDate
-        ? new Date(surveyToClone.endDate).toISOString().substr(0, 10)
+      endDate: eventToEdit?.endDate
+        ? new Date(eventToEdit.endDate).toISOString().substr(0, 10)
+        : eventToClone?.endDate
+        ? new Date(eventToClone.endDate).toISOString().substr(0, 10)
         : "",
-      introPrompt:
-        surveyToEdit?.introPrompt || surveyToClone?.introPrompt || "",
-      outroPrompt:
-        surveyToEdit?.outroPrompt || surveyToClone?.outroPrompt || "",
-      description:
-        surveyToEdit?.description || surveyToClone?.description || "",
+      introPrompt: eventToEdit?.introPrompt || eventToClone?.introPrompt || "",
+      outroPrompt: eventToEdit?.outroPrompt || eventToClone?.outroPrompt || "",
+      description: eventToEdit?.description || eventToClone?.description || "",
     });
   }, [isOpen]);
 
-  const onSubmitSurvey = (data: createSurveyForm) => {
-    if (surveyToEdit) {
-      const editedSurvey: Survey = {
-        surveyId: surveyToEdit.surveyId,
-        surveyName: data.surveyName,
-        surveyActive: surveyToEdit.surveyActive,
+  const onSubmitEvent = (data: createEventForm) => {
+    if (eventToEdit) {
+      const editedEvent: Event = {
+        eventId: eventToEdit.eventId,
+        eventName: data.eventName,
+        eventActive: eventToEdit.eventActive,
         startDate: data.startDate,
         endDate: data.endDate,
         introPrompt: data.introPrompt,
         outroPrompt: data.outroPrompt,
-        CreatedBy: surveyToEdit.CreatedBy,
+        CreatedBy: eventToEdit.CreatedBy,
         description: data.description,
         questions: [...questions],
       };
 
       axios
         .patch(
-          "https://at2l22ryjg.execute-api.eu-west-2.amazonaws.com/dev/surveys/" +
-            surveyToEdit.surveyId,
-          editedSurvey
+          "https://at2l22ryjg.execute-api.eu-west-2.amazonaws.com/dev/events/" +
+            eventToEdit.eventId,
+          editedEvent
         )
         .then((res) => {
           setReFetch();
@@ -108,9 +100,9 @@ const CreateEvent: React.FC<CreateSurveyProps> = ({
           }
         });
     } else {
-      const newSurvey: Survey = {
-        surveyName: data.surveyName,
-        surveyActive: true,
+      const newEvent: Event = {
+        eventName: data.eventName,
+        eventActive: true,
         startDate: data.startDate,
         endDate: data.endDate,
         introPrompt: data.introPrompt,
@@ -121,8 +113,8 @@ const CreateEvent: React.FC<CreateSurveyProps> = ({
       };
       axios
         .post(
-          "https://at2l22ryjg.execute-api.eu-west-2.amazonaws.com/dev/surveys",
-          newSurvey
+          "https://at2l22ryjg.execute-api.eu-west-2.amazonaws.com/dev/events",
+          newEvent
         )
         .then((res) => {
           setReFetch();
@@ -224,12 +216,12 @@ const CreateEvent: React.FC<CreateSurveyProps> = ({
     if (
       validation &&
       (questions.length > 0 ||
-        watchSurvey("surveyName") ||
-        watchSurvey("startDate") ||
-        watchSurvey("endDate") ||
-        watchSurvey("introPrompt") ||
-        watchSurvey("outroPrompt") ||
-        watchSurvey("description"))
+        watchEvent("eventName") ||
+        watchEvent("startDate") ||
+        watchEvent("endDate") ||
+        watchEvent("introPrompt") ||
+        watchEvent("outroPrompt") ||
+        watchEvent("description"))
     ) {
       Swal.fire({
         title: "Are you sure?",
@@ -241,8 +233,8 @@ const CreateEvent: React.FC<CreateSurveyProps> = ({
         confirmButtonText: "Yes, Cancel!",
       }).then((result) => {
         if (result.isConfirmed) {
-          resetSurvey({
-            surveyName: "",
+          resetEvent({
+            eventName: "",
             startDate: "",
             endDate: "",
             introPrompt: "",
@@ -261,8 +253,8 @@ const CreateEvent: React.FC<CreateSurveyProps> = ({
         }
       });
     } else {
-      resetSurvey({
-        surveyName: "",
+      resetEvent({
+        eventName: "",
         startDate: "",
         endDate: "",
         introPrompt: "",
@@ -275,42 +267,42 @@ const CreateEvent: React.FC<CreateSurveyProps> = ({
       questionOnEdit && setQuestionOnEdit(0);
     }
 
-    if (surveyToEdit || surveyToClone) {
-      removeDefaultSurvey();
+    if (eventToEdit || eventToClone) {
+      removeDefaultEvent();
     }
   };
 
   const validateName = (name: string) => {
-    if (surveyNames.includes(name)) {
+    if (eventNames.includes(name)) {
       return "the name is already exists";
     } else {
-      clearErrorsSurvey("surveyName");
+      clearErrorsEvent("eventName");
     }
   };
   const validateDate = (date: string, type: string) => {
     if (type === "startDate") {
       if (new Date(date) < new Date()) {
         return "Start Date cannot be before the current date and time";
-      } else if (new Date(date) > new Date(watchSurvey("endDate"))) {
-        setErrorSurvey("endDate", {
+      } else if (new Date(date) > new Date(watchEvent("endDate"))) {
+        setErrorEvent("endDate", {
           type: "manual",
           message: "End Date cannot be before the Start Date",
         });
         return "Start Date cannot be after the End Date";
       } else {
-        clearErrorsSurvey("startDate");
-        clearErrorsSurvey("endDate");
+        clearErrorsEvent("startDate");
+        clearErrorsEvent("endDate");
       }
     } else {
-      if (new Date(date) < new Date(watchSurvey("startDate"))) {
-        setErrorSurvey("startDate", {
+      if (new Date(date) < new Date(watchEvent("startDate"))) {
+        setErrorEvent("startDate", {
           type: "manual",
           message: "Start Date cannot be after the End Date",
         });
         return "End Date cannot be before the Start Date";
       } else {
-        clearErrorsSurvey("startDate");
-        clearErrorsSurvey("endDate");
+        clearErrorsEvent("startDate");
+        clearErrorsEvent("endDate");
       }
     }
   };
@@ -346,10 +338,10 @@ const CreateEvent: React.FC<CreateSurveyProps> = ({
         !isOpen ? "-bottom-full" : "-bottom-0"
       } transition-all ease-out duration-500 left-1/2 -translate-x-1/2 overflow-y-scroll hide-scroll-bar`}>
       <div className='bg-white h-3 w-28 rounded-full absolute top-2 left-1/2 -translate-x-1/2'></div>
-      <form onSubmit={handleSubmitSurvey(onSubmitSurvey)}>
+      <form onSubmit={handleSubmitEvent(onSubmitEvent)}>
         <div className='w-full flex justify-between items-center'>
           <h3 className='font-bold text-xl lg:text-3xl text-gray-900'>
-            {surveyToEdit ? "Edit Survey" : "Create Survey"}
+            {eventToEdit ? "Edit Event" : "Create Event"}
           </h3>
           <div className='flex gap-x-2'>
             <button
@@ -361,7 +353,7 @@ const CreateEvent: React.FC<CreateSurveyProps> = ({
               <span className='absolute bottom-0 left-0 w-full h-0 transition-all duration-300 delay-200 bg-green-400 group-hover:h-full ease'></span>
               <span className='absolute inset-0 w-full h-full duration-300 delay-300 bg-green-500 opacity-0 group-hover:opacity-100'></span>
               <span className='relative transition-colors duration-300 delay-200 group-hover:text-white ease'>
-                {surveyToEdit ? "Save" : "Create"}
+                {eventToEdit ? "Save" : "Create"}
               </span>
             </button>
             <button
@@ -381,40 +373,37 @@ const CreateEvent: React.FC<CreateSurveyProps> = ({
         </div>
         <div className='w-full h-fit flex flex-col gap-y-3 bg-gray-50 rounded-lg p-5 pb-8 mt-5'>
           <p className='text-gray-800 text-sm font-medium'>
-            1. Start with setting up your survey information
+            1. Start with setting up your event information
           </p>
           <div className='flex flex-col gap-y-8'>
             <div className='flex max-md:flex-col gap-x-5'>
               <div className='w-2/4 max-md:w-full relative mt-1'>
                 <input
                   className={`peer h-full w-full border-b ${
-                    errorsSurvey.surveyName
-                      ? "border-red-200"
-                      : "border-gray-200"
+                    errorsEvent.eventName ? "border-red-200" : "border-gray-200"
                   } bg-transparent pt-4 pb-4 font-sans text-sm font-normal text-gray-700 outline outline-0 transition-all ${
-                    errorsSurvey.surveyName
+                    errorsEvent.eventName
                       ? "placeholder-shown:border-red-200"
                       : "placeholder-shown:border-gray-200"
                   } focus:border-green-500 focus:outline-0 disabled:border-0`}
                   placeholder=' '
                   type='text'
-                  id='surveyName'
-                  {...registerSurvey("surveyName", {
+                  id='eventName'
+                  {...registerEvent("eventName", {
                     required: true,
-                    validate: (value) =>
-                      validateName(value),
+                    validate: (value) => validateName(value),
                   })}
                 />
                 <label
-                  htmlFor='surveyName'
+                  htmlFor='eventName'
                   className="after:content[' '] pointer-events-none absolute left-0 -top-2.5 pb-14 flex h-full w-full select-none text-[14px] font-normal leading-tight text-gray-800 transition-all after:absolute after:-bottom-1.5 after:block after:w-full after:scale-x-0 after:border-b-2 after:border-green-500 after:transition-transform after:duration-300 peer-placeholder-shown:text-lg peer-placeholder-shown:leading-[4.25] peer-placeholder-shown:text-gray-800 peer-focus:text-[14px] peer-focus:leading-tight peer-focus:text-green-500 peer-focus:after:scale-x-100 peer-focus:after:border-green-500 peer-disabled:text-transparent peer-disabled:peer-placeholder-shown:text-gray-800">
-                  Survey Name
+                  Event Name
                 </label>
-                {errorsSurvey.surveyName && (
+                {errorsEvent.eventName && (
                   <p className='absolute bottom-0 translate-y-full left-0 text-xs text-red-500'>
-                    {errorsSurvey.surveyName.type === "required"
-                        ? "This field is required"
-                        : errorsSurvey.surveyName.message}
+                    {errorsEvent.eventName.type === "required"
+                      ? "This field is required"
+                      : errorsEvent.eventName.message}
                   </p>
                 )}
               </div>
@@ -422,18 +411,18 @@ const CreateEvent: React.FC<CreateSurveyProps> = ({
                 <div className='w-1/2 relative'>
                   <input
                     className={`peer h-full w-full border-b ${
-                      errorsSurvey.startDate
+                      errorsEvent.startDate
                         ? "border-red-200"
                         : "border-gray-200"
                     } bg-transparent pt-4 pb-4 font-sans text-sm font-normal text-gray-700 outline outline-0 transition-all ${
-                      errorsSurvey.startDate
+                      errorsEvent.startDate
                         ? "placeholder-shown:border-red-200"
                         : "placeholder-shown:border-gray-200"
                     } focus:border-green-500 focus:outline-0 disabled:border-0`}
                     placeholder=' '
                     type='date'
                     id='startDate'
-                    {...registerSurvey("startDate", {
+                    {...registerEvent("startDate", {
                       valueAsDate: true,
                       required: true,
                       validate: (value) =>
@@ -445,29 +434,27 @@ const CreateEvent: React.FC<CreateSurveyProps> = ({
                     className="after:content[' '] pointer-events-none absolute left-0 -top-2 pb-14 flex h-full w-full select-none text-[14px] font-normal leading-tight text-gray-800 transition-all after:absolute after:-bottom-1.5 after:block after:w-full after:scale-x-0 after:border-b-2 after:border-green-500 after:transition-transform after:duration-300 peer-placeholder-shown:text-lg peer-placeholder-shown:leading-[4.25] peer-placeholder-shown:text-gray-800 peer-focus:text-[14px] peer-focus:leading-tight peer-focus:text-green-500 peer-focus:after:scale-x-100 peer-focus:after:border-green-500 peer-disabled:text-transparent peer-disabled:peer-placeholder-shown:text-gray-800">
                     Start Date
                   </label>
-                  {errorsSurvey.startDate && (
+                  {errorsEvent.startDate && (
                     <p className='absolute bottom-0 translate-y-full left-0 text-xs text-red-500'>
-                      {errorsSurvey.startDate.type === "required"
+                      {errorsEvent.startDate.type === "required"
                         ? "This field is required"
-                        : errorsSurvey.startDate.message}
+                        : errorsEvent.startDate.message}
                     </p>
                   )}
                 </div>
                 <div className='w-1/2 relative'>
                   <input
                     className={`peer h-full w-full border-b ${
-                      errorsSurvey.endDate
-                        ? "border-red-200"
-                        : "border-gray-200"
+                      errorsEvent.endDate ? "border-red-200" : "border-gray-200"
                     } bg-transparent pt-4 pb-4 font-sans text-sm font-normal text-gray-700 outline outline-0 transition-all ${
-                      errorsSurvey.endDate
+                      errorsEvent.endDate
                         ? "placeholder-shown:border-red-200"
                         : "placeholder-shown:border-gray-200"
                     } focus:border-green-500 focus:outline-0 disabled:border-0`}
                     placeholder=' '
                     type='date'
                     id='endDate'
-                    {...registerSurvey("endDate", {
+                    {...registerEvent("endDate", {
                       valueAsDate: true,
                       required: true,
                       validate: (value) =>
@@ -479,11 +466,11 @@ const CreateEvent: React.FC<CreateSurveyProps> = ({
                     className="after:content[' '] pointer-events-none absolute left-0 -top-2 pb-14 flex h-full w-full select-none text-[14px] font-normal leading-tight text-gray-800 transition-all after:absolute after:-bottom-1.5 after:block after:w-full after:scale-x-0 after:border-b-2 after:border-green-500 after:transition-transform after:duration-300 peer-placeholder-shown:text-lg peer-placeholder-shown:leading-[4.25] peer-placeholder-shown:text-gray-800 peer-focus:text-[14px] peer-focus:leading-tight peer-focus:text-green-500 peer-focus:after:scale-x-100 peer-focus:after:border-green-500 peer-disabled:text-transparent peer-disabled:peer-placeholder-shown:text-gray-800">
                     End Date
                   </label>
-                  {errorsSurvey.endDate && (
+                  {errorsEvent.endDate && (
                     <p className='absolute bottom-0 translate-y-full left-0 text-xs text-red-500'>
-                      {errorsSurvey.endDate.type === "required"
+                      {errorsEvent.endDate.type === "required"
                         ? "This field is required"
-                        : errorsSurvey.endDate.message}
+                        : errorsEvent.endDate.message}
                     </p>
                   )}
                 </div>
@@ -493,25 +480,25 @@ const CreateEvent: React.FC<CreateSurveyProps> = ({
               <div className='w-1/2 relative '>
                 <input
                   className={`peer h-full w-full border-b ${
-                    errorsSurvey.introPrompt
+                    errorsEvent.introPrompt
                       ? "border-red-200"
                       : "border-gray-200"
                   } bg-transparent pt-4 pb-4 font-sans text-sm font-normal text-gray-700 outline outline-0 transition-all ${
-                    errorsSurvey.introPrompt
+                    errorsEvent.introPrompt
                       ? "placeholder-shown:border-red-200"
                       : "placeholder-shown:border-gray-200"
                   } focus:border-green-500 focus:outline-0 disabled:border-0`}
                   placeholder=' '
                   type='text'
                   id='introPrompt'
-                  {...registerSurvey("introPrompt", { required: true })}
+                  {...registerEvent("introPrompt", { required: true })}
                 />
                 <label
                   htmlFor='introPrompt'
                   className="after:content[' '] pointer-events-none absolute left-0 -top-2.5 pb-14 flex h-full w-full select-none text-[14px] font-normal leading-tight text-gray-800 transition-all after:absolute after:-bottom-1.5 after:block after:w-full after:scale-x-0 after:border-b-2 after:border-green-500 after:transition-transform after:duration-300 peer-placeholder-shown:text-lg peer-placeholder-shown:leading-[4.25] peer-placeholder-shown:text-gray-800 peer-focus:text-[14px] peer-focus:leading-tight peer-focus:text-green-500 peer-focus:after:scale-x-100 peer-focus:after:border-green-500 peer-disabled:text-transparent peer-disabled:peer-placeholder-shown:text-gray-800">
                   Intro Prompt
                 </label>
-                {errorsSurvey.introPrompt && (
+                {errorsEvent.introPrompt && (
                   <p className='absolute bottom-0 translate-y-full left-0 text-xs text-red-500'>
                     Intro Prompt is required
                   </p>
@@ -520,25 +507,25 @@ const CreateEvent: React.FC<CreateSurveyProps> = ({
               <div className='w-1/2 relative '>
                 <input
                   className={`peer h-full w-full border-b ${
-                    errorsSurvey.outroPrompt
+                    errorsEvent.outroPrompt
                       ? "border-red-200"
                       : "border-gray-200"
                   } bg-transparent pt-4 pb-4 font-sans text-sm font-normal text-gray-700 outline outline-0 transition-all ${
-                    errorsSurvey.outroPrompt
+                    errorsEvent.outroPrompt
                       ? "placeholder-shown:border-red-200"
                       : "placeholder-shown:border-gray-200"
                   } focus:border-green-500 focus:outline-0 disabled:border-0`}
                   placeholder=' '
                   type='text'
                   id='outroPrompt'
-                  {...registerSurvey("outroPrompt", { required: true })}
+                  {...registerEvent("outroPrompt", { required: true })}
                 />
                 <label
                   htmlFor='outroPrompt'
                   className="after:content[' '] pointer-events-none absolute left-0 -top-2.5 pb-14 flex h-full w-full select-none text-[14px] font-normal leading-tight text-gray-800 transition-all after:absolute after:-bottom-1.5 after:block after:w-full after:scale-x-0 after:border-b-2 after:border-green-500 after:transition-transform after:duration-300 peer-placeholder-shown:text-lg peer-placeholder-shown:leading-[4.25] peer-placeholder-shown:text-gray-800 peer-focus:text-[14px] peer-focus:leading-tight peer-focus:text-green-500 peer-focus:after:scale-x-100 peer-focus:after:border-green-500 peer-disabled:text-transparent peer-disabled:peer-placeholder-shown:text-gray-800">
                   Outro Prompt
                 </label>
-                {errorsSurvey.outroPrompt && (
+                {errorsEvent.outroPrompt && (
                   <p className='absolute bottom-0 translate-y-full left-0 text-xs text-red-500'>
                     Outro Prompt is required
                   </p>
@@ -548,24 +535,22 @@ const CreateEvent: React.FC<CreateSurveyProps> = ({
             <div className='w-full relative'>
               <textarea
                 className={`peer h-full w-full border-b ${
-                  errorsSurvey.description
-                    ? "border-red-200"
-                    : "border-gray-200"
+                  errorsEvent.description ? "border-red-200" : "border-gray-200"
                 } bg-transparent pt-4 pb-4 font-sans text-sm font-normal text-gray-700 outline outline-0 transition-all ${
-                  errorsSurvey.description
+                  errorsEvent.description
                     ? "placeholder-shown:border-red-200"
                     : "placeholder-shown:border-gray-200"
                 } focus:border-green-500 focus:outline-0 disabled:border-0`}
                 placeholder=' '
                 id='description'
-                {...registerSurvey("description", { required: true })}
+                {...registerEvent("description", { required: true })}
               />{" "}
               <label
                 htmlFor='description'
                 className="after:content[' '] pointer-events-none absolute left-0 -top-2.5 pb-14 flex h-full w-full select-none text-[14px] font-normal leading-tight text-gray-800 transition-all after:absolute after:-bottom-1.5 after:block after:w-full after:scale-x-0 after:border-b-2 after:border-green-500 after:transition-transform after:duration-300 peer-placeholder-shown:text-lg peer-placeholder-shown:leading-[4.25] peer-placeholder-shown:text-gray-800 peer-focus:text-[14px] peer-focus:leading-tight peer-focus:text-green-500 peer-focus:after:scale-x-100 peer-focus:after:border-green-500 peer-disabled:text-transparent peer-disabled:peer-placeholder-shown:text-gray-800">
                 Description
               </label>
-              {errorsSurvey.description && (
+              {errorsEvent.description && (
                 <p className='absolute bottom-0 translate-y-full left-0 text-xs text-red-500'>
                   Description is required
                 </p>

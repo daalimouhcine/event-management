@@ -1,27 +1,18 @@
-// type for the question object
-export type Question = {
-  questionNumber: number;
-  maxValue: number;
-  minValue: number;
-  questionText: string;
-};
-
-// type for the survey object
-export type Survey = {
-  surveyId?: number;
-  surveyName: string;
-  startDate: string;
+export type Event = {
+  eventId?: number | string;
+  eventName: string;
+  startDateTime: string;
   endDate: string;
-  description: string;
-  introPrompt: string;
-  outroPrompt: string;
-  surveyActive: boolean;
-  CreatedBy?: string;
-  questions: Question[];
+  weekDay: string;
+  eventType: string;
+  description?: string;
+  message: string;
+  active: boolean;
+  createdBy?: string;
 };
 
-export type createSurveyForm = {
-  surveyName: string;
+export type createEventForm = {
+  eventName: string;
   startDate: string;
   endDate: string;
   introPrompt: string;
@@ -34,4 +25,10 @@ export type createQuestionForm = {
   questionText: string;
   minValue: number;
   maxValue: number;
+};
+
+export type Search = {
+  search: string;
+  byActive: boolean;
+  byInactive: boolean;
 };

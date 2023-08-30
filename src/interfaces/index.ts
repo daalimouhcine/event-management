@@ -1,42 +1,42 @@
-import { Survey } from "../types";
+import { Event } from "../types";
 
-export interface CreateSurveyProps {
-  surveyNames: string[];
+export interface CreateEventProps {
+  eventNames: string[];
   isOpen: boolean;
   setOpen: () => void;
   setReFetch: () => void;
-  surveyToEdit?: Survey; 
-  surveyToClone?: Survey; 
-  removeDefaultSurvey: () => void;
+  eventToEdit?: Event;
+  eventToClone?: Event;
+  removeDefaultEvent: () => void;
 }
 
-export interface SurveyActionsProps {
-  survey: Survey;
+export interface EventActionsProps {
+  event: Event;
   viewDetails?: () => void;
   displayDetails: boolean;
   setReFetch: () => void;
-  setSurveyToEdit: (survey: Survey) => void;
-  setSurveyToClone: (survey: Survey) => void;
+  setEventToEdit: (event: Event) => void;
+  setEventToClone: (event: Event) => void;
   setOpenEdit: () => void;
   index?: number;
 }
 
-export interface SurveyRowProps {
-  survey: Survey;
+export interface EventRowProps {
+  event: Event;
   index: number;
   setReFetch: () => void;
-  setSurveyToEdit: (survey: Survey) => void;
-  setSurveyToClone: (survey: Survey) => void;
+  setEventToEdit: (event: Event) => void;
+  setEventToClone: (event: Event) => void;
   setOpenEdit: () => void;
 }
 
-export interface SurveyDetailsProps {
+export interface EventDetailsProps {
   isOpen: boolean;
   setOpen: () => void;
   setReFetch: () => void;
-  survey: Survey;
-  setSurveyToEdit: (survey: Survey) => void;
-  setSurveyToClone: (survey: Survey) => void;
-  surveyTitle: string;
+  event: Event;
+  setEventToEdit: (event: Event) => void;
+  setEventToClone: (event: Event) => void;
+  eventTitle: string;
   setOpenEdit: () => void;
 }
