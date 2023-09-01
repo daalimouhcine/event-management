@@ -32,7 +32,7 @@ const EventRow: React.FC<EventRowProps> = ({
             setOpen={() => setOpenDetails(!openDetails)}
             setEventToEdit={editEvent}
             setEventToClone={cloneEvent}
-            eventTitle={event.eventName}
+            eventTitle={event.EventName!}
             setOpenEdit={() => setOpenEdit()}
           />
         </td>
@@ -44,42 +44,59 @@ const EventRow: React.FC<EventRowProps> = ({
         <td
           onClick={() => setOpenDetails(true)}
           className='whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium text-gray-900 sm:pl-6'>
-          {event.eventId}
+          {event["Event ID"]}
         </td>
         <td
           onClick={() => setOpenDetails(true)}
           className='whitespace-nowrap px-3 py-4 text-sm text-gray-500'>
-          {event.eventName}
+          {event.EventName || "Not assigned"}
         </td>
         <td
           onClick={() => setOpenDetails(true)}
           className='whitespace-nowrap px-3 py-4 text-sm text-gray-500'>
-          {new Date(event.startDateTime).toDateString()}
+          {event.Description || "Not assigned"}
         </td>
         <td
           onClick={() => setOpenDetails(true)}
           className='whitespace-nowrap px-3 py-4 text-sm text-gray-500'>
-          {new Date(event.endDate).toDateString()}
+          {event.WeekDay || "Not assigned"}
         </td>
         <td
           onClick={() => setOpenDetails(true)}
           className='whitespace-nowrap px-3 py-4 text-sm text-gray-500'>
-          {event.weekDay}
+          {event.StartDate
+            ? new Date(event.StartDate).toDateString()
+            : event.StartTime || "Not assigned"}
         </td>
         <td
           onClick={() => setOpenDetails(true)}
           className='whitespace-nowrap px-3 py-4 text-sm text-gray-500'>
-          {event.eventType}
+          {event.EndDate
+            ? new Date(event.EndDate).toDateString()
+            : event.EndTime || "Not assigned"}
         </td>
         <td
           onClick={() => setOpenDetails(true)}
           className='whitespace-nowrap px-3 py-4 text-sm text-gray-500'>
-          <p className='w-44 truncate'>{event.message}</p>
+          {event.Type === "C"
+            ? "Closure "
+            : event.Type === "E"
+            ? "Emergency"
+            : event.Type === "M1"
+            ? "Custom Message 1"
+            : event.Type === "M2"
+            ? "Custom Messag 2"
+            : "Not assigned"}
         </td>
         <td
           onClick={() => setOpenDetails(true)}
           className='whitespace-nowrap px-3 py-4 text-sm text-gray-500'>
-          {event.status ? (
+          <p className='w-44 truncate'>{event.Message}</p>
+        </td>
+        <td
+          onClick={() => setOpenDetails(true)}
+          className='whitespace-nowrap px-3 py-4 text-sm text-gray-500'>
+          {event.Active ? (
             <span className='inline-flex rounded-full bg-green-100 px-2 text-xs font-semibold leading-5 text-green-800'>
               Active
             </span>
@@ -92,7 +109,7 @@ const EventRow: React.FC<EventRowProps> = ({
         <td
           onClick={() => setOpenDetails(true)}
           className='whitespace-nowrap px-3 py-4 text-sm text-gray-500'>
-          {event.createdBy}
+          {event.CreatedBy}
         </td>
         <td className='relative whitespace-nowrap py-4 pl-3 pr-4 text-right text-sm font-medium sm:pr-6'>
           <EventActions

@@ -8,19 +8,19 @@ import { useForm } from "react-hook-form";
 
 const defaultEvents: Event[] = [
   {
-    eventId: "1234",
-    startDateTime: "2023-08-28",
-    eventType: "C",
-    description: "August Bank Holiday",
-    message:
+    ["Event ID"]: "1234",
+    StartDate: "2023-08-28",
+    Type: "C",
+    Description: "August Bank Holiday",
+    Message:
       "Sorry we're closed for August Bank Holiday, please call back tomorrow",
-    active: true,
-    createdBy: "Nigel Ryan",
+    Active: true,
+    CreatedBy: "Nigel Ryan",
   },
   {
-    eventId: "1235",
-    startDateTime: "2021-04-01",
-    endDate: "2021-04-30",
+    ["Event ID"]: "1235",
+    StartDate: "2021-04-01",
+    EndDate: "2021-04-30",
     Type: "M2",
     Description: "April Promotion",
     Message: "We have a promotion for April, ask for details",
@@ -28,8 +28,8 @@ const defaultEvents: Event[] = [
     CreatedBy: "Nigel Ryan",
   },
   {
-    eventId: "1236",
-    weekday: "Monday",
+    ["Event ID"]: "1236",
+    WeekDay: "Monday",
     Type: "M1",
     Description: "Monday Message",
     Message: "Hello, it’s Monday today, yippee!",
@@ -37,8 +37,8 @@ const defaultEvents: Event[] = [
     CreatedBy: "Nigel Ryan",
   },
   {
-    eventId: "1237",
-    Weekday: "Tuesday",
+    ["Event ID"]: "1237",
+    WeekDay: "Tuesday",
     StartTime: "09:00",
     EndTime: "13:00",
     Type: "C",
@@ -54,7 +54,7 @@ const EventTable = () => {
   const [createEventOpen, setCreateEventOpen] = useState(false);
   const [loading, setLoading] = useState(false);
   const [events, setEvents] = useState<Event[]>([]);
-  const [eventNames, setEventNames] = useState<string[]>([]);
+  const [EventNames, setEventNames] = useState<string[]>([]);
   const [reFetch, setReFetch] = useState(false);
   const [eventToEdit, setEventToEdit] = useState<Event | undefined>();
   const [eventToClone, setEventToClone] = useState<Event | undefined>();
@@ -77,10 +77,10 @@ const EventTable = () => {
   //           });
   //         setEvents([...eventsWithoutContent]);
 
-  //         const eventNamesGetter = eventsWithoutContent.map(
-  //           (event) => event.eventName
+  //         const EventNamesGetter = eventsWithoutContent.map(
+  //           (event) => event.EventName
   //         );
-  //         setEventNames(eventNamesGetter);
+  //         setEventNames(EventNamesGetter);
   //         setLoading(false);
   //       });
   //   };
@@ -96,52 +96,52 @@ const EventTable = () => {
   //   }
   // }, [eventToEdit, eventToClone]);
 
-  // const removeEditEvent = () => {
-  //   setEventToEdit(undefined);
-  //   setEventToClone(undefined);
-  // };
+  const removeEditEvent = () => {
+    setEventToEdit(undefined);
+    setEventToClone(undefined);
+  };
 
   // const searchValue = watch("search");
   // const byActive = watch("byActive");
-  // const byInactive = watch("byInactive");
+  // const byInActive = watch("byInActive");
 
   // useEffect(() => {
-  //   if (searchValue || byActive || byInactive) {
+  //   if (searchValue || byActive || byInActive) {
   //     const filteredEvents = events.filter((event) => {
-  //       if (searchValue && byActive && byInactive) {
+  //       if (searchValue && byActive && byInActive) {
   //         return (
-  //           event.eventName &&
-  //           event.eventName
+  //           event.EventName &&
+  //           event.EventName
   //             .toLowerCase()
   //             .includes(searchValue.toLowerCase()) &&
   //           event.eventActive === true
   //         );
   //       } else if (searchValue && byActive) {
   //         return (
-  //           event.eventName &&
-  //           event.eventName
+  //           event.EventName &&
+  //           event.EventName
   //             .toLowerCase()
   //             .includes(searchValue.toLowerCase()) &&
   //           event.eventActive === true
   //         );
-  //       } else if (searchValue && byInactive) {
+  //       } else if (searchValue && byInActive) {
   //         return (
-  //           event.eventName &&
-  //           event.eventName
+  //           event.EventName &&
+  //           event.EventName
   //             .toLowerCase()
   //             .includes(searchValue.toLowerCase()) &&
   //           !event.eventActive
   //         );
   //       } else if (searchValue) {
   //         return (
-  //           event.eventName &&
-  //           event.eventName.toLowerCase().includes(searchValue.toLowerCase())
+  //           event.EventName &&
+  //           event.EventName.toLowerCase().includes(searchValue.toLowerCase())
   //         );
-  //       } else if (byActive && byInactive) {
+  //       } else if (byActive && byInActive) {
   //         return event.eventActive === true || !event.eventActive;
   //       } else if (byActive) {
   //         return event.eventActive === true || event.eventActive;
-  //       } else if (byInactive) {
+  //       } else if (byInActive) {
   //         return event.eventActive === false || !event.eventActive;
   //       }
   //     });
@@ -149,7 +149,7 @@ const EventTable = () => {
   //   } else {
   //     setTableData([...events]);
   //   }
-  // }, [searchValue, events, byActive, byInactive]);
+  // }, [searchValue, events, byActive, byInActive]);
 
   // const resetSearch = () => {
   //   reset({ search: "" });
@@ -166,15 +166,15 @@ const EventTable = () => {
           </p>
         </div>
         <div className='mt-4 sm:mt-0 sm:ml-16 sm:flex-none max-sm:ml-auto max-sm:w-fit'>
-          {/* <CreateEvent
-            eventNames={eventNames}
+          <CreateEvent
+            EventNames={EventNames}
             isOpen={createEventOpen}
             setOpen={() => setCreateEventOpen(false)}
             setReFetch={() => setReFetch(!reFetch)}
             eventToEdit={eventToEdit}
             eventToClone={eventToClone}
             removeDefaultEvent={removeEditEvent}
-          /> */}
+          />
           <button
             onClick={() => setCreateEventOpen(true)}
             type='button'
@@ -250,11 +250,11 @@ const EventTable = () => {
             <div className='flex items-center'>
               <input
                 type='checkbox'
-                {...register("byInactive")}
-                id='byInactive'
+                {...register("byInActive")}
+                id='byInActive'
                 className='w-5 h-5'
               />
-              <label htmlFor='byInactive' className='ml-2'>
+              <label htmlFor='byInActive' className='ml-2'>
                 Not Active
               </label>
             </div>
@@ -278,6 +278,16 @@ const EventTable = () => {
                     </th>
                     <th
                       scope='col'
+                      className='py-3.5 pl-4 pr-3 text-left text-sm font-semibold text-gray-100 sm:pl-6'>
+                      Description
+                    </th>
+                    <th
+                      scope='col'
+                      className='px-3 py-3.5 text-left text-sm font-semibold text-gray-100'>
+                      WeekDay
+                    </th>
+                    <th
+                      scope='col'
                       className='px-3 py-3.5 text-left text-sm font-semibold text-gray-100'>
                       Start Date/Time
                     </th>
@@ -285,11 +295,6 @@ const EventTable = () => {
                       scope='col'
                       className='px-3 py-3.5 text-left text-sm font-semibold text-gray-100'>
                       End Date
-                    </th>
-                    <th
-                      scope='col'
-                      className='px-3 py-3.5 text-left text-sm font-semibold text-gray-100'>
-                      Weekday
                     </th>
                     <th
                       scope='col'
@@ -304,12 +309,12 @@ const EventTable = () => {
                     <th
                       scope='col'
                       className='px-3 py-3.5 text-left text-sm font-semibold text-gray-100'>
-                      Created By
+                      Status
                     </th>
                     <th
                       scope='col'
                       className='px-3 py-3.5 text-left text-sm font-semibold text-gray-100'>
-                      Status
+                      Created By
                     </th>
                     <th
                       scope='col'
@@ -330,7 +335,7 @@ const EventTable = () => {
                   ) : defaultEvents?.length > 0 ? (
                     defaultEvents.map((event, index) => (
                       <EventRow
-                        key={event.eventId}
+                        key={event["Event ID"]}
                         index={index}
                         event={event}
                         setReFetch={() => setReFetch(!reFetch)}
