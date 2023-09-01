@@ -44,9 +44,9 @@ const EventActions: React.FC<EventActionsProps> = ({
               eventId
           )
           .then((res) => {
-            if (res.data.statusCode == 200) {
+            if (res.data.StatusCode == 200) {
               const responseMessage = JSON.parse(res.data.body);
-              Swal.fire("Deleted!", responseMessage.message, "success");
+              Swal.fire("Deleted!", responseMessage.Message, "success");
               setReFetch();
             }
           });
@@ -66,14 +66,14 @@ const EventActions: React.FC<EventActionsProps> = ({
   // const duplicate = (event: Event) => {
   //   setShowLoader(true);
   //   const clonedEvent: Event = {
-  //     eventName: event.eventName,
+  //     EventName: event.EventName,
   //     eventActive: event.eventActive,
   //     startDate: event.startDate,
-  //     endDate: event.endDate,
+  //     EndDate: event.EndDate,
   //     introPrompt: event.introPrompt,
   //     outroPrompt: event.outroPrompt,
   //     CreatedBy: "Mouhcine Daali",
-  //     description: event.description,
+  //     Description: event.Description,
   //     questions: [...event.questions],
   //   };
   //   axios
@@ -84,12 +84,12 @@ const EventActions: React.FC<EventActionsProps> = ({
   //     .then((res) => {
   //       setReFetch();
   //       setShowLoader(false);
-  //       if (res.data.statusCode == 200) {
+  //       if (res.data.StatusCode == 200) {
   //         const responseMessage = JSON.parse(res.data.body);
   //         Swal.fire({
   //           position: "center",
   //           icon: "success",
-  //           title: responseMessage.message,
+  //           title: responseMessage.Message,
   //           showConfirmButton: false,
   //           timer: 1500,
   //         });
@@ -152,7 +152,7 @@ const EventActions: React.FC<EventActionsProps> = ({
         <button
           onClick={() => {
             setOpen(false);
-            removeEvent(event.eventId!);
+            // removeEvent(Number.parseInt(event["Event ID"]));
           }}
           className='w-full flex items-center justify-center px-3 py-2 text-xs text-gray-700 hover:bg-gray-100 hover:text-gray-900'>
           <span>Delete</span>

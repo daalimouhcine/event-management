@@ -1,23 +1,26 @@
 export type Event = {
-  eventId?: number | string;
-  eventName: string;
-  startDateTime: string;
-  endDate: string;
-  weekDay: string;
-  eventType: string;
-  description?: string;
-  message: string;
-  active: boolean;
-  createdBy?: string;
+  ["Event ID"]?: string | number;
+  EventName?: string;
+  StartDate?: string;
+  EndDate?: string;
+  WeekDay?: string;
+  StartTime?: string;
+  EndTime?: string;
+  Type: string;
+  Description: string;
+  Message: string;
+  Active: boolean;
+  CreatedBy: string;
 };
 
 export type createEventForm = {
-  eventName: string;
-  startDate: string;
-  endDate: string;
-  introPrompt: string;
-  outroPrompt: string;
-  description: string;
+  EventName: string;
+  StartDate: string;
+  EndDate: string;
+  WeekDay?: string;
+  StartTime?: string;
+  EndTime?: string;
+  Description: string;
 };
 
 export type createQuestionForm = {
@@ -30,5 +33,5 @@ export type createQuestionForm = {
 export type Search = {
   search: string;
   byActive: boolean;
-  byInactive: boolean;
+  byInActive: boolean;
 };

@@ -1,7 +1,7 @@
 import { Event } from "../types";
 
 export interface CreateEventProps {
-  eventNames: string[];
+  EventNames: string[];
   isOpen: boolean;
   setOpen: () => void;
   setReFetch: () => void;

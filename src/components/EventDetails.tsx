@@ -84,7 +84,7 @@ const EventDetails: React.FC<EventDetailsProps> = ({
                 End Date
               </h4>
               <p className='text-sm lg:text-base text-gray-500'>
-                {new Date(event.endDate).toDateString()}
+                {new Date(event.EndDate).toDateString()}
               </p>
             </div>
           </div>
@@ -93,7 +93,7 @@ const EventDetails: React.FC<EventDetailsProps> = ({
               Description
             </h4>
             <p className='text-sm lg:text-base text-gray-500'>
-              {event.description}
+              {event.Description}
             </p>
           </div>
         </div>

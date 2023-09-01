@@ -1,5 +1,5 @@
 import { useForm } from "react-hook-form";
-import { Question, Event, createQuestionForm, createEventForm } from "../types";
+import { Event, createQuestionForm, createEventForm } from "../types";
 import { useEffect, useState } from "react";
 import { PencilIcon, TrashIcon, XMarkIcon } from "@heroicons/react/20/solid";
 import Swal from "sweetalert2";
@@ -7,7 +7,7 @@ import axios from "axios";
 import { CreateEventProps } from "../interfaces";
 
 const CreateEvent: React.FC<CreateEventProps> = ({
-  eventNames,
+  EventNames,
   isOpen,
   setOpen,
   setReFetch,
@@ -15,8 +15,6 @@ const CreateEvent: React.FC<CreateEventProps> = ({
   eventToClone,
   removeDefaultEvent,
 }) => {
-  const [questions, setQuestions] = useState<Question[]>([]);
-  const [questionOnEdit, setQuestionOnEdit] = useState<number>(0);
 
   const {
     register: registerEvent,
@@ -37,55 +35,53 @@ const CreateEvent: React.FC<CreateEventProps> = ({
     formState: { errors: errorsQuestion },
   } = useForm<createQuestionForm>();
 
-  useEffect(() => {
-    setQuestions(eventToEdit?.questions || eventToClone?.questions || []);
-    resetEvent({
-      eventName: eventToEdit?.eventName || "",
-      startDate: eventToEdit?.startDate
-        ? new Date(eventToEdit.startDate).toISOString().substr(0, 10)
-        : eventToClone?.startDate
-        ? new Date(eventToClone.startDate).toISOString().substr(0, 10)
-        : "",
-      endDate: eventToEdit?.endDate
-        ? new Date(eventToEdit.endDate).toISOString().substr(0, 10)
-        : eventToClone?.endDate
-        ? new Date(eventToClone.endDate).toISOString().substr(0, 10)
-        : "",
-      introPrompt: eventToEdit?.introPrompt || eventToClone?.introPrompt || "",
-      outroPrompt: eventToEdit?.outroPrompt || eventToClone?.outroPrompt || "",
-      description: eventToEdit?.description || eventToClone?.description || "",
-    });
-  }, [isOpen]);
+  // useEffect(() => {
+  //   resetEvent({
+  //     EventName: eventToEdit?.EventName || "",
+  //     startDate: eventToEdit?.startDate
+  //       ? new Date(eventToEdit.startDate).toISOString().substr(0, 10)
+  //       : eventToClone?.startDate
+  //       ? new Date(eventToClone.startDate).toISOString().substr(0, 10)
+  //       : "",
+  //     EndDate: eventToEdit?.EndDate
+  //       ? new Date(eventToEdit.EndDate).toISOString().substr(0, 10)
+  //       : eventToClone?.EndDate
+  //       ? new Date(eventToClone.EndDate).toISOString().substr(0, 10)
+  //       : "",
+  //     introPrompt: eventToEdit?.introPrompt || eventToClone?.introPrompt || "",
+  //     outroPrompt: eventToEdit?.outroPrompt || eventToClone?.outroPrompt || "",
+  //     Description: eventToEdit?.Description || eventToClone?.Description || "",
+  //   });
+  // }, [isOpen]);
 
   const onSubmitEvent = (data: createEventForm) => {
     if (eventToEdit) {
       const editedEvent: Event = {
-        eventId: eventToEdit.eventId,
-        eventName: data.eventName,
-        eventActive: eventToEdit.eventActive,
-        startDate: data.startDate,
-        endDate: data.endDate,
-        introPrompt: data.introPrompt,
-        outroPrompt: data.outroPrompt,
+        "Event ID": eventToEdit["Event ID"],
+        EventName: data.EventName,
+        Active: eventToEdit.Active,
+        StartDate: data.startDate,
+        EndDate: data.EndDate,
+        StartTime: data.StartTime,
+        Description: data.introPrompt,
+        Message: data.outroPrompt,
         CreatedBy: eventToEdit.CreatedBy,
-        description: data.description,
-        questions: [...questions],
       };
 
       axios
         .patch(
           "https://at2l22ryjg.execute-api.eu-west-2.amazonaws.com/dev/events/" +
-            eventToEdit.eventId,
+            eventToEdit["Event ID"],
           editedEvent
         )
         .then((res) => {
           setReFetch();
-          if (res.data.statusCode == 200) {
+          if (res.data.StatusCode == 200) {
             const responseMessage = JSON.parse(res.data.body);
             Swal.fire({
               position: "center",
               icon: "success",
-              title: responseMessage.message,
+              title: responseMessage.Message,
               showConfirmButton: false,
               timer: 1500,
             });
@@ -101,14 +97,14 @@ const CreateEvent: React.FC<CreateEventProps> = ({
         });
     } else {
       const newEvent: Event = {
-        eventName: data.eventName,
+        EventName: data.EventName,
         eventActive: true,
         startDate: data.startDate,
-        endDate: data.endDate,
+        EndDate: data.EndDate,
         introPrompt: data.introPrompt,
         outroPrompt: data.outroPrompt,
         CreatedBy: "Mouhcine Daali",
-        description: data.description,
+        Description: data.Description,
         questions: [...questions],
       };
       axios
@@ -118,12 +114,12 @@ const CreateEvent: React.FC<CreateEventProps> = ({
         )
         .then((res) => {
           setReFetch();
-          if (res.data.statusCode == 200) {
+          if (res.data.StatusCode == 200) {
             const responseMessage = JSON.parse(res.data.body);
             Swal.fire({
               position: "center",
               icon: "success",
-              title: responseMessage.message,
+              title: responseMessage.Message,
               showConfirmButton: false,
               timer: 1500,
             });
@@ -216,12 +212,12 @@ const CreateEvent: React.FC<CreateEventProps> = ({
     if (
       validation &&
       (questions.length > 0 ||
-        watchEvent("eventName") ||
+        watchEvent("EventName") ||
         watchEvent("startDate") ||
-        watchEvent("endDate") ||
+        watchEvent("EndDate") ||
         watchEvent("introPrompt") ||
         watchEvent("outroPrompt") ||
-        watchEvent("description"))
+        watchEvent("Description"))
     ) {
       Swal.fire({
         title: "Are you sure?",
@@ -234,12 +230,12 @@ const CreateEvent: React.FC<CreateEventProps> = ({
       }).then((result) => {
         if (result.isConfirmed) {
           resetEvent({
-            eventName: "",
+            EventName: "",
             startDate: "",
-            endDate: "",
+            EndDate: "",
             introPrompt: "",
             outroPrompt: "",
-            description: "",
+            Description: "",
           });
           resetQuestion({ questionText: "", minValue: NaN, maxValue: NaN });
           setQuestions([]);
@@ -254,12 +250,12 @@ const CreateEvent: React.FC<CreateEventProps> = ({
       });
     } else {
       resetEvent({
-        eventName: "",
+        EventName: "",
         startDate: "",
-        endDate: "",
+        EndDate: "",
         introPrompt: "",
         outroPrompt: "",
-        description: "",
+        Description: "",
       });
       resetQuestion({ questionText: "", minValue: NaN, maxValue: NaN });
       setQuestions([]);
@@ -273,36 +269,36 @@ const CreateEvent: React.FC<CreateEventProps> = ({
   };
 
   const validateName = (name: string) => {
-    if (eventNames.includes(name)) {
+    if (EventNames.includes(name)) {
       return "the name is already exists";
     } else {
-      clearErrorsEvent("eventName");
+      clearErrorsEvent("EventName");
     }
   };
   const validateDate = (date: string, type: string) => {
     if (type === "startDate") {
       if (new Date(date) < new Date()) {
         return "Start Date cannot be before the current date and time";
-      } else if (new Date(date) > new Date(watchEvent("endDate"))) {
-        setErrorEvent("endDate", {
+      } else if (new Date(date) > new Date(watchEvent("EndDate"))) {
+        setErrorEvent("EndDate", {
           type: "manual",
-          message: "End Date cannot be before the Start Date",
+          Message: "End Date cannot be before the Start Date",
         });
         return "Start Date cannot be after the End Date";
       } else {
         clearErrorsEvent("startDate");
-        clearErrorsEvent("endDate");
+        clearErrorsEvent("EndDate");
       }
     } else {
       if (new Date(date) < new Date(watchEvent("startDate"))) {
         setErrorEvent("startDate", {
           type: "manual",
-          message: "Start Date cannot be after the End Date",
+          Message: "Start Date cannot be after the End Date",
         });
         return "End Date cannot be before the Start Date";
       } else {
         clearErrorsEvent("startDate");
-        clearErrorsEvent("endDate");
+        clearErrorsEvent("EndDate");
       }
     }
   };
@@ -311,7 +307,7 @@ const CreateEvent: React.FC<CreateEventProps> = ({
       if (Number(data) > Number(watchQuestion("maxValue").valueOf())) {
         setErrorQuestion("maxValue", {
           type: "manual",
-          message: "Max Value cannot be less than Min Value",
+          Message: "Max Value cannot be less than Min Value",
         });
         return "Min Value cannot be greater than Max Value";
       } else {
@@ -322,7 +318,7 @@ const CreateEvent: React.FC<CreateEventProps> = ({
       if (Number(data) < Number(watchQuestion("minValue"))) {
         setErrorQuestion("minValue", {
           type: "manual",
-          message: "Min Value cannot be greater than Max Value",
+          Message: "Min Value cannot be greater than Max Value",
         });
         return "Max Value cannot be less than Min Value";
       } else {
@@ -380,30 +376,30 @@ const CreateEvent: React.FC<CreateEventProps> = ({
               <div className='w-2/4 max-md:w-full relative mt-1'>
                 <input
                   className={`peer h-full w-full border-b ${
-                    errorsEvent.eventName ? "border-red-200" : "border-gray-200"
+                    errorsEvent.EventName ? "border-red-200" : "border-gray-200"
                   } bg-transparent pt-4 pb-4 font-sans text-sm font-normal text-gray-700 outline outline-0 transition-all ${
-                    errorsEvent.eventName
+                    errorsEvent.EventName
                       ? "placeholder-shown:border-red-200"
                       : "placeholder-shown:border-gray-200"
                   } focus:border-green-500 focus:outline-0 disabled:border-0`}
                   placeholder=' '
                   type='text'
-                  id='eventName'
-                  {...registerEvent("eventName", {
+                  id='EventName'
+                  {...registerEvent("EventName", {
                     required: true,
                     validate: (value) => validateName(value),
                   })}
                 />
                 <label
-                  htmlFor='eventName'
+                  htmlFor='EventName'
                   className="after:content[' '] pointer-events-none absolute left-0 -top-2.5 pb-14 flex h-full w-full select-none text-[14px] font-normal leading-tight text-gray-800 transition-all after:absolute after:-bottom-1.5 after:block after:w-full after:scale-x-0 after:border-b-2 after:border-green-500 after:transition-transform after:duration-300 peer-placeholder-shown:text-lg peer-placeholder-shown:leading-[4.25] peer-placeholder-shown:text-gray-800 peer-focus:text-[14px] peer-focus:leading-tight peer-focus:text-green-500 peer-focus:after:scale-x-100 peer-focus:after:border-green-500 peer-disabled:text-transparent peer-disabled:peer-placeholder-shown:text-gray-800">
                   Event Name
                 </label>
-                {errorsEvent.eventName && (
+                {errorsEvent.EventName && (
                   <p className='absolute bottom-0 translate-y-full left-0 text-xs text-red-500'>
-                    {errorsEvent.eventName.type === "required"
+                    {errorsEvent.EventName.type === "required"
                       ? "This field is required"
-                      : errorsEvent.eventName.message}
+                      : errorsEvent.EventName.Message}
                   </p>
                 )}
               </div>
@@ -438,39 +434,39 @@ const CreateEvent: React.FC<CreateEventProps> = ({
                     <p className='absolute bottom-0 translate-y-full left-0 text-xs text-red-500'>
                       {errorsEvent.startDate.type === "required"
                         ? "This field is required"
-                        : errorsEvent.startDate.message}
+                        : errorsEvent.startDate.Message}
                     </p>
                   )}
                 </div>
                 <div className='w-1/2 relative'>
                   <input
                     className={`peer h-full w-full border-b ${
-                      errorsEvent.endDate ? "border-red-200" : "border-gray-200"
+                      errorsEvent.EndDate ? "border-red-200" : "border-gray-200"
                     } bg-transparent pt-4 pb-4 font-sans text-sm font-normal text-gray-700 outline outline-0 transition-all ${
-                      errorsEvent.endDate
+                      errorsEvent.EndDate
                         ? "placeholder-shown:border-red-200"
                         : "placeholder-shown:border-gray-200"
                     } focus:border-green-500 focus:outline-0 disabled:border-0`}
                     placeholder=' '
                     type='date'
-                    id='endDate'
-                    {...registerEvent("endDate", {
+                    id='EndDate'
+                    {...registerEvent("EndDate", {
                       valueAsDate: true,
                       required: true,
                       validate: (value) =>
-                        validateDate(value.toString(), "endDate"),
+                        validateDate(value.toString(), "EndDate"),
                     })}
                   />
                   <label
-                    htmlFor='endDate'
+                    htmlFor='EndDate'
                     className="after:content[' '] pointer-events-none absolute left-0 -top-2 pb-14 flex h-full w-full select-none text-[14px] font-normal leading-tight text-gray-800 transition-all after:absolute after:-bottom-1.5 after:block after:w-full after:scale-x-0 after:border-b-2 after:border-green-500 after:transition-transform after:duration-300 peer-placeholder-shown:text-lg peer-placeholder-shown:leading-[4.25] peer-placeholder-shown:text-gray-800 peer-focus:text-[14px] peer-focus:leading-tight peer-focus:text-green-500 peer-focus:after:scale-x-100 peer-focus:after:border-green-500 peer-disabled:text-transparent peer-disabled:peer-placeholder-shown:text-gray-800">
                     End Date
                   </label>
-                  {errorsEvent.endDate && (
+                  {errorsEvent.EndDate && (
                     <p className='absolute bottom-0 translate-y-full left-0 text-xs text-red-500'>
-                      {errorsEvent.endDate.type === "required"
+                      {errorsEvent.EndDate.type === "required"
                         ? "This field is required"
-                        : errorsEvent.endDate.message}
+                        : errorsEvent.EndDate.Message}
                     </p>
                   )}
                 </div>
@@ -535,22 +531,22 @@ const CreateEvent: React.FC<CreateEventProps> = ({
             <div className='w-full relative'>
               <textarea
                 className={`peer h-full w-full border-b ${
-                  errorsEvent.description ? "border-red-200" : "border-gray-200"
+                  errorsEvent.Description ? "border-red-200" : "border-gray-200"
                 } bg-transparent pt-4 pb-4 font-sans text-sm font-normal text-gray-700 outline outline-0 transition-all ${
-                  errorsEvent.description
+                  errorsEvent.Description
                     ? "placeholder-shown:border-red-200"
                     : "placeholder-shown:border-gray-200"
                 } focus:border-green-500 focus:outline-0 disabled:border-0`}
                 placeholder=' '
-                id='description'
-                {...registerEvent("description", { required: true })}
+                id='Description'
+                {...registerEvent("Description", { required: true })}
               />{" "}
               <label
-                htmlFor='description'
+                htmlFor='Description'
                 className="after:content[' '] pointer-events-none absolute left-0 -top-2.5 pb-14 flex h-full w-full select-none text-[14px] font-normal leading-tight text-gray-800 transition-all after:absolute after:-bottom-1.5 after:block after:w-full after:scale-x-0 after:border-b-2 after:border-green-500 after:transition-transform after:duration-300 peer-placeholder-shown:text-lg peer-placeholder-shown:leading-[4.25] peer-placeholder-shown:text-gray-800 peer-focus:text-[14px] peer-focus:leading-tight peer-focus:text-green-500 peer-focus:after:scale-x-100 peer-focus:after:border-green-500 peer-disabled:text-transparent peer-disabled:peer-placeholder-shown:text-gray-800">
                 Description
               </label>
-              {errorsEvent.description && (
+              {errorsEvent.Description && (
                 <p className='absolute bottom-0 translate-y-full left-0 text-xs text-red-500'>
                   Description is required
                 </p>
@@ -607,7 +603,7 @@ const CreateEvent: React.FC<CreateEventProps> = ({
                   <p className='absolute bottom-0 translate-y-full left-0 text-xs text-red-500'>
                     {errorsQuestion.minValue.type === "required"
                       ? "Min Value is required"
-                      : errorsQuestion.minValue.message}
+                      : errorsQuestion.minValue.Message}
                   </p>
                 )}
               </div>
@@ -631,7 +627,7 @@ const CreateEvent: React.FC<CreateEventProps> = ({
                   <p className='absolute bottom-0 translate-y-full left-0 text-xs text-red-500'>
                     {errorsQuestion.maxValue.type === "required"
                       ? "Max Value is required"
-                      : errorsQuestion.maxValue.message}
+                      : errorsQuestion.maxValue.Message}
                   </p>
                 )}
               </div>
