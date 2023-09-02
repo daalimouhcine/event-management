@@ -1,5 +1,5 @@
 import { useForm } from "react-hook-form";
-import { Event, createQuestionForm, createEventForm } from "../types";
+import { Event, createEventForm } from "../types";
 import { useEffect, useState } from "react";
 import { PencilIcon, TrashIcon, XMarkIcon } from "@heroicons/react/20/solid";
 import Swal from "sweetalert2";
@@ -15,6 +15,7 @@ const CreateEvent: React.FC<CreateEventProps> = ({
   eventToClone,
   removeDefaultEvent,
 }) => {
+  const [isChecked, setIsChecked] = useState(false);
 
   const {
     register: registerEvent,
@@ -25,15 +26,6 @@ const CreateEvent: React.FC<CreateEventProps> = ({
     clearErrors: clearErrorsEvent,
     formState: { errors: errorsEvent },
   } = useForm<createEventForm>();
-  const {
-    register: registerQuestion,
-    handleSubmit: handleSubmitQuestion,
-    reset: resetQuestion,
-    watch: watchQuestion,
-    setError: setErrorQuestion,
-    clearErrors: clearErrorsQuestion,
-    formState: { errors: errorsQuestion },
-  } = useForm<createQuestionForm>();
 
   // useEffect(() => {
   //   resetEvent({
@@ -53,6 +45,9 @@ const CreateEvent: React.FC<CreateEventProps> = ({
   //     Description: eventToEdit?.Description || eventToClone?.Description || "",
   //   });
   // }, [isOpen]);
+  const handleCheckboxChange = () => {
+    setIsChecked(!isChecked);
+  };
 
   const onSubmitEvent = (data: createEventForm) => {
     if (eventToEdit) {
@@ -60,11 +55,14 @@ const CreateEvent: React.FC<CreateEventProps> = ({
         "Event ID": eventToEdit["Event ID"],
         EventName: data.EventName,
         Active: eventToEdit.Active,
-        StartDate: data.startDate,
+        WeekDay: eventToEdit.WeekDay,
+        StartDate: data.StartDate,
         EndDate: data.EndDate,
         StartTime: data.StartTime,
-        Description: data.introPrompt,
-        Message: data.outroPrompt,
+        EndTime: data.EndTime,
+        Type: data.Type,
+        Description: data.Description,
+        Message: data.Message,
         CreatedBy: eventToEdit.CreatedBy,
       };
 
@@ -98,14 +96,16 @@ const CreateEvent: React.FC<CreateEventProps> = ({
     } else {
       const newEvent: Event = {
         EventName: data.EventName,
-        eventActive: true,
-        startDate: data.startDate,
+        Active: true,
+        StartDate: data.StartDate,
         EndDate: data.EndDate,
-        introPrompt: data.introPrompt,
-        outroPrompt: data.outroPrompt,
+        WeekDay: data.WeekDay,
+        StartTime: data.StartTime,
+        EndTime: data.EndTime,
+        Type: data.Type,
         CreatedBy: "Mouhcine Daali",
         Description: data.Description,
-        questions: [...questions],
+        Message: data.Message,
       };
       axios
         .post(
@@ -136,89 +136,9 @@ const CreateEvent: React.FC<CreateEventProps> = ({
     }
     cancel(false);
   };
-  const onSubmitQuestion = (data: createQuestionForm) => {
-    if (data.questionNumber) {
-      const newQuestion: Question = {
-        questionNumber: data.questionNumber,
-        questionText: data.questionText,
-        minValue: data.minValue,
-        maxValue: data.maxValue,
-      };
-
-      // edit question in questions array and update the state with the new array of questions with the edited question and the same order
-      setQuestions(
-        questions.map((question) => {
-          if (question.questionNumber === data.questionNumber) {
-            return newQuestion;
-          } else {
-            return question;
-          }
-        })
-      );
-      setQuestionOnEdit(0);
-    } else {
-      const newQuestion: Question = {
-        questionNumber: questions.length + 1,
-        questionText: data.questionText,
-        minValue: data.minValue,
-        maxValue: data.maxValue,
-      };
-
-      setQuestions([...questions, newQuestion]);
-    }
-    resetQuestion({ questionText: "", minValue: NaN, maxValue: NaN });
-  };
-
-  const editQuestion = (questionNumber: number) => {
-    setQuestionOnEdit(questionNumber);
-    const question = questions.find(
-      (question) => question.questionNumber === questionNumber
-    );
-    if (question) {
-      resetQuestion({
-        questionNumber: question.questionNumber,
-        questionText: question.questionText,
-        minValue: question.minValue,
-        maxValue: question.maxValue,
-      });
-    }
-  };
-  const cancelEdit = () => {
-    setQuestionOnEdit(0);
-    resetQuestion({ questionText: "", minValue: NaN, maxValue: NaN });
-  };
-  const removeQuestion = (questionNumber: number) => {
-    Swal.fire({
-      title: "Are you sure?",
-      text: "You won't be able to revert this!",
-      icon: "warning",
-      showCancelButton: true,
-      confirmButtonColor: "#3085d6",
-      cancelButtonColor: "#d33",
-      confirmButtonText: "Yes, Remove it!",
-    }).then((result) => {
-      if (result.isConfirmed) {
-        setQuestions(
-          questions.filter(
-            (question) => question.questionNumber !== questionNumber
-          )
-        );
-        Swal.fire("Removed!", "Your question has been removed.", "success");
-      }
-    });
-  };
 
   const cancel = (validation: boolean) => {
-    if (
-      validation &&
-      (questions.length > 0 ||
-        watchEvent("EventName") ||
-        watchEvent("startDate") ||
-        watchEvent("EndDate") ||
-        watchEvent("introPrompt") ||
-        watchEvent("outroPrompt") ||
-        watchEvent("Description"))
-    ) {
+    if (validation) {
       Swal.fire({
         title: "Are you sure?",
         text: "You won't be able to revert this!",
@@ -231,16 +151,17 @@ const CreateEvent: React.FC<CreateEventProps> = ({
         if (result.isConfirmed) {
           resetEvent({
             EventName: "",
-            startDate: "",
+            StartDate: "",
             EndDate: "",
-            introPrompt: "",
-            outroPrompt: "",
+            WeekDay: "",
+            StartTime: "",
+            EndTime: "",
+            Type: "",
             Description: "",
+            Message: "",
           });
-          resetQuestion({ questionText: "", minValue: NaN, maxValue: NaN });
-          setQuestions([]);
           setOpen();
-          questionOnEdit && setQuestionOnEdit(0);
+
           Swal.fire(
             "Canceled!",
             "Your operation has been canceled.",
@@ -251,16 +172,16 @@ const CreateEvent: React.FC<CreateEventProps> = ({
     } else {
       resetEvent({
         EventName: "",
-        startDate: "",
+        StartDate: "",
         EndDate: "",
-        introPrompt: "",
-        outroPrompt: "",
+        WeekDay: "",
+        StartTime: "",
+        EndTime: "",
+        Type: "",
         Description: "",
+        Message: "",
       });
-      resetQuestion({ questionText: "", minValue: NaN, maxValue: NaN });
-      setQuestions([]);
       setOpen();
-      questionOnEdit && setQuestionOnEdit(0);
     }
 
     if (eventToEdit || eventToClone) {
@@ -282,48 +203,23 @@ const CreateEvent: React.FC<CreateEventProps> = ({
       } else if (new Date(date) > new Date(watchEvent("EndDate"))) {
         setErrorEvent("EndDate", {
           type: "manual",
-          Message: "End Date cannot be before the Start Date",
+          message: "End Date cannot be before the Start Date",
         });
         return "Start Date cannot be after the End Date";
       } else {
-        clearErrorsEvent("startDate");
+        clearErrorsEvent("StartDate");
         clearErrorsEvent("EndDate");
       }
     } else {
-      if (new Date(date) < new Date(watchEvent("startDate"))) {
-        setErrorEvent("startDate", {
+      if (new Date(date) < new Date(watchEvent("StartDate"))) {
+        setErrorEvent("StartDate", {
           type: "manual",
-          Message: "Start Date cannot be after the End Date",
+          message: "Start Date cannot be after the End Date",
         });
         return "End Date cannot be before the Start Date";
       } else {
-        clearErrorsEvent("startDate");
+        clearErrorsEvent("StartDate");
         clearErrorsEvent("EndDate");
-      }
-    }
-  };
-  const validateMinMax = (data: number, type: string) => {
-    if (type === "minValue") {
-      if (Number(data) > Number(watchQuestion("maxValue").valueOf())) {
-        setErrorQuestion("maxValue", {
-          type: "manual",
-          Message: "Max Value cannot be less than Min Value",
-        });
-        return "Min Value cannot be greater than Max Value";
-      } else {
-        clearErrorsQuestion("minValue");
-        clearErrorsQuestion("maxValue");
-      }
-    } else {
-      if (Number(data) < Number(watchQuestion("minValue"))) {
-        setErrorQuestion("minValue", {
-          type: "manual",
-          Message: "Min Value cannot be greater than Max Value",
-        });
-        return "Max Value cannot be less than Min Value";
-      } else {
-        clearErrorsQuestion("minValue");
-        clearErrorsQuestion("maxValue");
       }
     }
   };
@@ -368,7 +264,7 @@ const CreateEvent: React.FC<CreateEventProps> = ({
           </div>
         </div>
         <div className='w-full h-fit flex flex-col gap-y-3 bg-gray-50 rounded-lg p-5 pb-8 mt-5'>
-          <p className='text-gray-800 text-sm font-medium'>
+          <p className='text-gray-800 text-sm font-medium w-fit border-b-2 border-black pb-1'>
             1. Start with setting up your event information
           </p>
           <div className='flex flex-col gap-y-8'>
@@ -399,134 +295,107 @@ const CreateEvent: React.FC<CreateEventProps> = ({
                   <p className='absolute bottom-0 translate-y-full left-0 text-xs text-red-500'>
                     {errorsEvent.EventName.type === "required"
                       ? "This field is required"
-                      : errorsEvent.EventName.Message}
+                      : errorsEvent.EventName.message}
                   </p>
                 )}
               </div>
-              <div className='flex max-md:mt-10 gap-x-5 w-2/4 max-md:w-full'>
-                <div className='w-1/2 relative'>
-                  <input
-                    className={`peer h-full w-full border-b ${
-                      errorsEvent.startDate
-                        ? "border-red-200"
-                        : "border-gray-200"
-                    } bg-transparent pt-4 pb-4 font-sans text-sm font-normal text-gray-700 outline outline-0 transition-all ${
-                      errorsEvent.startDate
-                        ? "placeholder-shown:border-red-200"
-                        : "placeholder-shown:border-gray-200"
-                    } focus:border-green-500 focus:outline-0 disabled:border-0`}
-                    placeholder=' '
-                    type='date'
-                    id='startDate'
-                    {...registerEvent("startDate", {
-                      valueAsDate: true,
-                      required: true,
-                      validate: (value) =>
-                        validateDate(value.toLocaleString(), "startDate"),
-                    })}
-                  />
-                  <label
-                    htmlFor='startDate'
-                    className="after:content[' '] pointer-events-none absolute left-0 -top-2 pb-14 flex h-full w-full select-none text-[14px] font-normal leading-tight text-gray-800 transition-all after:absolute after:-bottom-1.5 after:block after:w-full after:scale-x-0 after:border-b-2 after:border-green-500 after:transition-transform after:duration-300 peer-placeholder-shown:text-lg peer-placeholder-shown:leading-[4.25] peer-placeholder-shown:text-gray-800 peer-focus:text-[14px] peer-focus:leading-tight peer-focus:text-green-500 peer-focus:after:scale-x-100 peer-focus:after:border-green-500 peer-disabled:text-transparent peer-disabled:peer-placeholder-shown:text-gray-800">
-                    Start Date
-                  </label>
-                  {errorsEvent.startDate && (
-                    <p className='absolute bottom-0 translate-y-full left-0 text-xs text-red-500'>
-                      {errorsEvent.startDate.type === "required"
-                        ? "This field is required"
-                        : errorsEvent.startDate.Message}
-                    </p>
-                  )}
-                </div>
-                <div className='w-1/2 relative'>
-                  <input
-                    className={`peer h-full w-full border-b ${
-                      errorsEvent.EndDate ? "border-red-200" : "border-gray-200"
-                    } bg-transparent pt-4 pb-4 font-sans text-sm font-normal text-gray-700 outline outline-0 transition-all ${
-                      errorsEvent.EndDate
-                        ? "placeholder-shown:border-red-200"
-                        : "placeholder-shown:border-gray-200"
-                    } focus:border-green-500 focus:outline-0 disabled:border-0`}
-                    placeholder=' '
-                    type='date'
-                    id='EndDate'
-                    {...registerEvent("EndDate", {
-                      valueAsDate: true,
-                      required: true,
-                      validate: (value) =>
-                        validateDate(value.toString(), "EndDate"),
-                    })}
-                  />
-                  <label
-                    htmlFor='EndDate'
-                    className="after:content[' '] pointer-events-none absolute left-0 -top-2 pb-14 flex h-full w-full select-none text-[14px] font-normal leading-tight text-gray-800 transition-all after:absolute after:-bottom-1.5 after:block after:w-full after:scale-x-0 after:border-b-2 after:border-green-500 after:transition-transform after:duration-300 peer-placeholder-shown:text-lg peer-placeholder-shown:leading-[4.25] peer-placeholder-shown:text-gray-800 peer-focus:text-[14px] peer-focus:leading-tight peer-focus:text-green-500 peer-focus:after:scale-x-100 peer-focus:after:border-green-500 peer-disabled:text-transparent peer-disabled:peer-placeholder-shown:text-gray-800">
-                    End Date
-                  </label>
-                  {errorsEvent.EndDate && (
-                    <p className='absolute bottom-0 translate-y-full left-0 text-xs text-red-500'>
-                      {errorsEvent.EndDate.type === "required"
-                        ? "This field is required"
-                        : errorsEvent.EndDate.Message}
-                    </p>
-                  )}
-                </div>
+              <div className='w-2/4 max-md:w-full relative mt-1'>
+                <input
+                  className={`peer h-full w-full border-b ${
+                    errorsEvent.Message ? "border-red-200" : "border-gray-200"
+                  } bg-transparent pt-4 pb-4 font-sans text-sm font-normal text-gray-700 outline outline-0 transition-all ${
+                    errorsEvent.Message
+                      ? "placeholder-shown:border-red-200"
+                      : "placeholder-shown:border-gray-200"
+                  } focus:border-green-500 focus:outline-0 disabled:border-0`}
+                  placeholder=' '
+                  type='text'
+                  id='Message'
+                  {...registerEvent("Message", {
+                    required: true,
+                  })}
+                />
+                <label
+                  htmlFor='Message'
+                  className="after:content[' '] pointer-events-none absolute left-0 -top-2.5 pb-14 flex h-full w-full select-none text-[14px] font-normal leading-tight text-gray-800 transition-all after:absolute after:-bottom-1.5 after:block after:w-full after:scale-x-0 after:border-b-2 after:border-green-500 after:transition-transform after:duration-300 peer-placeholder-shown:text-lg peer-placeholder-shown:leading-[4.25] peer-placeholder-shown:text-gray-800 peer-focus:text-[14px] peer-focus:leading-tight peer-focus:text-green-500 peer-focus:after:scale-x-100 peer-focus:after:border-green-500 peer-disabled:text-transparent peer-disabled:peer-placeholder-shown:text-gray-800">
+                  Message
+                </label>
+                {errorsEvent.Message && (
+                  <p className='absolute bottom-0 translate-y-full left-0 text-xs text-red-500'>
+                    {errorsEvent.Message.type === "required" &&
+                      "This field is required"}
+                  </p>
+                )}
               </div>
             </div>
             <div className='flex gap-x-5'>
-              <div className='w-1/2 relative '>
-                <input
+              <div className='w-1/2 max-md:w-full relative mt-1'>
+                {/* create select options for types */}
+                <select
+                  defaultValue=''
                   className={`peer h-full w-full border-b ${
-                    errorsEvent.introPrompt
-                      ? "border-red-200"
-                      : "border-gray-200"
+                    errorsEvent.Type ? "border-red-200" : "border-gray-200"
                   } bg-transparent pt-4 pb-4 font-sans text-sm font-normal text-gray-700 outline outline-0 transition-all ${
-                    errorsEvent.introPrompt
+                    errorsEvent.Type
                       ? "placeholder-shown:border-red-200"
                       : "placeholder-shown:border-gray-200"
                   } focus:border-green-500 focus:outline-0 disabled:border-0`}
-                  placeholder=' '
-                  type='text'
-                  id='introPrompt'
-                  {...registerEvent("introPrompt", { required: true })}
-                />
+                  id='Type'
+                  {...registerEvent("Type", { required: true })}>
+                  <option value='' disabled hidden>
+                    Select Type
+                  </option>
+                  <option value='C'>Closure</option>
+                  <option value='E'>Emergency</option>
+                  <option value='M1'>Custom Message 1 </option>
+                  <option value='M2'>Custom Message 2</option>
+                </select>
                 <label
-                  htmlFor='introPrompt'
+                  htmlFor='Type'
                   className="after:content[' '] pointer-events-none absolute left-0 -top-2.5 pb-14 flex h-full w-full select-none text-[14px] font-normal leading-tight text-gray-800 transition-all after:absolute after:-bottom-1.5 after:block after:w-full after:scale-x-0 after:border-b-2 after:border-green-500 after:transition-transform after:duration-300 peer-placeholder-shown:text-lg peer-placeholder-shown:leading-[4.25] peer-placeholder-shown:text-gray-800 peer-focus:text-[14px] peer-focus:leading-tight peer-focus:text-green-500 peer-focus:after:scale-x-100 peer-focus:after:border-green-500 peer-disabled:text-transparent peer-disabled:peer-placeholder-shown:text-gray-800">
-                  Intro Prompt
+                  Type
                 </label>
-                {errorsEvent.introPrompt && (
+                {errorsEvent.Type && (
                   <p className='absolute bottom-0 translate-y-full left-0 text-xs text-red-500'>
-                    Intro Prompt is required
+                    Type is required
                   </p>
                 )}
               </div>
-              <div className='w-1/2 relative '>
-                <input
-                  className={`peer h-full w-full border-b ${
-                    errorsEvent.outroPrompt
-                      ? "border-red-200"
-                      : "border-gray-200"
-                  } bg-transparent pt-4 pb-4 font-sans text-sm font-normal text-gray-700 outline outline-0 transition-all ${
-                    errorsEvent.outroPrompt
-                      ? "placeholder-shown:border-red-200"
-                      : "placeholder-shown:border-gray-200"
-                  } focus:border-green-500 focus:outline-0 disabled:border-0`}
-                  placeholder=' '
-                  type='text'
-                  id='outroPrompt'
-                  {...registerEvent("outroPrompt", { required: true })}
-                />
-                <label
-                  htmlFor='outroPrompt'
-                  className="after:content[' '] pointer-events-none absolute left-0 -top-2.5 pb-14 flex h-full w-full select-none text-[14px] font-normal leading-tight text-gray-800 transition-all after:absolute after:-bottom-1.5 after:block after:w-full after:scale-x-0 after:border-b-2 after:border-green-500 after:transition-transform after:duration-300 peer-placeholder-shown:text-lg peer-placeholder-shown:leading-[4.25] peer-placeholder-shown:text-gray-800 peer-focus:text-[14px] peer-focus:leading-tight peer-focus:text-green-500 peer-focus:after:scale-x-100 peer-focus:after:border-green-500 peer-disabled:text-transparent peer-disabled:peer-placeholder-shown:text-gray-800">
-                  Outro Prompt
-                </label>
-                {errorsEvent.outroPrompt && (
-                  <p className='absolute bottom-0 translate-y-full left-0 text-xs text-red-500'>
-                    Outro Prompt is required
-                  </p>
-                )}
-              </div>
+              {/* display costume message field if the user select M1 or M2 */}
+              {watchEvent("Type") === "M1" || watchEvent("Type") === "M2" ? (
+                <div className='w-1/2 max-md:w-full relative mt-1'>
+                  <input
+                    className={`peer h-full w-full border-b ${
+                      errorsEvent.CostumeMessage!
+                        ? "border-red-200"
+                        : "border-gray-200"
+                    } bg-transparent pt-4 pb-4 font-sans text-sm font-normal text-gray-700 outline outline-0 transition-all ${
+                      errorsEvent.CostumeMessage!
+                        ? "placeholder-shown:border-red-200"
+                        : "placeholder-shown:border-gray-200"
+                    } focus:border-green-500 focus:outline-0 disabled:border-0`}
+                    placeholder=' '
+                    type='text'
+                    id='CostumeMessage'
+                    {...registerEvent("CostumeMessage", {
+                      required: true,
+                    })}
+                  />
+                  <label
+                    htmlFor='CostumeMessage'
+                    className="after:content[' '] pointer-events-none absolute left-0 -top-2.5 pb-14 flex h-full w-full select-none text-[14px] font-normal leading-tight text-gray-800 transition-all after:absolute after:-bottom-1.5 after:block after:w-full after:scale-x-0 after:border-b-2 after:border-green-500 after:transition-transform after:duration-300 peer-placeholder-shown:text-lg peer-placeholder-shown:leading-[4.25] peer-placeholder-shown:text-gray-800 peer-focus:text-[14px] peer-focus:leading-tight peer-focus:text-green-500 peer-focus:after:scale-x-100 peer-focus:after:border-green-500 peer-disabled:text-transparent peer-disabled:peer-placeholder-shown:text-gray-800">
+                    CostumeMessage
+                  </label>
+                  {errorsEvent.CostumeMessage! && (
+                    <p className='absolute bottom-0 translate-y-full left-0 text-xs text-red-500'>
+                      {errorsEvent.CostumeMessage!.type === "required" &&
+                        "This field is required"}
+                    </p>
+                  )}
+                </div>
+              ) : (
+                ""
+              )}
             </div>
             <div className='w-full relative'>
               <textarea
@@ -553,208 +422,92 @@ const CreateEvent: React.FC<CreateEventProps> = ({
               )}
             </div>
           </div>
+          <p className='text-gray-800 text-sm font-medium mt-5 w-fit border-b-2 border-black pb-1'>
+            2. Schedule your Event
+          </p>
+          <div className='flex gap-x-10 items-center w-full'>
+            <div className='w-fit'>
+              <label className='flex flex-col gap-y-1 cursor-pointer select-none items-center'>
+                <i className='text-gray-800 text-sm font-medium'>All Day</i>
+                <div className='relative'>
+                  <input
+                    type='checkbox'
+                    checked={isChecked}
+                    onChange={handleCheckboxChange}
+                    className='sr-only'
+                  />
+                  <div className='h-5 w-14 rounded-full bg-[#E5E7EB] shadow-inner'></div>
+                  <div
+                    className={`shadow-md absolute -top-1 flex h-7 w-7 items-center justify-center rounded-full transition-all ease-linear duration-300 ${
+                      isChecked ? "!bg-white left-1/2" : "bg-white left-0"
+                    }`}>
+                    <span
+                      className={`active h-4 w-4 rounded-full  ${
+                        isChecked ? "bg-blue-500" : "bg-[#E5E7EB]"
+                      }`}></span>
+                  </div>
+                </div>
+              </label>
+            </div>
+            <div className='w-full flex flex-col gap-y-8'>
+              <div className='flex gap-x-5'>
+                <div className='w-1/2 max-md:w-full relative mt-1'>
+                  <input
+                    className={`peer h-full w-full border-b ${
+                      errorsEvent.StartDate
+                        ? "border-red-200"
+                        : "border-gray-200"
+                    } bg-transparent pt-4 pb-4 font-sans text-sm font-normal text-gray-700 outline outline-0 transition-all ${
+                      errorsEvent.StartDate
+                        ? "placeholder-shown:border-red-200"
+                        : "placeholder-shown:border-gray-200"
+                    } focus:border-green-500 focus:outline-0 disabled:border-0`}
+                    placeholder=' '
+                    type='date'
+                    id='StartDate'
+                    {...registerEvent("StartDate", { required: true })}
+                  />
+                  <label
+                    htmlFor='StartDate'
+                    className="after:content[' '] pointer-events-none absolute left-0 -top-2.5 pb-14 flex h-full w-full select-none text-[14px] font-normal leading-tight text-gray-800 transition-all after:absolute after:-bottom-1.5 after:block after:w-full after:scale-x-0 after:border-b-2 after:border-green-500 after:transition-transform after:duration-300 peer-placeholder-shown:text-lg peer-placeholder-shown:leading-[4.25] peer-placeholder-shown:text-gray-800 peer-focus:text-[14px] peer-focus:leading-tight peer-focus:text-green-500 peer-focus:after:scale-x-100 peer-focus:after:border-green-500 peer-disabled:text-transparent peer-disabled:peer-placeholder-shown:text-gray-800">
+                    Start Date
+                  </label>
+                  {errorsEvent.StartDate && (
+                    <p className='absolute bottom-0 translate-y-full left-0 text-xs text-red-500'>
+                      Start Date is required
+                    </p>
+                  )}
+                </div>
+                <div className='w-1/2 max-md:w-full relative mt-1'>
+                  <input
+                    className={`peer h-full w-full border-b ${
+                      errorsEvent.EndDate ? "border-red-200" : "border-gray-200"
+                    } bg-transparent pt-4 pb-4 font-sans text-sm font-normal text-gray-700 outline outline-0 transition-all ${
+                      errorsEvent.EndDate
+                        ? "placeholder-shown:border-red-200"
+                        : "placeholder-shown:border-gray-200"
+                    } focus:border-green-500 focus:outline-0 disabled:border-0`}
+                    placeholder=' '
+                    type='date'
+                    id='EndDate'
+                    {...registerEvent("EndDate", { required: true })}
+                  />
+                  <label
+                    htmlFor='EndDate'
+                    className="after:content[' '] pointer-events-none absolute left-0 -top-2.5 pb-14 flex h-full w-full select-none text-[14px] font-normal leading-tight text-gray-800 transition-all after:absolute after:-bottom-1.5 after:block after:w-full after:scale-x-0 after:border-b-2 after:border-green-500 after:transition-transform after:duration-300 peer-placeholder-shown:text-lg peer-placeholder-shown:leading-[4.25] peer-placeholder-shown:text-gray-800 peer-focus:text-[14px] peer-focus:leading-tight peer-focus:text-green-500 peer-focus:after:scale-x-100 peer-focus:after:border-green-500 peer-disabled:text-transparent peer-disabled:peer-placeholder-shown:text-gray-800">
+                    End Date
+                  </label>
+                  {errorsEvent.EndDate && (
+                    <p className='absolute bottom-0 translate-y-full left-0 text-xs text-red-500'>
+                      End Date is required
+                    </p>
+                  )}
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
       </form>
-      <div className='mt-8 flex flex-col p-1 bg-gray-100 rounded-lg'>
-        <div className='flex justify-between items-center px-5 pt-3'>
-          <p className='text-gray-800 text-sm font-medium'>2. Add Questions</p>
-        </div>
-        <form
-          onSubmit={handleSubmitQuestion(onSubmitQuestion)}
-          className='flex flex-col gap-y-3 my-5 px-5'>
-          <div className='w-full flex max-sm:flex-col gap-10'>
-            <div className='w-2/4 max-sm:w-full relative '>
-              <input
-                className='peer h-full w-full border-b border-gray-200 bg-transparent pt-4 pb-4 font-sans text-sm font-normal text-gray-700 outline outline-0 transition-all placeholder-shown:border-gray-200 focus:border-green-500 focus:outline-0 disabled:border-0'
-                placeholder=' '
-                type='text'
-                id='questionText'
-                {...registerQuestion("questionText", { required: true })}
-              />
-              <label
-                htmlFor='questionText'
-                className="after:content[' '] pointer-events-none absolute left-0 -top-2.5 pb-14 flex h-full w-full select-none text-[14px] font-normal leading-tight text-gray-800 transition-all after:absolute after:-bottom-1.5 after:block after:w-full after:scale-x-0 after:border-b-2 after:border-green-500 after:transition-transform after:duration-300 peer-placeholder-shown:text-lg peer-placeholder-shown:leading-[4.25] peer-placeholder-shown:text-gray-800 peer-focus:text-[14px] peer-focus:leading-tight peer-focus:text-green-500 peer-focus:after:scale-x-100 peer-focus:after:border-green-500 peer-disabled:text-transparent peer-disabled:peer-placeholder-shown:text-gray-800">
-                Question Text
-              </label>
-              {errorsQuestion.questionText && (
-                <p className='absolute bottom-0 translate-y-full left-0 text-xs text-red-500'>
-                  Question Text is required
-                </p>
-              )}
-            </div>
-            <div className='w-2/4 max-sm:w-full flex'>
-              <div className='w-1/2 relative '>
-                <input
-                  className='peer h-full w-full border-b border-gray-200 bg-transparent pt-4 pb-4 font-sans text-sm font-normal text-gray-700 outline outline-0 transition-all placeholder-shown:border-gray-200 focus:border-green-500 focus:outline-0 disabled:border-0'
-                  placeholder=' '
-                  type='number'
-                  id='minValue'
-                  {...registerQuestion("minValue", {
-                    required: true,
-                    validate: (value) => validateMinMax(value, "minValue"),
-                  })}
-                />
-                <label
-                  htmlFor='minValue'
-                  className="after:content[' '] pointer-events-none absolute left-0 -top-2.5 pb-14 flex h-full w-full select-none text-[14px] font-normal leading-tight text-gray-800 transition-all after:absolute after:-bottom-1.5 after:block after:w-full after:scale-x-0 after:border-b-2 after:border-green-500 after:transition-transform after:duration-300 peer-placeholder-shown:text-lg peer-placeholder-shown:leading-[4.25] peer-placeholder-shown:text-gray-800 peer-focus:text-[14px] peer-focus:leading-tight peer-focus:text-green-500 peer-focus:after:scale-x-100 peer-focus:after:border-green-500 peer-disabled:text-transparent peer-disabled:peer-placeholder-shown:text-gray-800">
-                  Min Value
-                </label>
-                {errorsQuestion.minValue && (
-                  <p className='absolute bottom-0 translate-y-full left-0 text-xs text-red-500'>
-                    {errorsQuestion.minValue.type === "required"
-                      ? "Min Value is required"
-                      : errorsQuestion.minValue.Message}
-                  </p>
-                )}
-              </div>
-              <div className='w-1/2 relative '>
-                <input
-                  className='peer h-full w-full border-b border-gray-200 bg-transparent pt-4 pb-4 font-sans text-sm font-normal text-gray-700 outline outline-0 transition-all placeholder-shown:border-gray-200 focus:border-green-500 focus:outline-0 disabled:border-0'
-                  placeholder=' '
-                  type='number'
-                  id='maxValue'
-                  {...registerQuestion("maxValue", {
-                    required: true,
-                    validate: (value) => validateMinMax(value, "maxValue"),
-                  })}
-                />
-                <label
-                  htmlFor='maxValue'
-                  className="after:content[' '] pointer-events-none absolute left-0 -top-2.5 pb-14 flex h-full w-full select-none text-[14px] font-normal leading-tight text-gray-800 transition-all after:absolute after:-bottom-1.5 after:block after:w-full after:scale-x-0 after:border-b-2 after:border-green-500 after:transition-transform after:duration-300 peer-placeholder-shown:text-lg peer-placeholder-shown:leading-[4.25] peer-placeholder-shown:text-gray-800 peer-focus:text-[14px] peer-focus:leading-tight peer-focus:text-green-500 peer-focus:after:scale-x-100 peer-focus:after:border-green-500 peer-disabled:text-transparent peer-disabled:peer-placeholder-shown:text-gray-800">
-                  Max Value
-                </label>
-                {errorsQuestion.maxValue && (
-                  <p className='absolute bottom-0 translate-y-full left-0 text-xs text-red-500'>
-                    {errorsQuestion.maxValue.type === "required"
-                      ? "Max Value is required"
-                      : errorsQuestion.maxValue.Message}
-                  </p>
-                )}
-              </div>
-            </div>
-          </div>
-          <button
-            type='submit'
-            className='self-end relative inline-flex items-center justify-start px-5 py-2.5 mt-5 overflow-hidden font-medium transition-all bg-white rounded hover:bg-white group'>
-            <span className='w-48 h-48 rounded rotate-[-40deg] bg-green-600 absolute bottom-0 left-0 -translate-x-full ease-out duration-500 transition-all translate-y-full mb-9 ml-9 group-hover:ml-0 group-hover:mb-32 group-hover:translate-x-0'></span>
-            <span className='relative w-full text-left text-black transition-colors duration-300 ease-in-out group-hover:text-white'>
-              {questionOnEdit ? "Edit Question" : "Add Question"}
-            </span>
-          </button>
-        </form>
-        <div className='w-full'>
-          <div className='w-full p-3 '>
-            <div className='overflow-x-scroll shadow ring-1 ring-black ring-opacity-5 md:rounded-lg'>
-              <table className='min-w-full divide-y divide-gray-300'>
-                <thead className='bg-gray-50'>
-                  <tr>
-                    <th
-                      scope='col'
-                      className='py-3.5 pl-4 pr-3 text-left text-sm font-semibold text-gray-900 sm:pl-6'>
-                      N°
-                    </th>
-                    <th
-                      scope='col'
-                      className='py-3.5 pl-4 pr-3 text-left text-sm font-semibold text-gray-900 sm:pl-6'>
-                      Question Text
-                    </th>
-                    <th
-                      scope='col'
-                      className='px-3 py-3.5 text-left text-sm font-semibold text-gray-900'>
-                      Min Value
-                    </th>
-                    <th
-                      scope='col'
-                      className='px-3 py-3.5 text-left text-sm font-semibold text-gray-900'>
-                      Max Value
-                    </th>
-                    <th
-                      scope='col'
-                      className='px-3 py-3.5 text-left text-sm font-semibold text-gray-900'>
-                      Actions
-                    </th>
-                  </tr>
-                </thead>
-                <tbody className='bg-white'>
-                  {questions.length > 0 ? (
-                    questions.map((question: Question) => (
-                      <tr
-                        key={question.questionNumber}
-                        className={`${
-                          questionOnEdit === question.questionNumber &&
-                          "border-4 border-gray-700"
-                        }`}>
-                        <td className='px-4 py-4 whitespace-nowrap text-sm font-medium text-gray-900'>
-                          {question.questionNumber}
-                        </td>
-                        <td className='px-4 py-4 whitespace-nowrap text-sm text-gray-500'>
-                          {question.questionText}
-                        </td>
-                        <td className='px-4 py-4 whitespace-nowrap text-sm text-gray-500'>
-                          {question.minValue}
-                        </td>
-                        <td className='px-4 py-4 whitespace-nowrap text-sm text-gray-500'>
-                          {question.maxValue}
-                        </td>
-                        <td className='flex gap-x-3 px-4 py-4 whitespace-nowrap text-sm text-gray-500'>
-                          <button
-                            onClick={() => {
-                              removeQuestion(question.questionNumber);
-                            }}
-                            className='text-red-600 hover:text-red-900'>
-                            <TrashIcon className='w-5 h-5' />
-                          </button>
-                          {/* {questionOnEdit === question.questionNumber && (
-                            <button
-                              onClick={() => {
-                                questionOnEdit
-                                  ? cancelEdit()
-                                  : editQuestion(question.questionNumber);
-                              }}
-                              className={`${
-                                questionOnEdit
-                                  ? "text-gray-600 hover:text-gray-900"
-                                  : "text-green-600 hover:text-green-900"
-                              }`}>
-                              <XMarkIcon className='w-5 h-5 bg-gray-200/70 rounded-md' />
-                            </button>
-                          )} */}
-                          <button
-                            onClick={() => {
-                              questionOnEdit === question.questionNumber
-                                ? cancelEdit()
-                                : editQuestion(question.questionNumber);
-                            }}
-                            className={`${
-                              questionOnEdit === question.questionNumber
-                                ? "text-gray-600 hover:text-gray-900"
-                                : "text-green-600 hover:text-green-900"
-                            }`}>
-                            {questionOnEdit === question.questionNumber ? (
-                              <XMarkIcon className='w-5 h-5 bg-gray-200/70 rounded-md' />
-                            ) : (
-                              <PencilIcon className='w-5 h-5' />
-                            )}
-                          </button>
-                        </td>
-                      </tr>
-                    ))
-                  ) : (
-                    <tr>
-                      <td
-                        align='center'
-                        colSpan={5}
-                        className='px-4 py-4 whitespace-nowrap text-sm font-medium text-gray-900'>
-                        No Questions
-                      </td>
-                    </tr>
-                  )}
-                </tbody>
-              </table>
-            </div>
-          </div>
-        </div>
-      </div>
     </div>
   );
 };

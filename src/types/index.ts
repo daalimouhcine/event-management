@@ -20,14 +20,10 @@ export type createEventForm = {
   WeekDay?: string;
   StartTime?: string;
   EndTime?: string;
+  Type: string;
+  CostumeMessage?: string;
+  Message: string;
   Description: string;
-};
-
-export type createQuestionForm = {
-  questionNumber?: number;
-  questionText: string;
-  minValue: number;
-  maxValue: number;
 };
 
 export type Search = {
