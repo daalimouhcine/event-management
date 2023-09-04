@@ -197,10 +197,10 @@ const CreateEvent: React.FC<CreateEventProps> = ({
     }
   };
   const validateDate = (date: string, type: string) => {
-    if (type === "startDate") {
-      if (new Date(date) < new Date()) {
-        return "Start Date cannot be before the current date and time";
-      } else if (new Date(date) > new Date(watchEvent("EndDate"))) {
+    if (new Date(date) < new Date()) {
+      return "Start Date cannot be before the current date";
+    } else if (type === "StartDate") {
+      if (new Date(date) > new Date(watchEvent("EndDate")) && isChecked) {
         setErrorEvent("EndDate", {
           type: "manual",
           message: "End Date cannot be before the Start Date",
@@ -384,7 +384,7 @@ const CreateEvent: React.FC<CreateEventProps> = ({
                   <label
                     htmlFor='CostumeMessage'
                     className="after:content[' '] pointer-events-none absolute left-0 -top-2.5 pb-14 flex h-full w-full select-none text-[14px] font-normal leading-tight text-gray-800 transition-all after:absolute after:-bottom-1.5 after:block after:w-full after:scale-x-0 after:border-b-2 after:border-green-500 after:transition-transform after:duration-300 peer-placeholder-shown:text-lg peer-placeholder-shown:leading-[4.25] peer-placeholder-shown:text-gray-800 peer-focus:text-[14px] peer-focus:leading-tight peer-focus:text-green-500 peer-focus:after:scale-x-100 peer-focus:after:border-green-500 peer-disabled:text-transparent peer-disabled:peer-placeholder-shown:text-gray-800">
-                    CostumeMessage
+                    Costume Message
                   </label>
                   {errorsEvent.CostumeMessage! && (
                     <p className='absolute bottom-0 translate-y-full left-0 text-xs text-red-500'>
@@ -465,7 +465,7 @@ const CreateEvent: React.FC<CreateEventProps> = ({
                     placeholder=' '
                     type='date'
                     id='StartDate'
-                    {...registerEvent("StartDate", { required: true })}
+                    {...registerEvent("StartDate", { required: true, validate: (value) => validateDate(value, "StartDate") })}
                   />
                   <label
                     htmlFor='StartDate'
@@ -474,7 +474,7 @@ const CreateEvent: React.FC<CreateEventProps> = ({
                   </label>
                   {errorsEvent.StartDate && (
                     <p className='absolute bottom-0 translate-y-full left-0 text-xs text-red-500'>
-                      Start Date is required
+                      {errorsEvent.StartDate.type === "required" ? "This field is required" : errorsEvent.StartDate.message}
                     </p>
                   )}
                 </div>
@@ -493,16 +493,16 @@ const CreateEvent: React.FC<CreateEventProps> = ({
                       placeholder=' '
                       type='date'
                       id='EndDate'
-                      {...registerEvent("EndDate", { required: true })}
+                      {...registerEvent("EndDate", { required: true, validate: (value) => validateDate(value, "EndDate") })}
                     />
                     <label
                       htmlFor='EndDate'
-                      className="after:content[' '] pointer-events-none absolute left-0 -top-2.5 pb-14 flex h-full w-full select-none text-[14px] font-normal leading-tight text-gray-800 transition-all after:absolute after:-bottom-1.5 after:block after:w-full after:scale-x-0 after:border-b-2 after:border-green-500 after:transition-transform after:duration-300 peer-placeholder-shown:text-lg peer-placeholder-shown:leading-[4.25] peer-placeholder-shown:text-gray-800 peer-focus:text-[14px] peer-focus:leading-tight peer-focus:text-green-500 peer-focus:after:scale-x-100 peer-focus:after:border-green-500 peer-disabled:text-transparent peer-disabled:peer-placeholder-shown:text-gray-800">
+                      className="after:content[' '] pointer-events-none absolute left-0 -top-2 pb-14 flex h-full w-full select-none text-[14px] font-normal leading-tight text-gray-800 transition-all after:absolute after:-bottom-1.5 after:block after:w-full after:scale-x-0 after:border-b-2 after:border-green-500 after:transition-transform after:duration-300 peer-placeholder-shown:text-lg peer-placeholder-shown:leading-[4.25] peer-placeholder-shown:text-gray-800 peer-focus:text-[14px] peer-focus:leading-tight peer-focus:text-green-500 peer-focus:after:scale-x-100 peer-focus:after:border-green-500 peer-disabled:text-transparent peer-disabled:peer-placeholder-shown:text-gray-800">
                       End Date
                     </label>
                     {errorsEvent.EndDate && (
                       <p className='absolute bottom-0 translate-y-full left-0 text-xs text-red-500'>
-                        End Date is required
+                        {errorsEvent.EndDate.type === "required" ? "This field is required" : errorsEvent.EndDate.message}
                       </p>
                     )}
                   </div>

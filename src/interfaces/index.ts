@@ -37,6 +37,5 @@ export interface EventDetailsProps {
   event: Event;
   setEventToEdit: (event: Event) => void;
   setEventToClone: (event: Event) => void;
-  eventTitle: string;
   setOpenEdit: () => void;
 }

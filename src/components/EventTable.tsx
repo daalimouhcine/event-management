@@ -289,12 +289,12 @@ const EventTable = () => {
                     <th
                       scope='col'
                       className='px-3 py-3.5 text-left text-sm font-semibold text-gray-100'>
-                      Start Date/Time
+                      Start/End Date
                     </th>
                     <th
                       scope='col'
                       className='px-3 py-3.5 text-left text-sm font-semibold text-gray-100'>
-                      End Date
+                      Start/End Time
                     </th>
                     <th
                       scope='col'
@@ -311,11 +311,11 @@ const EventTable = () => {
                       className='px-3 py-3.5 text-left text-sm font-semibold text-gray-100'>
                       Status
                     </th>
-                    <th
+                    {/* <th
                       scope='col'
                       className='px-3 py-3.5 text-left text-sm font-semibold text-gray-100'>
                       Created By
-                    </th>
+                    </th> */}
                     <th
                       scope='col'
                       className='relative py-3.5 pl-3 pr-4 sm:pr-6'>

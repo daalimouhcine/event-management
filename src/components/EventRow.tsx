@@ -32,7 +32,6 @@ const EventRow: React.FC<EventRowProps> = ({
             setOpen={() => setOpenDetails(!openDetails)}
             setEventToEdit={editEvent}
             setEventToClone={cloneEvent}
-            eventTitle={event.EventName!}
             setOpenEdit={() => setOpenEdit()}
           />
         </td>
@@ -54,7 +53,7 @@ const EventRow: React.FC<EventRowProps> = ({
         <td
           onClick={() => setOpenDetails(true)}
           className='whitespace-nowrap px-3 py-4 text-sm text-gray-500'>
-          {event.Description || "Not assigned"}
+          <p className='w-36 truncate'>{event.Description || "Not assigned"}</p>
         </td>
         <td
           onClick={() => setOpenDetails(true)}
@@ -64,16 +63,16 @@ const EventRow: React.FC<EventRowProps> = ({
         <td
           onClick={() => setOpenDetails(true)}
           className='whitespace-nowrap px-3 py-4 text-sm text-gray-500'>
-          {event.StartDate
-            ? new Date(event.StartDate).toDateString()
-            : event.StartTime || "Not assigned"}
+          {`${event.StartDate || "Not assigned"} - ${
+            event.EndDate || "Not assigned"
+          }`}
         </td>
         <td
           onClick={() => setOpenDetails(true)}
           className='whitespace-nowrap px-3 py-4 text-sm text-gray-500'>
-          {event.EndDate
-            ? new Date(event.EndDate).toDateString()
-            : event.EndTime || "Not assigned"}
+          {`${event.StartTime || "Not assigned"} - ${
+            event.EndTime || "Not assigned"
+          }`}
         </td>
         <td
           onClick={() => setOpenDetails(true)}
@@ -106,11 +105,11 @@ const EventRow: React.FC<EventRowProps> = ({
             </span>
           )}
         </td>
-        <td
+        {/* <td
           onClick={() => setOpenDetails(true)}
           className='whitespace-nowrap px-3 py-4 text-sm text-gray-500'>
           {event.CreatedBy}
-        </td>
+        </td> */}
         <td className='relative whitespace-nowrap py-4 pl-3 pr-4 text-right text-sm font-medium sm:pr-6'>
           <EventActions
             event={event}
