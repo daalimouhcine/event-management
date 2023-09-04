@@ -27,24 +27,35 @@ const CreateEvent: React.FC<CreateEventProps> = ({
     formState: { errors: errorsEvent },
   } = useForm<createEventForm>();
 
-  // useEffect(() => {
-  //   resetEvent({
-  //     EventName: eventToEdit?.EventName || "",
-  //     startDate: eventToEdit?.startDate
-  //       ? new Date(eventToEdit.startDate).toISOString().substr(0, 10)
-  //       : eventToClone?.startDate
-  //       ? new Date(eventToClone.startDate).toISOString().substr(0, 10)
-  //       : "",
-  //     EndDate: eventToEdit?.EndDate
-  //       ? new Date(eventToEdit.EndDate).toISOString().substr(0, 10)
-  //       : eventToClone?.EndDate
-  //       ? new Date(eventToClone.EndDate).toISOString().substr(0, 10)
-  //       : "",
-  //     introPrompt: eventToEdit?.introPrompt || eventToClone?.introPrompt || "",
-  //     outroPrompt: eventToEdit?.outroPrompt || eventToClone?.outroPrompt || "",
-  //     Description: eventToEdit?.Description || eventToClone?.Description || "",
-  //   });
-  // }, [isOpen]);
+  useEffect(() => {
+    resetEvent({
+      EventName: eventToEdit?.EventName || "",
+      StartDate: eventToEdit?.StartDate
+        ? new Date(eventToEdit.StartDate).toISOString().substr(0, 10)
+        : eventToClone?.StartDate
+        ? new Date(eventToClone.StartDate).toISOString().substr(0, 10)
+        : "",
+      EndDate: eventToEdit?.EndDate
+        ? new Date(eventToEdit.EndDate).toISOString().substr(0, 10)
+        : eventToClone?.EndDate
+        ? new Date(eventToClone.EndDate).toISOString().substr(0, 10)
+        : "",
+      WeekDay: eventToEdit?.WeekDay || eventToClone?.WeekDay || "",
+      StartTime: eventToEdit?.StartTime || eventToClone?.StartTime || "",
+      EndTime: eventToEdit?.EndTime || eventToClone?.EndTime || "",
+      Type: eventToEdit?.Type || eventToClone?.Type || "",
+      Description: eventToEdit?.Description || eventToClone?.Description || "",
+      Message: eventToEdit?.Message || eventToClone?.Message || "",
+    });
+    (eventToEdit?.WeekDay &&
+      !eventToEdit?.StartTime &&
+      !eventToEdit?.EndTime) ||
+    (eventToClone?.WeekDay &&
+      !eventToClone?.StartTime &&
+      !eventToClone?.EndTime)
+      ? setIsChecked(true)
+      : setIsChecked(false);
+  }, [isOpen]);
   const handleCheckboxChange = () => {
     setIsChecked(!isChecked);
   };
@@ -160,6 +171,7 @@ const CreateEvent: React.FC<CreateEventProps> = ({
             Description: "",
             Message: "",
           });
+          setIsChecked(false);
           setOpen();
 
           Swal.fire(
@@ -181,6 +193,7 @@ const CreateEvent: React.FC<CreateEventProps> = ({
         Description: "",
         Message: "",
       });
+      setIsChecked(false);
       setOpen();
     }
 
@@ -361,41 +374,6 @@ const CreateEvent: React.FC<CreateEventProps> = ({
                   </p>
                 )}
               </div>
-              {/* display costume message field if the user select M1 or M2 */}
-              {watchEvent("Type") === "M1" || watchEvent("Type") === "M2" ? (
-                <div className='w-1/2 max-md:w-full relative mt-1'>
-                  <input
-                    className={`peer h-full w-full border-b ${
-                      errorsEvent.CostumeMessage!
-                        ? "border-red-200"
-                        : "border-gray-200"
-                    } bg-transparent pt-4 pb-4 font-sans text-sm font-normal text-gray-700 outline outline-0 transition-all ${
-                      errorsEvent.CostumeMessage!
-                        ? "placeholder-shown:border-red-200"
-                        : "placeholder-shown:border-gray-200"
-                    } focus:border-green-500 focus:outline-0 disabled:border-0`}
-                    placeholder=' '
-                    type='text'
-                    id='CostumeMessage'
-                    {...registerEvent("CostumeMessage", {
-                      required: true,
-                    })}
-                  />
-                  <label
-                    htmlFor='CostumeMessage'
-                    className="after:content[' '] pointer-events-none absolute left-0 -top-2.5 pb-14 flex h-full w-full select-none text-[14px] font-normal leading-tight text-gray-800 transition-all after:absolute after:-bottom-1.5 after:block after:w-full after:scale-x-0 after:border-b-2 after:border-green-500 after:transition-transform after:duration-300 peer-placeholder-shown:text-lg peer-placeholder-shown:leading-[4.25] peer-placeholder-shown:text-gray-800 peer-focus:text-[14px] peer-focus:leading-tight peer-focus:text-green-500 peer-focus:after:scale-x-100 peer-focus:after:border-green-500 peer-disabled:text-transparent peer-disabled:peer-placeholder-shown:text-gray-800">
-                    Costume Message
-                  </label>
-                  {errorsEvent.CostumeMessage! && (
-                    <p className='absolute bottom-0 translate-y-full left-0 text-xs text-red-500'>
-                      {errorsEvent.CostumeMessage!.type === "required" &&
-                        "This field is required"}
-                    </p>
-                  )}
-                </div>
-              ) : (
-                ""
-              )}
             </div>
             <div className='w-full relative'>
               <textarea
@@ -465,7 +443,10 @@ const CreateEvent: React.FC<CreateEventProps> = ({
                     placeholder=' '
                     type='date'
                     id='StartDate'
-                    {...registerEvent("StartDate", { required: true, validate: (value) => validateDate(value, "StartDate") })}
+                    {...registerEvent("StartDate", {
+                      required: true,
+                      validate: (value) => validateDate(value, "StartDate"),
+                    })}
                   />
                   <label
                     htmlFor='StartDate'
@@ -474,7 +455,9 @@ const CreateEvent: React.FC<CreateEventProps> = ({
                   </label>
                   {errorsEvent.StartDate && (
                     <p className='absolute bottom-0 translate-y-full left-0 text-xs text-red-500'>
-                      {errorsEvent.StartDate.type === "required" ? "This field is required" : errorsEvent.StartDate.message}
+                      {errorsEvent.StartDate.type === "required"
+                        ? "This field is required"
+                        : errorsEvent.StartDate.message}
                     </p>
                   )}
                 </div>
@@ -493,7 +476,10 @@ const CreateEvent: React.FC<CreateEventProps> = ({
                       placeholder=' '
                       type='date'
                       id='EndDate'
-                      {...registerEvent("EndDate", { required: true, validate: (value) => validateDate(value, "EndDate") })}
+                      {...registerEvent("EndDate", {
+                        required: true,
+                        validate: (value) => validateDate(value, "EndDate"),
+                      })}
                     />
                     <label
                       htmlFor='EndDate'
@@ -502,7 +488,9 @@ const CreateEvent: React.FC<CreateEventProps> = ({
                     </label>
                     {errorsEvent.EndDate && (
                       <p className='absolute bottom-0 translate-y-full left-0 text-xs text-red-500'>
-                        {errorsEvent.EndDate.type === "required" ? "This field is required" : errorsEvent.EndDate.message}
+                        {errorsEvent.EndDate.type === "required"
+                          ? "This field is required"
+                          : errorsEvent.EndDate.message}
                       </p>
                     )}
                   </div>

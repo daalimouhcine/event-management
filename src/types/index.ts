@@ -21,7 +21,6 @@ export type createEventForm = {
   StartTime?: string;
   EndTime?: string;
   Type: string;
-  CostumeMessage?: string;
   Message: string;
   Description: string;
 };
