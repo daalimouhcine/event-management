@@ -9,6 +9,7 @@ import { useForm } from "react-hook-form";
 const defaultEvents: Event[] = [
   {
     ["Event ID"]: "1234",
+    EventName: "August Bank Holiday",
     StartDate: "2023-08-28",
     Type: "C",
     Description: "August Bank Holiday",
@@ -24,7 +25,7 @@ const defaultEvents: Event[] = [
     Type: "M2",
     Description: "April Promotion",
     Message: "We have a promotion for April, ask for details",
-    Active: true,
+    Active: false,
     CreatedBy: "Nigel Ryan",
   },
   {
@@ -53,13 +54,13 @@ const defaultEvents: Event[] = [
 const EventTable = () => {
   const [createEventOpen, setCreateEventOpen] = useState(false);
   const [loading, setLoading] = useState(false);
-  const [events, setEvents] = useState<Event[]>([]);
+  const [events, setEvents] = useState<Event[]>(defaultEvents);
   const [EventNames, setEventNames] = useState<string[]>([]);
   const [reFetch, setReFetch] = useState(false);
   const [eventToEdit, setEventToEdit] = useState<Event | undefined>();
   const [eventToClone, setEventToClone] = useState<Event | undefined>();
-  // const { register, watch, reset } = useForm<Search>();
-  // const [tableData, setTableData] = useState<Event[]>(events || []);
+  const { register, watch, reset } = useForm<Search>();
+  const [tableData, setTableData] = useState<Event[]>(events || []);
 
   // useEffect(() => {
   //   setLoading(true);
@@ -87,73 +88,73 @@ const EventTable = () => {
   //   getEvents();
   // }, [reFetch]);
 
-  // useEffect(() => {
-  //   if (eventToClone) {
-  //     setCreateEventOpen(true);
-  //   }
-  //   if (eventToEdit) {
-  //     setCreateEventOpen(true);
-  //   }
-  // }, [eventToEdit, eventToClone]);
+  useEffect(() => {
+    if (eventToClone) {
+      setCreateEventOpen(true);
+    }
+    if (eventToEdit) {
+      setCreateEventOpen(true);
+    }
+  }, [eventToEdit, eventToClone]);
 
   const removeEditEvent = () => {
     setEventToEdit(undefined);
     setEventToClone(undefined);
   };
 
-  // const searchValue = watch("search");
-  // const byActive = watch("byActive");
-  // const byInActive = watch("byInActive");
+  const searchValue = watch("search");
+  const byActive = watch("byActive");
+  const byInActive = watch("byInActive");
 
-  // useEffect(() => {
-  //   if (searchValue || byActive || byInActive) {
-  //     const filteredEvents = events.filter((event) => {
-  //       if (searchValue && byActive && byInActive) {
-  //         return (
-  //           event.EventName &&
-  //           event.EventName
-  //             .toLowerCase()
-  //             .includes(searchValue.toLowerCase()) &&
-  //           event.eventActive === true
-  //         );
-  //       } else if (searchValue && byActive) {
-  //         return (
-  //           event.EventName &&
-  //           event.EventName
-  //             .toLowerCase()
-  //             .includes(searchValue.toLowerCase()) &&
-  //           event.eventActive === true
-  //         );
-  //       } else if (searchValue && byInActive) {
-  //         return (
-  //           event.EventName &&
-  //           event.EventName
-  //             .toLowerCase()
-  //             .includes(searchValue.toLowerCase()) &&
-  //           !event.eventActive
-  //         );
-  //       } else if (searchValue) {
-  //         return (
-  //           event.EventName &&
-  //           event.EventName.toLowerCase().includes(searchValue.toLowerCase())
-  //         );
-  //       } else if (byActive && byInActive) {
-  //         return event.eventActive === true || !event.eventActive;
-  //       } else if (byActive) {
-  //         return event.eventActive === true || event.eventActive;
-  //       } else if (byInActive) {
-  //         return event.eventActive === false || !event.eventActive;
-  //       }
-  //     });
-  //     setTableData([...filteredEvents]);
-  //   } else {
-  //     setTableData([...events]);
-  //   }
-  // }, [searchValue, events, byActive, byInActive]);
+  useEffect(() => {
+    if (searchValue || byActive || byInActive) {
+      const filteredEvents = events.filter((event) => {
+        if (searchValue && byActive && byInActive) {
+          return (
+            event.EventName &&
+            event.EventName
+              .toLowerCase()
+              .includes(searchValue.toLowerCase()) &&
+            event.Active === true
+          );
+        } else if (searchValue && byActive) {
+          return (
+            event.EventName &&
+            event.EventName
+              .toLowerCase()
+              .includes(searchValue.toLowerCase()) &&
+            event.Active === true
+          );
+        } else if (searchValue && byInActive) {
+          return (
+            event.EventName &&
+            event.EventName
+              .toLowerCase()
+              .includes(searchValue.toLowerCase()) &&
+            !event.Active
+          );
+        } else if (searchValue) {
+          return (
+            event.EventName &&
+            event.EventName.toLowerCase().includes(searchValue.toLowerCase())
+          );
+        } else if (byActive && byInActive) {
+          return event.Active === true || !event.Active;
+        } else if (byActive) {
+          return event.Active === true || event.Active;
+        } else if (byInActive) {
+          return event.Active === false || !event.Active;
+        }
+      });
+      setTableData([...filteredEvents]);
+    } else {
+      setTableData([...events]);
+    }
+  }, [searchValue, events, byActive, byInActive]);
 
-  // const resetSearch = () => {
-  //   reset({ search: "" });
-  // };
+  const resetSearch = () => {
+    reset({ search: "" });
+  };
 
   return (
     <div className='px-4 sm:px-6 lg:px-8 mt-10'>
@@ -215,7 +216,7 @@ const EventTable = () => {
         </div>
       </div>
       <div className='mt-8 flex flex-col'>
-        {/* <form className='w-full flex max-md:flex-col gap-5 mb-3'>
+         <div className='w-full flex max-md:flex-col gap-5 mb-3'>
           <div className='w-1/2 max-md:w-2/3 max-sm:w-full'>
             <div className='mt-2 relative'>
               <MagnifyingGlassIcon className='absolute w-5 h-5 text-gray-400 left-3 translate-y-1/2' />
@@ -259,7 +260,7 @@ const EventTable = () => {
               </label>
             </div>
           </div>
-        </form> */}
+        </div> 
         <div className='-my-2 -mx-4 overflow-x-auto sm:-mx-6 lg:-mx-8'>
           <div className='w-full p-3 '>
             <div className='overflow-x-scroll shadow ring-1 ring-black ring-opacity-5 md:rounded-lg'>
@@ -332,8 +333,8 @@ const EventTable = () => {
                         Loading...
                       </td>
                     </tr>
-                  ) : defaultEvents?.length > 0 ? (
-                    defaultEvents.map((event, index) => (
+                  ) : tableData?.length > 0 ? (
+                    tableData.map((event, index) => (
                       <EventRow
                         key={event["Event ID"]}
                         index={index}
