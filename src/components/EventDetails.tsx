@@ -10,7 +10,6 @@ const EventDetails: React.FC<EventDetailsProps> = ({
   setEventToEdit,
   setEventToClone,
   event,
-  eventTitle,
   setOpenEdit,
 }) => {
   const editEvent = (event: Event) => {
@@ -29,7 +28,7 @@ const EventDetails: React.FC<EventDetailsProps> = ({
       <div className='bg-white h-3 w-28 rounded-full absolute top-2 left-1/2 -translate-x-1/2'></div>
       <div className='w-full flex justify-between items-center'>
         <h3 className='font-bold text-xl lg:text-3xl text-gray-900'>
-          Event Details: {eventTitle}
+          Event Details: {event.EventName || "Name Not assigned"}
         </h3>
         <div className='flex gap-x-2 items-center'>
           <EventActions
@@ -51,44 +50,58 @@ const EventDetails: React.FC<EventDetailsProps> = ({
         </div>
       </div>
       <div className='w-full h-fit flex flex-col gap-y-8 bg-gray-50 rounded-lg p-5 mt-5'>
-        <div className='flex gap-x-8'>
-          <div className='w-1/2'>
-            <h4 className='text-lg lg:text-xl font-semibold text-gray-900'>
-              Intro Prompt
-            </h4>
-            <p className='text-sm lg:text-base text-gray-500'>
-              {event.introPrompt}
-            </p>
+        <div className='flex flex-col gap-5'>
+          <div className='flex w-full'>
+            <div className='w-1/2'>
+              <h4 className='text-lg lg:text-xl font-semibold text-gray-900'>
+                Type
+              </h4>
+              <p className='text-sm lg:text-base text-gray-500'>
+                {event.Type === "C"
+                  ? "Closure "
+                  : event.Type === "E"
+                  ? "Emergency"
+                  : event.Type === "M1"
+                  ? "Custom Message 1"
+                  : event.Type === "M2"
+                  ? "Custom Messag 2"
+                  : "Not assigned"}
+              </p>
+            </div>
+            <div className='w-1/2'>
+              <h4 className='text-lg lg:text-xl font-semibold text-gray-900'>
+                Week Day
+              </h4>
+              <p className='text-sm lg:text-base text-gray-500'>
+                {event.WeekDay || "Not assigned"}
+              </p>
+            </div>
           </div>
-          <div className='w-1/2'>
-            <h4 className='text-lg lg:text-xl font-semibold text-gray-900'>
-              Outro Prompt
-            </h4>
-            <p className='text-sm lg:text-base text-gray-500'>
-              {event.outroPrompt}
-            </p>
+          <div className='flex w-full'>
+            <div className='w-1/2'>
+              <h4 className='text-lg lg:text-xl font-semibold text-gray-900'>
+                Start-End Date
+              </h4>
+              <p className='text-sm lg:text-base text-gray-500'>
+                {`${event.StartDate || "Not assigned"} - ${
+                  event.EndDate || "Not assigned"
+                }`}
+              </p>
+            </div>
+            <div className='w-1/2'>
+              <h4 className='text-lg lg:text-xl font-semibold text-gray-900'>
+                Start-End Time
+              </h4>
+              <p className='text-sm lg:text-base text-gray-500'>
+                {`${event.StartTime || "Not assigned"} - ${
+                  event.EndTime || "Not assigned"
+                }`}
+              </p>
+            </div>
           </div>
         </div>
-        <div className='flex gap-x-5'>
-          <div className='w-1/2 flex gap-x-5'>
-            <div className='w-1/2'>
-              <h4 className='text-lg lg:text-xl font-semibold text-gray-900'>
-                Start Date
-              </h4>
-              <p className='text-sm lg:text-base text-gray-500'>
-                {new Date(event.startDate).toDateString()}
-              </p>
-            </div>
-            <div className='w-1/2'>
-              <h4 className='text-lg lg:text-xl font-semibold text-gray-900'>
-                End Date
-              </h4>
-              <p className='text-sm lg:text-base text-gray-500'>
-                {new Date(event.EndDate).toDateString()}
-              </p>
-            </div>
-          </div>
-          <div className='w-2/4'>
+        <div className='flex flex-col gap-8'>
+          <div className='w-1/2'>
             <h4 className='text-lg lg:text-xl font-semibold text-gray-900'>
               Description
             </h4>
@@ -96,59 +109,13 @@ const EventDetails: React.FC<EventDetailsProps> = ({
               {event.Description}
             </p>
           </div>
-        </div>
-      </div>
-      <div className='mt-8 flex flex-col'>
-        <div className='-my-2 -mx-4 overflow-x-auto sm:-mx-6 lg:-mx-8'>
-          <div className='inline-block min-w-full py-2 align-middle md:px-6 lg:px-8'>
-            <div className='overflow-hidden shadow ring-1 ring-black ring-opacity-5 md:rounded-lg'>
-              {/* <table className='min-w-full divide-y divide-gray-300'>
-                <thead className='bg-gray-50'>
-                  <tr>
-                    <th
-                      scope='col'
-                      className='py-3.5 pl-4 pr-3 text-left text-sm font-semibold text-gray-900 sm:pl-6'>
-                      N°
-                    </th>
-                    <th
-                      scope='col'
-                      className='py-3.5 pl-4 pr-3 text-left text-sm font-semibold text-gray-900 sm:pl-6'>
-                      Question Text
-                    </th>
-                    <th
-                      scope='col'
-                      className='px-3 py-3.5 text-left text-sm font-semibold text-gray-900'>
-                      Min Value
-                    </th>
-                    <th
-                      scope='col'
-                      className='px-3 py-3.5 text-left text-sm font-semibold text-gray-900'>
-                      Max Value
-                    </th>
-                  </tr>
-                </thead>
-                <tbody className='bg-white'>
-                  {event.questions?.length > 0 ? (
-                    event.questions.map((question, index) => (
-                      <QuestionRow
-                        key={question.questionNumber}
-                        index={index}
-                        question={question}
-                      />
-                    ))
-                  ) : (
-                    <tr>
-                      <td
-                        align='center'
-                        colSpan={4}
-                        className='px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900'>
-                        No questions added yet
-                      </td>
-                    </tr>
-                  )}
-                </tbody>
-              </table> */}
-            </div>
+          <div className='w-1/2'>
+            <h4 className='text-lg lg:text-xl font-semibold text-gray-900'>
+              Message
+            </h4>
+            <p className='text-sm lg:text-base text-gray-500'>
+              {event.Message}
+            </p>
           </div>
         </div>
       </div>
