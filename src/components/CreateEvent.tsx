@@ -2,7 +2,7 @@ import { useForm } from "react-hook-form";
 import { Event, createEventForm } from "../types";
 import { useEffect, useState } from "react";
 import Swal from "sweetalert2";
-import axios from "axios";
+// import axios from "axios";
 import { CreateEventProps } from "../interfaces";
 
 const CreateEvent: React.FC<CreateEventProps> = ({
@@ -164,6 +164,8 @@ const CreateEvent: React.FC<CreateEventProps> = ({
       //   });
     }
     // cancel(false);
+    setReFetch();
+
   };
 
   const cancel = (validation: boolean) => {
@@ -233,8 +235,8 @@ const CreateEvent: React.FC<CreateEventProps> = ({
       new Date(date).getDate() !== new Date().getDate()
     ) {
       return "Start Date cannot be before the current date";
-    } else if (type === "StartDate" && isChecked) {
-      if (new Date(date) > new Date(watchEvent("EndDate")) && isChecked) {
+    } else if (type === "StartDate") {
+      if (new Date(date) > new Date(watchEvent("EndDate")) && isChecked && !watchEvent("WeekDay")) {
         setErrorEvent("EndDate", {
           type: "manual",
           message: "End Date cannot be before the Start Date",
