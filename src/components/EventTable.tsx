@@ -2,7 +2,7 @@ import EventRow from "./EventRow";
 import { Event, Search } from "../types";
 import CreateEvent from "./CreateEvent";
 import { useEffect, useState } from "react";
-import axios from "axios";
+// import axios from "axios";
 import { MagnifyingGlassIcon, XMarkIcon } from "@heroicons/react/20/solid";
 import { useForm } from "react-hook-form";
 
@@ -53,9 +53,15 @@ const defaultEvents: Event[] = [
 
 const EventTable = () => {
   const [createEventOpen, setCreateEventOpen] = useState(false);
-  const [loading, setLoading] = useState(false);
-  const [events, setEvents] = useState<Event[]>(defaultEvents);
-  const [EventNames, setEventNames] = useState<string[]>([]);
+  const [loading, 
+    // setLoading
+  ] = useState(false);
+  const [events, 
+    // setEvents
+  ] = useState<Event[]>(defaultEvents);
+  const [EventNames, 
+    // setEventNames
+  ] = useState<string[]>([]);
   const [reFetch, setReFetch] = useState(false);
   const [eventToEdit, setEventToEdit] = useState<Event | undefined>();
   const [eventToClone, setEventToClone] = useState<Event | undefined>();
@@ -112,25 +118,19 @@ const EventTable = () => {
         if (searchValue && byActive && byInActive) {
           return (
             event.EventName &&
-            event.EventName
-              .toLowerCase()
-              .includes(searchValue.toLowerCase()) &&
+            event.EventName.toLowerCase().includes(searchValue.toLowerCase()) &&
             event.Active === true
           );
         } else if (searchValue && byActive) {
           return (
             event.EventName &&
-            event.EventName
-              .toLowerCase()
-              .includes(searchValue.toLowerCase()) &&
+            event.EventName.toLowerCase().includes(searchValue.toLowerCase()) &&
             event.Active === true
           );
         } else if (searchValue && byInActive) {
           return (
             event.EventName &&
-            event.EventName
-              .toLowerCase()
-              .includes(searchValue.toLowerCase()) &&
+            event.EventName.toLowerCase().includes(searchValue.toLowerCase()) &&
             !event.Active
           );
         } else if (searchValue) {
@@ -216,7 +216,7 @@ const EventTable = () => {
         </div>
       </div>
       <div className='mt-8 flex flex-col'>
-         <div className='w-full flex max-md:flex-col gap-5 mb-3'>
+        <div className='w-full flex max-md:flex-col gap-5 mb-3'>
           <div className='w-1/2 max-md:w-2/3 max-sm:w-full'>
             <div className='mt-2 relative'>
               <MagnifyingGlassIcon className='absolute w-5 h-5 text-gray-400 left-3 translate-y-1/2' />
@@ -260,7 +260,7 @@ const EventTable = () => {
               </label>
             </div>
           </div>
-        </div> 
+        </div>
         <div className='-my-2 -mx-4 overflow-x-auto sm:-mx-6 lg:-mx-8'>
           <div className='w-full p-3 '>
             <div className='overflow-x-scroll shadow ring-1 ring-black ring-opacity-5 md:rounded-lg'>

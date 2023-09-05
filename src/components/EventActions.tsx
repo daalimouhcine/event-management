@@ -8,15 +8,15 @@ import {
 } from "@heroicons/react/20/solid";
 import { Event } from "../types";
 import { useClickOutside } from "../hooks/useClickOutside";
-import Swal from "sweetalert2";
-import axios from "axios";
+// import Swal from "sweetalert2";
+// import axios from "axios";
 import { EventActionsProps } from "../interfaces";
 
 const EventActions: React.FC<EventActionsProps> = ({
   event,
   viewDetails,
   displayDetails,
-  setReFetch,
+  // setReFetch,
   setEventToEdit,
   setEventToClone,
   setOpenEdit,
@@ -27,32 +27,32 @@ const EventActions: React.FC<EventActionsProps> = ({
     setOpen(false);
   });
 
-  const removeEvent = (eventId: number) => {
-    Swal.fire({
-      title: "Are you sure?",
-      text: "You won't be able to revert this!",
-      icon: "warning",
-      showCancelButton: true,
-      confirmButtonColor: "#3085d6",
-      cancelButtonColor: "#d33",
-      confirmButtonText: "Yes, delete it!",
-    }).then((result) => {
-      if (result.isConfirmed) {
-        axios
-          .delete(
-            "https://at2l22ryjg.execute-api.eu-west-2.amazonaws.com/dev/events/" +
-              eventId
-          )
-          .then((res) => {
-            if (res.data.StatusCode == 200) {
-              const responseMessage = JSON.parse(res.data.body);
-              Swal.fire("Deleted!", responseMessage.Message, "success");
-              setReFetch();
-            }
-          });
-      }
-    });
-  };
+  // const removeEvent = (eventId: number) => {
+  //   Swal.fire({
+  //     title: "Are you sure?",
+  //     text: "You won't be able to revert this!",
+  //     icon: "warning",
+  //     showCancelButton: true,
+  //     confirmButtonColor: "#3085d6",
+  //     cancelButtonColor: "#d33",
+  //     confirmButtonText: "Yes, delete it!",
+  //   }).then((result) => {
+  //     if (result.isConfirmed) {
+  //       axios
+  //         .delete(
+  //           "https://at2l22ryjg.execute-api.eu-west-2.amazonaws.com/dev/events/" +
+  //             eventId
+  //         )
+  //         .then((res) => {
+  //           if (res.data.StatusCode == 200) {
+  //             const responseMessage = JSON.parse(res.data.body);
+  //             Swal.fire("Deleted!", responseMessage.Message, "success");
+  //             setReFetch();
+  //           }
+  //         });
+  //     }
+  //   });
+  // };
 
   const editEvent = (event: Event) => {
     setEventToEdit(event);

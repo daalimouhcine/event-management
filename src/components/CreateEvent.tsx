@@ -9,7 +9,7 @@ const CreateEvent: React.FC<CreateEventProps> = ({
   EventNames,
   isOpen,
   setOpen,
-  setReFetch,
+  // setReFetch,
   eventToEdit,
   eventToClone,
   removeDefaultEvent,
@@ -164,8 +164,6 @@ const CreateEvent: React.FC<CreateEventProps> = ({
       //   });
     }
     // cancel(false);
-    setReFetch();
-
   };
 
   const cancel = (validation: boolean) => {
