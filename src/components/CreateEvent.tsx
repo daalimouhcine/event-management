@@ -1,7 +1,6 @@
 import { useForm } from "react-hook-form";
 import { Event, createEventForm } from "../types";
 import { useEffect, useState } from "react";
-import { PencilIcon, TrashIcon, XMarkIcon } from "@heroicons/react/20/solid";
 import Swal from "sweetalert2";
 import axios from "axios";
 import { CreateEventProps } from "../interfaces";
@@ -61,6 +60,22 @@ const CreateEvent: React.FC<CreateEventProps> = ({
   };
 
   const onSubmitEvent = (data: createEventForm) => {
+    if (
+      (!data.StartDate && !data.WeekDay) ||
+      (data.EndDate && !data.StartDate && !data.WeekDay) ||
+      (data.EndTime && !data.StartTime && !isChecked) ||
+      (data.StartTime && !data.EndTime && !isChecked)
+    ) {
+      Swal.fire({
+        position: "center",
+        icon: "error",
+        title: "Please fill the schedule fields correctly",
+        showConfirmButton: false,
+        timer: 1500,
+      });
+      return;
+    }
+
     if (eventToEdit) {
       const editedEvent: Event = {
         "Event ID": eventToEdit["Event ID"],
@@ -77,33 +92,35 @@ const CreateEvent: React.FC<CreateEventProps> = ({
         CreatedBy: eventToEdit.CreatedBy,
       };
 
-      axios
-        .patch(
-          "https://at2l22ryjg.execute-api.eu-west-2.amazonaws.com/dev/events/" +
-            eventToEdit["Event ID"],
-          editedEvent
-        )
-        .then((res) => {
-          setReFetch();
-          if (res.data.StatusCode == 200) {
-            const responseMessage = JSON.parse(res.data.body);
-            Swal.fire({
-              position: "center",
-              icon: "success",
-              title: responseMessage.Message,
-              showConfirmButton: false,
-              timer: 1500,
-            });
-          } else {
-            Swal.fire({
-              position: "center",
-              icon: "error",
-              title: "Something Went Wrong",
-              showConfirmButton: false,
-              timer: 1500,
-            });
-          }
-        });
+      alert("Edit: " + JSON.stringify(editedEvent));
+
+      // axios
+      //   .patch(
+      //     "https://at2l22ryjg.execute-api.eu-west-2.amazonaws.com/dev/events/" +
+      //       eventToEdit["Event ID"],
+      //     editedEvent
+      //   )
+      //   .then((res) => {
+      //     setReFetch();
+      //     if (res.data.StatusCode == 200) {
+      //       const responseMessage = JSON.parse(res.data.body);
+      //       Swal.fire({
+      //         position: "center",
+      //         icon: "success",
+      //         title: responseMessage.Message,
+      //         showConfirmButton: false,
+      //         timer: 1500,
+      //       });
+      //     } else {
+      //       Swal.fire({
+      //         position: "center",
+      //         icon: "error",
+      //         title: "Something Went Wrong",
+      //         showConfirmButton: false,
+      //         timer: 1500,
+      //       });
+      //     }
+      //   });
     } else {
       const newEvent: Event = {
         EventName: data.EventName,
@@ -118,34 +135,35 @@ const CreateEvent: React.FC<CreateEventProps> = ({
         Description: data.Description,
         Message: data.Message,
       };
-      axios
-        .post(
-          "https://at2l22ryjg.execute-api.eu-west-2.amazonaws.com/dev/events",
-          newEvent
-        )
-        .then((res) => {
-          setReFetch();
-          if (res.data.StatusCode == 200) {
-            const responseMessage = JSON.parse(res.data.body);
-            Swal.fire({
-              position: "center",
-              icon: "success",
-              title: responseMessage.Message,
-              showConfirmButton: false,
-              timer: 1500,
-            });
-          } else {
-            Swal.fire({
-              position: "center",
-              icon: "error",
-              title: "Something Went Wrong",
-              showConfirmButton: false,
-              timer: 1500,
-            });
-          }
-        });
+      alert("Create: " + JSON.stringify(newEvent));
+      // axios
+      //   .post(
+      //     "https://at2l22ryjg.execute-api.eu-west-2.amazonaws.com/dev/events",
+      //     newEvent
+      //   )
+      //   .then((res) => {
+      //     setReFetch();
+      //     if (res.data.StatusCode == 200) {
+      //       const responseMessage = JSON.parse(res.data.body);
+      //       Swal.fire({
+      //         position: "center",
+      //         icon: "success",
+      //         title: responseMessage.Message,
+      //         showConfirmButton: false,
+      //         timer: 1500,
+      //       });
+      //     } else {
+      //       Swal.fire({
+      //         position: "center",
+      //         icon: "error",
+      //         title: "Something Went Wrong",
+      //         showConfirmButton: false,
+      //         timer: 1500,
+      //       });
+      //     }
+      //   });
     }
-    cancel(false);
+    // cancel(false);
   };
 
   const cancel = (validation: boolean) => {
@@ -210,9 +228,12 @@ const CreateEvent: React.FC<CreateEventProps> = ({
     }
   };
   const validateDate = (date: string, type: string) => {
-    if (new Date(date) < new Date()) {
+    if (
+      new Date(date) < new Date() &&
+      new Date(date).getDate() !== new Date().getDate()
+    ) {
       return "Start Date cannot be before the current date";
-    } else if (type === "StartDate") {
+    } else if (type === "StartDate" && isChecked) {
       if (new Date(date) > new Date(watchEvent("EndDate")) && isChecked) {
         setErrorEvent("EndDate", {
           type: "manual",
@@ -223,7 +244,7 @@ const CreateEvent: React.FC<CreateEventProps> = ({
         clearErrorsEvent("StartDate");
         clearErrorsEvent("EndDate");
       }
-    } else {
+    } else if (type === "EndDate" && isChecked) {
       if (new Date(date) < new Date(watchEvent("StartDate"))) {
         setErrorEvent("StartDate", {
           type: "manual",
@@ -444,7 +465,7 @@ const CreateEvent: React.FC<CreateEventProps> = ({
                     type='date'
                     id='StartDate'
                     {...registerEvent("StartDate", {
-                      required: true,
+                      required: false,
                       validate: (value) => validateDate(value, "StartDate"),
                     })}
                   />
@@ -477,7 +498,7 @@ const CreateEvent: React.FC<CreateEventProps> = ({
                       type='date'
                       id='EndDate'
                       {...registerEvent("EndDate", {
-                        required: true,
+                        required: false,
                         validate: (value) => validateDate(value, "EndDate"),
                       })}
                     />
@@ -507,7 +528,7 @@ const CreateEvent: React.FC<CreateEventProps> = ({
                       : "placeholder-shown:border-gray-200"
                   } focus:border-green-500 focus:outline-0 disabled:border-0`}
                   id='WeekDay'
-                  {...registerEvent("WeekDay", { required: true })}>
+                  {...registerEvent("WeekDay", { required: false })}>
                   <option value='' className='text-gray-500'>
                     Select Day
                   </option>
@@ -547,7 +568,7 @@ const CreateEvent: React.FC<CreateEventProps> = ({
                     placeholder=' '
                     type='time'
                     id='StartTime'
-                    {...registerEvent("StartTime", { required: true })}
+                    {...registerEvent("StartTime", { required: false })}
                   />
                   <label
                     htmlFor='StartTime'
@@ -572,7 +593,7 @@ const CreateEvent: React.FC<CreateEventProps> = ({
                     placeholder=' '
                     type='time'
                     id='EndTime'
-                    {...registerEvent("EndTime", { required: true })}
+                    {...registerEvent("EndTime", { required: false })}
                   />
                   <label
                     htmlFor='EndTime'
