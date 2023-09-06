@@ -423,29 +423,6 @@ const CreateEvent: React.FC<CreateEventProps> = ({
             2. Schedule your Event
           </p>
           <div className='flex gap-x-10 items-center w-full'>
-            <div className='w-fit'>
-              <label className='flex flex-col gap-y-1 cursor-pointer select-none items-center'>
-                <i className='text-gray-800 text-sm font-medium'>All Day</i>
-                <div className='relative'>
-                  <input
-                    type='checkbox'
-                    checked={isChecked}
-                    onChange={handleCheckboxChange}
-                    className='sr-only'
-                  />
-                  <div className='h-5 w-14 rounded-full bg-[#E5E7EB] shadow-inner'></div>
-                  <div
-                    className={`shadow-md absolute -top-1 flex h-7 w-7 items-center justify-center rounded-full transition-all ease-linear duration-200 ${
-                      isChecked ? "!bg-white left-1/2" : "bg-white left-0"
-                    }`}>
-                    <span
-                      className={`active h-4 w-4 rounded-full  ${
-                        isChecked ? "bg-blue-500" : "bg-[#E5E7EB]"
-                      }`}></span>
-                  </div>
-                </div>
-              </label>
-            </div>
             <div className='w-full flex flex-col gap-y-8'>
               <div className='flex gap-x-5'>
                 <div className='w-full max-md:w-full relative mt-1'>
@@ -480,40 +457,6 @@ const CreateEvent: React.FC<CreateEventProps> = ({
                     </p>
                   )}
                 </div>
-                {isChecked && !watchEvent("WeekDay") && (
-                  <div className='w-full max-md:w-full relative mt-1'>
-                    <input
-                      className={`peer h-full w-full border-b ${
-                        errorsEvent.EndDate
-                          ? "border-red-200"
-                          : "border-gray-200"
-                      } bg-transparent pt-4 pb-4 font-sans text-sm font-normal text-gray-700 outline outline-0 transition-all ${
-                        errorsEvent.EndDate
-                          ? "placeholder-shown:border-red-200"
-                          : "placeholder-shown:border-gray-200"
-                      } focus:border-green-500 focus:outline-0 disabled:border-0`}
-                      placeholder=' '
-                      type='date'
-                      id='EndDate'
-                      {...registerEvent("EndDate", {
-                        required: false,
-                        validate: (value) => validateDate(value, "EndDate"),
-                      })}
-                    />
-                    <label
-                      htmlFor='EndDate'
-                      className="after:content[' '] pointer-events-none absolute left-0 -top-2 pb-14 flex h-full w-full select-none text-[14px] font-normal leading-tight text-gray-800 transition-all after:absolute after:-bottom-1.5 after:block after:w-full after:scale-x-0 after:border-b-2 after:border-green-500 after:transition-transform after:duration-300 peer-placeholder-shown:text-lg peer-placeholder-shown:leading-[4.25] peer-placeholder-shown:text-gray-800 peer-focus:text-[14px] peer-focus:leading-tight peer-focus:text-green-500 peer-focus:after:scale-x-100 peer-focus:after:border-green-500 peer-disabled:text-transparent peer-disabled:peer-placeholder-shown:text-gray-800">
-                      End Date
-                    </label>
-                    {errorsEvent.EndDate && (
-                      <p className='absolute bottom-0 translate-y-full left-0 text-xs text-red-500'>
-                        {errorsEvent.EndDate.type === "required"
-                          ? "This field is required"
-                          : errorsEvent.EndDate.message}
-                      </p>
-                    )}
-                  </div>
-                )}
               </div>
               <div className='w-full relative'>
                 <select
@@ -550,6 +493,61 @@ const CreateEvent: React.FC<CreateEventProps> = ({
                 )}
               </div>
             </div>
+            <div className='w-fit'>
+              <label className='flex flex-col gap-y-1 cursor-pointer select-none items-center'>
+                <i className='text-gray-800 text-sm font-medium'>All Day</i>
+                <div className='relative'>
+                  <input
+                    type='checkbox'
+                    checked={isChecked}
+                    onChange={handleCheckboxChange}
+                    className='sr-only'
+                  />
+                  <div className='h-5 w-14 rounded-full bg-[#E5E7EB] shadow-inner'></div>
+                  <div
+                    className={`shadow-md absolute -top-1 flex h-7 w-7 items-center justify-center rounded-full transition-all ease-linear duration-200 ${
+                      isChecked ? "!bg-white left-1/2" : "bg-white left-0"
+                    }`}>
+                    <span
+                      className={`active h-4 w-4 rounded-full  ${
+                        isChecked ? "bg-blue-500" : "bg-[#E5E7EB]"
+                      }`}></span>
+                  </div>
+                </div>
+              </label>
+            </div>
+            {isChecked && !watchEvent("WeekDay") && (
+              <div className='w-full max-md:w-full relative mt-1'>
+                <input
+                  className={`peer h-full w-full border-b ${
+                    errorsEvent.EndDate ? "border-red-200" : "border-gray-200"
+                  } bg-transparent pt-4 pb-4 font-sans text-sm font-normal text-gray-700 outline outline-0 transition-all ${
+                    errorsEvent.EndDate
+                      ? "placeholder-shown:border-red-200"
+                      : "placeholder-shown:border-gray-200"
+                  } focus:border-green-500 focus:outline-0 disabled:border-0`}
+                  placeholder=' '
+                  type='date'
+                  id='EndDate'
+                  {...registerEvent("EndDate", {
+                    required: false,
+                    validate: (value) => validateDate(value, "EndDate"),
+                  })}
+                />
+                <label
+                  htmlFor='EndDate'
+                  className="after:content[' '] pointer-events-none absolute left-0 -top-2 pb-14 flex h-full w-full select-none text-[14px] font-normal leading-tight text-gray-800 transition-all after:absolute after:-bottom-1.5 after:block after:w-full after:scale-x-0 after:border-b-2 after:border-green-500 after:transition-transform after:duration-300 peer-placeholder-shown:text-lg peer-placeholder-shown:leading-[4.25] peer-placeholder-shown:text-gray-800 peer-focus:text-[14px] peer-focus:leading-tight peer-focus:text-green-500 peer-focus:after:scale-x-100 peer-focus:after:border-green-500 peer-disabled:text-transparent peer-disabled:peer-placeholder-shown:text-gray-800">
+                  End Date
+                </label>
+                {errorsEvent.EndDate && (
+                  <p className='absolute bottom-0 translate-y-full left-0 text-xs text-red-500'>
+                    {errorsEvent.EndDate.type === "required"
+                      ? "This field is required"
+                      : errorsEvent.EndDate.message}
+                  </p>
+                )}
+              </div>
+            )}
             {!isChecked && (
               <div className='flex flex-col gap-7 w-2/3 max-md:w-full relative '>
                 <div className='relative'>

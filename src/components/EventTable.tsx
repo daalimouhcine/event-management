@@ -16,8 +16,6 @@ const EventTable = () => {
   const [eventToClone, setEventToClone] = useState<Event | undefined>();
   const { register, watch, reset } = useForm<Search>();
   const [tableData, setTableData] = useState<Event[]>(events || []);
-
-  const [scrollPosition, setScrollPosition] = useState(0);
   
   useEffect(() => {
     setLoading(true);
