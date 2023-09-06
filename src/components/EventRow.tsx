@@ -6,6 +6,7 @@ import { EventRowProps } from "../interfaces";
 import axios from "axios";
 import Swal from "sweetalert2";
 import Loader from "./Loader";
+import { ArrowsRightLeftIcon } from "@heroicons/react/20/solid";
 
 const EventRow: React.FC<EventRowProps> = ({
   event,
@@ -138,7 +139,7 @@ const EventRow: React.FC<EventRowProps> = ({
         </td>
         <td
           onClick={() => toggleActive(event)}
-          className='whitespace-nowrap px-3 py-4 text-sm text-gray-500'>
+          className='flex gap-x-2 whitespace-nowrap px-3 py-4 text-sm text-gray-500'>
           {event.Active ? (
             <span className='inline-flex rounded-full bg-green-100 px-2 text-xs font-semibold leading-5 text-green-800'>
               Active
@@ -148,6 +149,7 @@ const EventRow: React.FC<EventRowProps> = ({
               Not Active
             </span>
           )}
+          <ArrowsRightLeftIcon className='h-5 w-5 text-gray-400' />
         </td>
         {/* <td
           onClick={() => setOpenDetails(true)}

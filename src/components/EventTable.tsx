@@ -17,6 +17,8 @@ const EventTable = () => {
   const { register, watch, reset } = useForm<Search>();
   const [tableData, setTableData] = useState<Event[]>(events || []);
 
+  const [scrollPosition, setScrollPosition] = useState(0);
+  
   useEffect(() => {
     setLoading(true);
     const getEvents = async () => {
@@ -25,7 +27,6 @@ const EventTable = () => {
           "https://1rix0t19h7.execute-api.eu-west-2.amazonaws.com/dev/events"
         )
         .then((res: { data: { body: { Items: Event[] } } }) => {
-
           setEvents([...res.data.body.Items]);
 
           const EventNamesGetter = res.data.body.Items.map(
@@ -101,7 +102,7 @@ const EventTable = () => {
   };
 
   return (
-    <div className='px-4 sm:px-6 lg:px-8 mt-10'>
+    <div className='[overflow-anchor:none] px-4 sm:px-6 lg:px-8 mt-10'>
       <div className='sm:flex sm:items-center'>
         <div className='sm:flex-auto'>
           <h1 className='text-xl font-semibold text-gray-900'>Events</h1>
