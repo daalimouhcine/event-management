@@ -8,15 +8,15 @@ import {
 } from "@heroicons/react/20/solid";
 import { Event } from "../types";
 import { useClickOutside } from "../hooks/useClickOutside";
-// import Swal from "sweetalert2";
-// import axios from "axios";
+import Swal from "sweetalert2";
+import axios from "axios";
 import { EventActionsProps } from "../interfaces";
 
 const EventActions: React.FC<EventActionsProps> = ({
   event,
   viewDetails,
   displayDetails,
-  // setReFetch,
+  setReFetch,
   setEventToEdit,
   setEventToClone,
   setOpenEdit,
@@ -27,32 +27,32 @@ const EventActions: React.FC<EventActionsProps> = ({
     setOpen(false);
   });
 
-  // const removeEvent = (eventId: number) => {
-  //   Swal.fire({
-  //     title: "Are you sure?",
-  //     text: "You won't be able to revert this!",
-  //     icon: "warning",
-  //     showCancelButton: true,
-  //     confirmButtonColor: "#3085d6",
-  //     cancelButtonColor: "#d33",
-  //     confirmButtonText: "Yes, delete it!",
-  //   }).then((result) => {
-  //     if (result.isConfirmed) {
-  //       axios
-  //         .delete(
-  //           "https://at2l22ryjg.execute-api.eu-west-2.amazonaws.com/dev/events/" +
-  //             eventId
-  //         )
-  //         .then((res) => {
-  //           if (res.data.StatusCode == 200) {
-  //             const responseMessage = JSON.parse(res.data.body);
-  //             Swal.fire("Deleted!", responseMessage.Message, "success");
-  //             setReFetch();
-  //           }
-  //         });
-  //     }
-  //   });
-  // };
+  const removeEvent = (eventId: string) => {
+    Swal.fire({
+      title: "Are you sure?",
+      text: "You won't be able to revert this!",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#3085d6",
+      cancelButtonColor: "#d33",
+      confirmButtonText: "Yes, delete it!",
+    }).then((result) => {
+      if (result.isConfirmed) {
+        axios
+          .delete(
+            "https://at2l22ryjg.execute-api.eu-west-2.amazonaws.com/dev/events/" +
+              eventId
+          )
+          .then((res) => {
+            if (res.data.StatusCode == 200) {
+              const responseMessage = JSON.parse(res.data.body);
+              Swal.fire("Deleted!", responseMessage.Message, "success");
+              setReFetch();
+            }
+          });
+      }
+    });
+  };
 
   const editEvent = (event: Event) => {
     setEventToEdit(event);
@@ -64,17 +64,18 @@ const EventActions: React.FC<EventActionsProps> = ({
   };
 
   // const duplicate = (event: Event) => {
-  //   setShowLoader(true);
   //   const clonedEvent: Event = {
   //     EventName: event.EventName,
-  //     eventActive: event.eventActive,
-  //     startDate: event.startDate,
+  //     Type: event.Type,
+  //     Active: event.Active,
+  //     StartDate: event.StartDate,
   //     EndDate: event.EndDate,
-  //     introPrompt: event.introPrompt,
-  //     outroPrompt: event.outroPrompt,
+  //     WeekDay: event.WeekDay,
+  //     StartTime: event.StartTime,
+  //     EndTime: event.EndTime,
   //     CreatedBy: "Mouhcine Daali",
   //     Description: event.Description,
-  //     questions: [...event.questions],
+  //     Message: event.Message,
   //   };
   //   axios
   //     .post(
@@ -83,7 +84,6 @@ const EventActions: React.FC<EventActionsProps> = ({
   //     )
   //     .then((res) => {
   //       setReFetch();
-  //       setShowLoader(false);
   //       if (res.data.StatusCode == 200) {
   //         const responseMessage = JSON.parse(res.data.body);
   //         Swal.fire({
@@ -152,7 +152,7 @@ const EventActions: React.FC<EventActionsProps> = ({
         <button
           onClick={() => {
             setOpen(false);
-            // removeEvent(Number.parseInt(event["Event ID"]));
+            removeEvent(event.EventID!);
           }}
           className='w-full flex items-center justify-center px-3 py-2 text-xs text-gray-700 hover:bg-gray-100 hover:text-gray-900'>
           <span>Delete</span>

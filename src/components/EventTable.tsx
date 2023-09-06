@@ -2,97 +2,41 @@ import EventRow from "./EventRow";
 import { Event, Search } from "../types";
 import CreateEvent from "./CreateEvent";
 import { useEffect, useState } from "react";
-// import axios from "axios";
+import axios from "axios";
 import { MagnifyingGlassIcon, XMarkIcon } from "@heroicons/react/20/solid";
 import { useForm } from "react-hook-form";
 
-const defaultEvents: Event[] = [
-  {
-    ["Event ID"]: "1234",
-    EventName: "August Bank Holiday",
-    StartDate: "2023-08-28",
-    Type: "C",
-    Description: "August Bank Holiday",
-    Message:
-      "Sorry we're closed for August Bank Holiday, please call back tomorrow",
-    Active: true,
-    CreatedBy: "Nigel Ryan",
-  },
-  {
-    ["Event ID"]: "1235",
-    StartDate: "2021-04-01",
-    EndDate: "2021-04-30",
-    Type: "M2",
-    Description: "April Promotion",
-    Message: "We have a promotion for April, ask for details",
-    Active: false,
-    CreatedBy: "Nigel Ryan",
-  },
-  {
-    ["Event ID"]: "1236",
-    WeekDay: "Monday",
-    Type: "M1",
-    Description: "Monday Message",
-    Message: "Hello, it’s Monday today, yippee!",
-    Active: true,
-    CreatedBy: "Nigel Ryan",
-  },
-  {
-    ["Event ID"]: "1237",
-    WeekDay: "Tuesday",
-    StartTime: "09:00",
-    EndTime: "13:00",
-    Type: "C",
-    Description: "Tuesday Training",
-    Message:
-      "Hello, we are closed today between 09 a.m and 1 p.m. for staff training, please call back later",
-    Active: true,
-    CreatedBy: "Nigel Ryan",
-  },
-];
-
 const EventTable = () => {
   const [createEventOpen, setCreateEventOpen] = useState(false);
-  const [loading, 
-    // setLoading
-  ] = useState(false);
-  const [events, 
-    // setEvents
-  ] = useState<Event[]>(defaultEvents);
-  const [EventNames, 
-    // setEventNames
-  ] = useState<string[]>([]);
+  const [loading, setLoading] = useState(false);
+  const [events, setEvents] = useState<Event[]>([]);
+  const [EventNames, setEventNames] = useState<string[]>([]);
   const [reFetch, setReFetch] = useState(false);
   const [eventToEdit, setEventToEdit] = useState<Event | undefined>();
   const [eventToClone, setEventToClone] = useState<Event | undefined>();
   const { register, watch, reset } = useForm<Search>();
   const [tableData, setTableData] = useState<Event[]>(events || []);
 
-  // useEffect(() => {
-  //   setLoading(true);
-  //   const getEvents = async () => {
-  //     await axios
-  //       .get(
-  //         "https://at2l22ryjg.execute-api.eu-west-2.amazonaws.com/dev/events"
-  //       )
-  //       .then((res: { data: { body: { content: Event }[] } }) => {
-  //         const eventsWithoutContent = res.data.body
-  //           .filter((item: { content: Event }) => item.content)
-  //           .map((item: { content: Event }) => {
-  //             const { content } = item;
-  //             return content;
-  //           });
-  //         setEvents([...eventsWithoutContent]);
+  useEffect(() => {
+    setLoading(true);
+    const getEvents = async () => {
+      await axios
+        .get(
+          "https://1rix0t19h7.execute-api.eu-west-2.amazonaws.com/dev/events"
+        )
+        .then((res: { data: { body: { Items: Event[] } } }) => {
 
-  //         const EventNamesGetter = eventsWithoutContent.map(
-  //           (event) => event.EventName
-  //         );
-  //         setEventNames(EventNamesGetter);
-  //         setLoading(false);
-  //       });
-  //   };
-  //   getEvents();
-  // }, [reFetch]);
+          setEvents([...res.data.body.Items]);
+
+          const EventNamesGetter = res.data.body.Items.map(
+            (event: Event) => event.EventName!
+          );
+          setEventNames(EventNamesGetter);
+          setLoading(false);
+        });
+    };
+    getEvents();
+  }, [reFetch]);
 
   useEffect(() => {
     if (eventToClone) {
@@ -270,11 +214,6 @@ const EventTable = () => {
                     <th
                       scope='col'
                       className='py-3.5 pl-4 pr-3 text-left text-sm font-semibold text-gray-100 sm:pl-6'>
-                      Event ID
-                    </th>
-                    <th
-                      scope='col'
-                      className='py-3.5 pl-4 pr-3 text-left text-sm font-semibold text-gray-100 sm:pl-6'>
                       Event Name
                     </th>
                     <th
@@ -336,7 +275,7 @@ const EventTable = () => {
                   ) : tableData?.length > 0 ? (
                     tableData.map((event, index) => (
                       <EventRow
-                        key={event["Event ID"]}
+                        key={event.EventID}
                         index={index}
                         event={event}
                         setReFetch={() => setReFetch(!reFetch)}
