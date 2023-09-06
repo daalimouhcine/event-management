@@ -93,18 +93,17 @@ const CreateEvent: React.FC<CreateEventProps> = ({
       };
       axios
         .patch(
-          "https://1rix0t19h7.execute-api.eu-west-2.amazonaws.com/dev/events" +
+          "https://1rix0t19h7.execute-api.eu-west-2.amazonaws.com/dev/events/" +
             eventToEdit.EventID,
           editedEvent
         )
         .then((res) => {
           setReFetch();
-          if (res.data.StatusCode == 200) {
-            const responseMessage = JSON.parse(res.data.body);
+          if (res.data.statusCode == 200) {
             Swal.fire({
               position: "center",
               icon: "success",
-              title: responseMessage.Message,
+              title: "Event Edited Successfully",
               showConfirmButton: false,
               timer: 1500,
             });
@@ -230,7 +229,11 @@ const CreateEvent: React.FC<CreateEventProps> = ({
     ) {
       return "Start Date cannot be before the current date";
     } else if (type === "StartDate") {
-      if (new Date(date) > new Date(watchEvent("EndDate")) && isChecked && !watchEvent("WeekDay")) {
+      if (
+        new Date(date) > new Date(watchEvent("EndDate")) &&
+        isChecked &&
+        !watchEvent("WeekDay")
+      ) {
         setErrorEvent("EndDate", {
           type: "manual",
           message: "End Date cannot be before the Start Date",

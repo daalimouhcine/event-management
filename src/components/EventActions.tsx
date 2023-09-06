@@ -40,14 +40,22 @@ const EventActions: React.FC<EventActionsProps> = ({
       if (result.isConfirmed) {
         axios
           .delete(
-            "https://at2l22ryjg.execute-api.eu-west-2.amazonaws.com/dev/events/" +
+            "https://1rix0t19h7.execute-api.eu-west-2.amazonaws.com/dev/events/" +
               eventId
           )
           .then((res) => {
-            if (res.data.StatusCode == 200) {
+            console.log(eventId);
+            console.log(res);
+            if (res.data.statusCode == 200) {
               const responseMessage = JSON.parse(res.data.body);
               Swal.fire("Deleted!", responseMessage.Message, "success");
               setReFetch();
+            } else {
+              Swal.fire(
+                "Error!",
+                "Something went wrong, please try again later",
+                "error"
+              );
             }
           });
       }
@@ -62,48 +70,6 @@ const EventActions: React.FC<EventActionsProps> = ({
     setEventToClone(event);
     setOpenEdit();
   };
-
-  // const duplicate = (event: Event) => {
-  //   const clonedEvent: Event = {
-  //     EventName: event.EventName,
-  //     Type: event.Type,
-  //     Active: event.Active,
-  //     StartDate: event.StartDate,
-  //     EndDate: event.EndDate,
-  //     WeekDay: event.WeekDay,
-  //     StartTime: event.StartTime,
-  //     EndTime: event.EndTime,
-  //     CreatedBy: "Mouhcine Daali",
-  //     Description: event.Description,
-  //     Message: event.Message,
-  //   };
-  //   axios
-  //     .post(
-  //       "https://at2l22ryjg.execute-api.eu-west-2.amazonaws.com/dev/events",
-  //       clonedEvent
-  //     )
-  //     .then((res) => {
-  //       setReFetch();
-  //       if (res.data.StatusCode == 200) {
-  //         const responseMessage = JSON.parse(res.data.body);
-  //         Swal.fire({
-  //           position: "center",
-  //           icon: "success",
-  //           title: responseMessage.Message,
-  //           showConfirmButton: false,
-  //           timer: 1500,
-  //         });
-  //       } else {
-  //         Swal.fire({
-  //           position: "center",
-  //           icon: "error",
-  //           title: "Something Went Wrong",
-  //           showConfirmButton: false,
-  //           timer: 1500,
-  //         });
-  //       }
-  //     });
-  // };
 
   return (
     <div ref={open ? ref : undefined} className='relative'>
