@@ -1,5 +1,5 @@
 export type Event = {
-  ["Event ID"]?: string | number;
+  EventID?: string;
   EventName?: string;
   StartDate?: string;
   EndDate?: string;
