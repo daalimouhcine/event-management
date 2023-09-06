@@ -2,14 +2,14 @@ import { useForm } from "react-hook-form";
 import { Event, createEventForm } from "../types";
 import { useEffect, useState } from "react";
 import Swal from "sweetalert2";
-// import axios from "axios";
+import axios from "axios";
 import { CreateEventProps } from "../interfaces";
 
 const CreateEvent: React.FC<CreateEventProps> = ({
   EventNames,
   isOpen,
   setOpen,
-  // setReFetch,
+  setReFetch,
   eventToEdit,
   eventToClone,
   removeDefaultEvent,
@@ -78,7 +78,7 @@ const CreateEvent: React.FC<CreateEventProps> = ({
 
     if (eventToEdit) {
       const editedEvent: Event = {
-        "Event ID": eventToEdit["Event ID"],
+        EventID: eventToEdit.EventID,
         EventName: data.EventName,
         Active: eventToEdit.Active,
         WeekDay: eventToEdit.WeekDay,
@@ -91,36 +91,33 @@ const CreateEvent: React.FC<CreateEventProps> = ({
         Message: data.Message,
         CreatedBy: eventToEdit.CreatedBy,
       };
-
-      alert("Edit: " + JSON.stringify(editedEvent));
-
-      // axios
-      //   .patch(
-      //     "https://at2l22ryjg.execute-api.eu-west-2.amazonaws.com/dev/events/" +
-      //       eventToEdit["Event ID"],
-      //     editedEvent
-      //   )
-      //   .then((res) => {
-      //     setReFetch();
-      //     if (res.data.StatusCode == 200) {
-      //       const responseMessage = JSON.parse(res.data.body);
-      //       Swal.fire({
-      //         position: "center",
-      //         icon: "success",
-      //         title: responseMessage.Message,
-      //         showConfirmButton: false,
-      //         timer: 1500,
-      //       });
-      //     } else {
-      //       Swal.fire({
-      //         position: "center",
-      //         icon: "error",
-      //         title: "Something Went Wrong",
-      //         showConfirmButton: false,
-      //         timer: 1500,
-      //       });
-      //     }
-      //   });
+      axios
+        .patch(
+          "https://1rix0t19h7.execute-api.eu-west-2.amazonaws.com/dev/events" +
+            eventToEdit.EventID,
+          editedEvent
+        )
+        .then((res) => {
+          setReFetch();
+          if (res.data.StatusCode == 200) {
+            const responseMessage = JSON.parse(res.data.body);
+            Swal.fire({
+              position: "center",
+              icon: "success",
+              title: responseMessage.Message,
+              showConfirmButton: false,
+              timer: 1500,
+            });
+          } else {
+            Swal.fire({
+              position: "center",
+              icon: "error",
+              title: "Something Went Wrong",
+              showConfirmButton: false,
+              timer: 1500,
+            });
+          }
+        });
     } else {
       const newEvent: Event = {
         EventName: data.EventName,
@@ -135,35 +132,34 @@ const CreateEvent: React.FC<CreateEventProps> = ({
         Description: data.Description,
         Message: data.Message,
       };
-      alert("Create: " + JSON.stringify(newEvent));
-      // axios
-      //   .post(
-      //     "https://at2l22ryjg.execute-api.eu-west-2.amazonaws.com/dev/events",
-      //     newEvent
-      //   )
-      //   .then((res) => {
-      //     setReFetch();
-      //     if (res.data.StatusCode == 200) {
-      //       const responseMessage = JSON.parse(res.data.body);
-      //       Swal.fire({
-      //         position: "center",
-      //         icon: "success",
-      //         title: responseMessage.Message,
-      //         showConfirmButton: false,
-      //         timer: 1500,
-      //       });
-      //     } else {
-      //       Swal.fire({
-      //         position: "center",
-      //         icon: "error",
-      //         title: "Something Went Wrong",
-      //         showConfirmButton: false,
-      //         timer: 1500,
-      //       });
-      //     }
-      //   });
+      axios
+        .post(
+          "https://1rix0t19h7.execute-api.eu-west-2.amazonaws.com/dev/events",
+          newEvent
+        )
+        .then((res) => {
+          setReFetch();
+          if (res.data.StatusCode == 200) {
+            const responseMessage = JSON.parse(res.data.body);
+            Swal.fire({
+              position: "center",
+              icon: "success",
+              title: responseMessage.Message,
+              showConfirmButton: false,
+              timer: 1500,
+            });
+          } else {
+            Swal.fire({
+              position: "center",
+              icon: "error",
+              title: "Something Went Wrong",
+              showConfirmButton: false,
+              timer: 1500,
+            });
+          }
+        });
     }
-    // cancel(false);
+    cancel(false);
   };
 
   const cancel = (validation: boolean) => {
@@ -380,7 +376,6 @@ const CreateEvent: React.FC<CreateEventProps> = ({
                     Select Type
                   </option>
                   <option value='C'>Closure</option>
-                  <option value='E'>Emergency</option>
                   <option value='M1'>Custom Message 1 </option>
                   <option value='M2'>Custom Message 2</option>
                 </select>
