@@ -138,6 +138,7 @@ const EventRow: React.FC<EventRowProps> = ({
           <p className='w-44 truncate'>{event.Message}</p>
         </td>
         <td
+          title='Click to change the status'
           onClick={() => toggleActive(event)}
           className='flex gap-x-2 whitespace-nowrap px-3 py-4 text-sm text-gray-500'>
           {event.Active ? (
@@ -151,11 +152,6 @@ const EventRow: React.FC<EventRowProps> = ({
           )}
           <ArrowsRightLeftIcon className='h-5 w-5 text-gray-400' />
         </td>
-        {/* <td
-          onClick={() => setOpenDetails(true)}
-          className='whitespace-nowrap px-3 py-4 text-sm text-gray-500'>
-          {event.CreatedBy}
-        </td> */}
         <td className='relative whitespace-nowrap py-4 pl-3 pr-4 text-right text-sm font-medium sm:pr-6'>
           <EventActions
             event={event}

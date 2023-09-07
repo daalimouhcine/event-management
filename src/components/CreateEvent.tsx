@@ -255,6 +255,12 @@ const CreateEvent: React.FC<CreateEventProps> = ({
         clearErrorsEvent("EndDate");
       }
     }
+    if (type === "EndDate" && !watchEvent("StartDate")) {
+      setErrorEvent("StartDate", {
+        type: "manual",
+        message: "You also need to fill the Start Date",
+      });
+    }
   };
 
   return (
@@ -443,10 +449,12 @@ const CreateEvent: React.FC<CreateEventProps> = ({
                       required: false,
                       validate: (value) => validateDate(value, "StartDate"),
                     })}
+                    disabled={watchEvent("WeekDay") ? true : false}
+                    value={watchEvent("WeekDay") ? "" : watchEvent("StartDate")}
                   />
                   <label
                     htmlFor='StartDate'
-                    className="after:content[' '] pointer-events-none absolute left-0 -top-2 pb-14 flex h-full w-full select-none text-[14px] font-normal leading-tight text-gray-800 transition-all after:absolute after:-bottom-1.5 after:block after:w-full after:scale-x-0 after:border-b-2 after:border-green-500 after:transition-transform after:duration-300 peer-placeholder-shown:text-lg peer-placeholder-shown:leading-[4.25] peer-placeholder-shown:text-gray-800 peer-focus:text-[14px] peer-focus:leading-tight peer-focus:text-green-500 peer-focus:after:scale-x-100 peer-focus:after:border-green-500 peer-disabled:text-transparent peer-disabled:peer-placeholder-shown:text-gray-800">
+                    className="after:content[' '] pointer-events-none absolute left-0 -top-2 pb-14 flex h-full w-full select-none text-[14px] font-normal leading-tight text-gray-800 transition-all after:absolute after:-bottom-1.5 after:block after:w-full after:scale-x-0 after:border-b-2 after:border-green-500 after:transition-transform after:duration-300 peer-placeholder-shown:text-lg peer-placeholder-shown:leading-[4.25] peer-placeholder-shown:text-gray-800 peer-focus:text-[14px] peer-focus:leading-tight peer-focus:text-green-500 peer-focus:after:scale-x-100 peer-focus:after:border-green-500 peer-disabled:text-gray-500 peer-disabled:peer-placeholder-shown:text-gray-800">
                     Start Date
                   </label>
                   {errorsEvent.StartDate && (
@@ -516,7 +524,7 @@ const CreateEvent: React.FC<CreateEventProps> = ({
                 </div>
               </label>
             </div>
-            {isChecked && !watchEvent("WeekDay") && (
+            {isChecked && (
               <div className='w-full max-md:w-full relative mt-1'>
                 <input
                   className={`peer h-full w-full border-b ${
@@ -533,10 +541,12 @@ const CreateEvent: React.FC<CreateEventProps> = ({
                     required: false,
                     validate: (value) => validateDate(value, "EndDate"),
                   })}
+                  disabled={watchEvent("WeekDay") ? true : false}
+                  value={watchEvent("WeekDay") ? "" : watchEvent("EndDate")}
                 />
                 <label
                   htmlFor='EndDate'
-                  className="after:content[' '] pointer-events-none absolute left-0 -top-2 pb-14 flex h-full w-full select-none text-[14px] font-normal leading-tight text-gray-800 transition-all after:absolute after:-bottom-1.5 after:block after:w-full after:scale-x-0 after:border-b-2 after:border-green-500 after:transition-transform after:duration-300 peer-placeholder-shown:text-lg peer-placeholder-shown:leading-[4.25] peer-placeholder-shown:text-gray-800 peer-focus:text-[14px] peer-focus:leading-tight peer-focus:text-green-500 peer-focus:after:scale-x-100 peer-focus:after:border-green-500 peer-disabled:text-transparent peer-disabled:peer-placeholder-shown:text-gray-800">
+                  className="after:content[' '] pointer-events-none absolute left-0 -top-2 pb-14 flex h-full w-full select-none text-[14px] font-normal leading-tight text-gray-800 transition-all after:absolute after:-bottom-1.5 after:block after:w-full after:scale-x-0 after:border-b-2 after:border-green-500 after:transition-transform after:duration-300 peer-placeholder-shown:text-lg peer-placeholder-shown:leading-[4.25] peer-placeholder-shown:text-gray-800 peer-focus:text-[14px] peer-focus:leading-tight peer-focus:text-green-500 peer-focus:after:scale-x-100 peer-focus:after:border-green-500 peer-disabled:text-gray-500 peer-disabled:peer-placeholder-shown:text-gray-800">
                   End Date
                 </label>
                 {errorsEvent.EndDate && (
