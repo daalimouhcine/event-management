@@ -44,11 +44,8 @@ const EventActions: React.FC<EventActionsProps> = ({
               eventId
           )
           .then((res) => {
-            console.log(eventId);
-            console.log(res);
             if (res.data.statusCode == 200) {
-              const responseMessage = JSON.parse(res.data.body);
-              Swal.fire("Deleted!", responseMessage.Message, "success");
+              Swal.fire("Deleted!", res.data.body.message, "success");
               setReFetch();
             } else {
               Swal.fire(
