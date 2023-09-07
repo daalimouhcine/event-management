@@ -81,11 +81,11 @@ const CreateEvent: React.FC<CreateEventProps> = ({
         EventID: eventToEdit.EventID,
         EventName: data.EventName,
         Active: eventToEdit.Active,
-        WeekDay: eventToEdit.WeekDay,
-        StartDate: data.StartDate,
-        EndDate: data.EndDate,
-        StartTime: data.StartTime,
-        EndTime: data.EndTime,
+        WeekDay: data.WeekDay,
+        StartDate: !watchEvent("WeekDay") ? data.StartDate : "",
+        EndDate: !watchEvent("WeekDay") ? data.EndDate : "",
+        StartTime: !isChecked ? data.StartTime : "",
+        EndTime: !isChecked ? data.EndTime : "",
         Type: data.Type,
         Description: data.Description,
         Message: data.Message,
@@ -121,11 +121,11 @@ const CreateEvent: React.FC<CreateEventProps> = ({
       const newEvent: Event = {
         EventName: data.EventName,
         Active: true,
-        StartDate: data.StartDate,
-        EndDate: data.EndDate,
+        StartDate: !watchEvent("WeekDay") ? data.StartDate : "",
+        EndDate: !watchEvent("WeekDay") ? data.StartDate : "",
         WeekDay: data.WeekDay,
-        StartTime: data.StartTime,
-        EndTime: data.EndTime,
+        StartTime: !isChecked ? data.StartTime : "",
+        EndTime: !isChecked ? data.EndTime : "",
         Type: data.Type,
         CreatedBy: "Mouhcine Daali",
         Description: data.Description,
@@ -138,12 +138,11 @@ const CreateEvent: React.FC<CreateEventProps> = ({
         )
         .then((res) => {
           setReFetch();
-          if (res.data.StatusCode == 200) {
-            const responseMessage = JSON.parse(res.data.body);
+          if (res.data.statusCode == 200) {
             Swal.fire({
               position: "center",
               icon: "success",
-              title: responseMessage.Message,
+              title: res.data.body.message,
               showConfirmButton: false,
               timer: 1500,
             });
@@ -216,7 +215,7 @@ const CreateEvent: React.FC<CreateEventProps> = ({
   };
 
   const validateName = (name: string) => {
-    if (EventNames.includes(name)) {
+    if (EventNames.includes(name) && !eventToEdit) {
       return "the name is already exists";
     } else {
       clearErrorsEvent("EventName");
@@ -261,9 +260,9 @@ const CreateEvent: React.FC<CreateEventProps> = ({
         message: "You also need to fill the Start Date",
       });
     }
+
   };
   const validateTime = (time: string, type: string) => {
-    // console.log(time > );
     if (
       time < new Date().toTimeString() &&
       time !== new Date().toTimeString() &&
@@ -519,7 +518,8 @@ const CreateEvent: React.FC<CreateEventProps> = ({
                       : "placeholder-shown:border-gray-200"
                   } focus:border-green-500 focus:outline-0 disabled:border-0`}
                   id='WeekDay'
-                  {...registerEvent("WeekDay", { required: false })}>
+                  {...registerEvent("WeekDay", { required: false })}
+                  disabled={watchEvent("StartDate") ? true : false}>
                   <option value='' className='text-gray-500'>
                     Select Day
                   </option>
@@ -533,7 +533,7 @@ const CreateEvent: React.FC<CreateEventProps> = ({
                 </select>
                 <label
                   htmlFor='WeekDay'
-                  className="after:content[' '] pointer-events-none absolute left-0 -top-2.5 pb-14 flex h-full w-full select-none text-[14px] font-normal leading-tight text-gray-800 transition-all after:absolute after:-bottom-1.5 after:block after:w-full after:scale-x-0 after:border-b-2 after:border-green-500 after:transition-transform after:duration-300 peer-placeholder-shown:text-lg peer-placeholder-shown:leading-[4.25] peer-placeholder-shown:text-gray-800 peer-focus:text-[14px] peer-focus:leading-tight peer-focus:text-green-500 peer-focus:after:scale-x-100 peer-focus:after:border-green-500 peer-disabled:text-transparent peer-disabled:peer-placeholder-shown:text-gray-800">
+                  className="after:content[' '] pointer-events-none absolute left-0 -top-2.5 pb-14 flex h-full w-full select-none text-[14px] font-normal leading-tight text-gray-800 transition-all after:absolute after:-bottom-1.5 after:block after:w-full after:scale-x-0 after:border-b-2 after:border-green-500 after:transition-transform after:duration-300 peer-placeholder-shown:text-lg peer-placeholder-shown:leading-[4.25] peer-placeholder-shown:text-gray-800 peer-focus:text-[14px] peer-focus:leading-tight peer-focus:text-green-500 peer-focus:after:scale-x-100 peer-focus:after:border-green-500 peer-disabled:text-gray-500 peer-disabled:peer-placeholder-shown:text-gray-800">
                   Week Day
                 </label>
                 {errorsEvent.WeekDay && (
@@ -566,7 +566,7 @@ const CreateEvent: React.FC<CreateEventProps> = ({
                 </div>
               </label>
             </div>
-            {isChecked && (
+            {isChecked ? (
               <div className='w-full max-md:w-full relative mt-1'>
                 <input
                   className={`peer h-full w-full border-b ${
@@ -584,7 +584,7 @@ const CreateEvent: React.FC<CreateEventProps> = ({
                     validate: (value) => validateDate(value, "EndDate"),
                   })}
                   disabled={watchEvent("WeekDay") ? true : false}
-                  value={watchEvent("WeekDay") ? "" : watchEvent("StartDate")}
+                  value={watchEvent("StartDate")}
                   contentEditable={false}
                   readOnly
                 />
@@ -601,8 +601,7 @@ const CreateEvent: React.FC<CreateEventProps> = ({
                   </p>
                 )}
               </div>
-            )}
-            {!isChecked && (
+            ) : (
               <div className='flex flex-col gap-7 w-2/3 max-md:w-full relative '>
                 <div className='relative'>
                   <input
