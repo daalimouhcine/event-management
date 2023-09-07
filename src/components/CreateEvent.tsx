@@ -262,6 +262,42 @@ const CreateEvent: React.FC<CreateEventProps> = ({
       });
     }
   };
+  const validateTime = (time: string, type: string) => {
+    if (
+      new Date(time) < new Date() &&
+      new Date(time).getTime() !== new Date().getTime()
+    ) {
+      return "Start Time cannot be before the current Time";
+    } else if (type === "StartTime") {
+      if (
+        time > watchEvent("EndTime")! &&
+        watchEvent("EndTime") &&
+        !isChecked
+      ) {
+        console.log("hello", time);
+        console.log(watchEvent("EndTime")!);
+        setErrorEvent("EndTime", {
+          type: "manual",
+          message: "End Time cannot be before the Start Time",
+        });
+        return "Start Time cannot be after the End Time";
+      } else {
+        clearErrorsEvent("StartTime");
+        clearErrorsEvent("EndTime");
+      }
+    } else if (type === "EndTime") {
+      if (time < watchEvent("StartTime")!) {
+        setErrorEvent("StartTime", {
+          type: "manual",
+          message: "Start Time cannot be after the End Time",
+        });
+        return "End Time cannot be before the Start Time";
+      } else {
+        clearErrorsEvent("StartTime");
+        clearErrorsEvent("EndTime");
+      }
+    }
+  };
 
   return (
     <div
@@ -544,7 +580,9 @@ const CreateEvent: React.FC<CreateEventProps> = ({
                     validate: (value) => validateDate(value, "EndDate"),
                   })}
                   disabled={watchEvent("WeekDay") ? true : false}
-                  value={watchEvent("WeekDay") ? "" : watchEvent("EndDate")}
+                  value={watchEvent("WeekDay") ? "" : watchEvent("StartDate")}
+                  contentEditable={false}
+                  readOnly
                 />
                 <label
                   htmlFor='EndDate'
@@ -576,7 +614,10 @@ const CreateEvent: React.FC<CreateEventProps> = ({
                     placeholder=' '
                     type='time'
                     id='StartTime'
-                    {...registerEvent("StartTime", { required: false })}
+                    {...registerEvent("StartTime", {
+                      required: watchEvent("EndTime") ? true : false,
+                      validate: (value) => validateTime(value!, "StartTime"),
+                    })}
                   />
                   <label
                     htmlFor='StartTime'
@@ -585,7 +626,9 @@ const CreateEvent: React.FC<CreateEventProps> = ({
                   </label>
                   {errorsEvent.StartTime && (
                     <p className='absolute bottom-0 translate-y-full left-0 text-xs text-red-500'>
-                      Start Time is required
+                      {errorsEvent.StartTime.type === "required"
+                        ? "This field is required"
+                        : errorsEvent.StartTime.message}
                     </p>
                   )}
                 </div>
@@ -601,7 +644,10 @@ const CreateEvent: React.FC<CreateEventProps> = ({
                     placeholder=' '
                     type='time'
                     id='EndTime'
-                    {...registerEvent("EndTime", { required: false })}
+                    {...registerEvent("EndTime", {
+                      required: watchEvent("StartTime") ? true : false,
+                      validate: (value) => validateTime(value!, "StartTime"),
+                    })}
                   />
                   <label
                     htmlFor='EndTime'
@@ -610,7 +656,9 @@ const CreateEvent: React.FC<CreateEventProps> = ({
                   </label>
                   {errorsEvent.EndTime && (
                     <p className='absolute bottom-0 translate-y-full left-0 text-xs text-red-500'>
-                      End Time is required
+                      {errorsEvent.EndTime.type === "required"
+                        ? "This field is required"
+                        : errorsEvent.EndTime.message}
                     </p>
                   )}
                 </div>
