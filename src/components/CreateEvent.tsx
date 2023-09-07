@@ -260,17 +260,16 @@ const CreateEvent: React.FC<CreateEventProps> = ({
         message: "You also need to fill the Start Date",
       });
     }
-
   };
   const validateTime = (time: string, type: string) => {
-    // if (
-    //   time < new Date().toTimeString() &&
-    //   time !== new Date().toTimeString() &&
-    //   (watchEvent("StartTime") || watchEvent("EndTime"))
-    // ) {
-    //   return "Start Time cannot be before the current Time";
-    // } else 
-    if (type === "StartTime") {
+    if (
+      watchEvent("StartDate") &&
+      time < new Date().toTimeString() &&
+      time !== new Date().toTimeString() &&
+      (watchEvent("StartTime") || watchEvent("EndTime"))
+    ) {
+      return "Start Time cannot be before the current Time";
+    } else if (type === "StartTime") {
       if (
         time > watchEvent("EndTime")! &&
         watchEvent("EndTime") &&
