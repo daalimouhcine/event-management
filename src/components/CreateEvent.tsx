@@ -450,7 +450,9 @@ const CreateEvent: React.FC<CreateEventProps> = ({
                       validate: (value) => validateDate(value, "StartDate"),
                     })}
                     disabled={watchEvent("WeekDay") ? true : false}
-                    value={watchEvent("WeekDay") ? "" : watchEvent("StartDate")}
+                    value={
+                      watchEvent("WeekDay") ? "" : watchEvent("StartDate") || ""
+                    }
                   />
                   <label
                     htmlFor='StartDate'
