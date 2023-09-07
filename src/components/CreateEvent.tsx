@@ -263,9 +263,11 @@ const CreateEvent: React.FC<CreateEventProps> = ({
     }
   };
   const validateTime = (time: string, type: string) => {
+    // console.log(time > );
     if (
-      new Date(time) < new Date() &&
-      new Date(time).getTime() !== new Date().getTime()
+      time < new Date().toTimeString() &&
+      time !== new Date().toTimeString() &&
+      (watchEvent("StartTime") || watchEvent("EndTime"))
     ) {
       return "Start Time cannot be before the current Time";
     } else if (type === "StartTime") {
@@ -274,8 +276,6 @@ const CreateEvent: React.FC<CreateEventProps> = ({
         watchEvent("EndTime") &&
         !isChecked
       ) {
-        console.log("hello", time);
-        console.log(watchEvent("EndTime")!);
         setErrorEvent("EndTime", {
           type: "manual",
           message: "End Time cannot be before the Start Time",
@@ -286,7 +286,11 @@ const CreateEvent: React.FC<CreateEventProps> = ({
         clearErrorsEvent("EndTime");
       }
     } else if (type === "EndTime") {
-      if (time < watchEvent("StartTime")!) {
+      if (
+        time < watchEvent("StartTime")! &&
+        watchEvent("StartTime") &&
+        !isChecked
+      ) {
         setErrorEvent("StartTime", {
           type: "manual",
           message: "Start Time cannot be after the End Time",
@@ -646,7 +650,7 @@ const CreateEvent: React.FC<CreateEventProps> = ({
                     id='EndTime'
                     {...registerEvent("EndTime", {
                       required: watchEvent("StartTime") ? true : false,
-                      validate: (value) => validateTime(value!, "StartTime"),
+                      validate: (value) => validateTime(value!, "EndTime"),
                     })}
                   />
                   <label
