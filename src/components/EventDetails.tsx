@@ -50,71 +50,95 @@ const EventDetails: React.FC<EventDetailsProps> = ({
         </div>
       </div>
       <div className='w-full h-fit flex flex-col gap-y-8 bg-gray-50 rounded-lg p-5 mt-5'>
-        <div className='flex flex-col gap-5'>
-          <div className='flex w-full'>
-            <div className='w-1/2'>
-              <h4 className='text-lg lg:text-xl font-semibold text-gray-900'>
-                Type
-              </h4>
-              <p className='text-sm lg:text-base text-gray-500'>
-                {event.Type === "C"
-                  ? "Closure "
-                  : event.Type === "E"
-                  ? "Emergency"
-                  : event.Type === "M1"
-                  ? "Custom Message 1"
-                  : event.Type === "M2"
-                  ? "Custom Messag 2"
-                  : "Not assigned"}
-              </p>
-            </div>
-            <div className='w-1/2'>
-              <h4 className='text-lg lg:text-xl font-semibold text-gray-900'>
-                Week Day
-              </h4>
-              <p className='text-sm lg:text-base text-gray-500'>
-                {event.WeekDay || "Not assigned"}
-              </p>
-            </div>
-          </div>
-          <div className='flex w-full'>
-            <div className='w-1/2'>
-              <h4 className='text-lg lg:text-xl font-semibold text-gray-900'>
-                Start-End Date
-              </h4>
-              <p className='text-sm lg:text-base text-gray-500'>
-                {`${event.StartDate || "Not assigned"} - ${
-                  event.EndDate || "Not assigned"
-                }`}
-              </p>
-            </div>
-            <div className='w-1/2'>
-              <h4 className='text-lg lg:text-xl font-semibold text-gray-900'>
-                Start-End Time
-              </h4>
-              <p className='text-sm lg:text-base text-gray-500'>
-                {`${event.StartTime || "Not assigned"} - ${
-                  event.EndTime || "Not assigned"
-                }`}
-              </p>
-            </div>
-          </div>
-        </div>
-        <div className='flex flex-col gap-8'>
-          <div className='w-1/2'>
+        <div className='flex gap-5 justify-between w-full flex-wrap'>
+          <div className='max-w-1/4 min-w-fit flex items-center gap-x-3'>
             <h4 className='text-lg lg:text-xl font-semibold text-gray-900'>
-              Description
+              Status:
             </h4>
             <p className='text-sm lg:text-base text-gray-500'>
-              {event.Description}
+              {event.Active ? "Active" : "Inactive"}
             </p>
           </div>
-          <div className='w-1/2'>
+          <div className='max-w-1/4 min-w-fit flex items-center gap-x-3'>
             <h4 className='text-lg lg:text-xl font-semibold text-gray-900'>
-              Message
+              Type:
+            </h4>
+            <p className='text-sm lg:text-base text-gray-500'>
+              {event.Type === "C"
+                ? "Closure "
+                : event.Type === "M1"
+                ? "Custom Message 1"
+                : event.Type === "M2"
+                ? "Custom Messag 2"
+                : "Not assigned"}
+            </p>
+          </div>
+          <div className='w-2/4 flex items-center gap-x-3'>
+            <h4 className='text-lg lg:text-xl font-semibold text-gray-900'>
+              Message:
             </h4>
             <p className='text-sm lg:text-base text-gray-500'>
               {event.Message}
+            </p>
+          </div>
+        </div>
+        <div className='flex gap-5 justify-between w-full flex-wrap'>
+          <div className='max-w-1/5 min-w-fit flex items-center gap-x-3'>
+            <h4 className='text-lg lg:text-xl font-semibold text-gray-900'>
+              Week Day:
+            </h4>
+            <p className='text-sm lg:text-base text-gray-500'>
+              {event.WeekDay || "Not assigned"}
+            </p>
+          </div>
+          <div className='max-w-1/5 min-w-fit flex items-center gap-x-3'>
+            <h4 className='text-lg lg:text-xl font-semibold text-gray-900'>
+              Start Date:
+            </h4>
+            <p className='text-sm lg:text-base text-gray-500'>
+              {event.StartDate || "Not assigned"}
+            </p>
+          </div>
+          <div className='max-w-1/5 min-w-fit flex items-center gap-x-3'>
+            <h4 className='text-lg lg:text-xl font-semibold text-gray-900'>
+              End Date:
+            </h4>
+            <p className='text-sm lg:text-base text-gray-500'>
+              {event.EndDate || "Not assigned"}
+            </p>
+          </div>
+          <div className='max-w-1/5 min-w-fit flex items-center gap-x-3'>
+            <h4 className='text-lg lg:text-xl font-semibold text-gray-900'>
+              Start Time:
+            </h4>
+            <p className='text-sm lg:text-base text-gray-500'>
+              {event.StartTime || "Not assigned"}
+            </p>
+          </div>
+          <div className='max-w-1/5 min-w-fit flex items-center gap-x-3'>
+            <h4 className='text-lg lg:text-xl font-semibold text-gray-900'>
+              End Time:
+            </h4>
+            <p className='text-sm lg:text-base text-gray-500'>
+              {event.EndTime || "Not assigned"}
+            </p>
+          </div>
+        </div>
+        <div className='flex justify-between w-full flex-wrap gap-5'>
+          <div className='max-w-1/4 min-w-fit flex items-center gap-x-3'>
+            <h4 className='text-lg lg:text-xl font-semibold text-gray-900'>
+              Created By:
+            </h4>
+            <p className='text-sm lg:text-base text-gray-500'>
+              {event.CreatedBy}
+            </p>
+          </div>
+          <div className='w-3/4 flex items-center gap-x-3'>
+            <h4 className='text-lg lg:text-xl font-semibold text-gray-900'>
+              Description:
+            </h4>
+            <p className='text-sm lg:text-base text-gray-500'>
+              {event.Description}
             </p>
           </div>
         </div>

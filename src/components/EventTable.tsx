@@ -16,7 +16,7 @@ const EventTable = () => {
   const [eventToClone, setEventToClone] = useState<Event | undefined>();
   const { register, watch, reset } = useForm<Search>();
   const [tableData, setTableData] = useState<Event[]>(events || []);
-  
+
   useEffect(() => {
     setLoading(true);
     const getEvents = async () => {
@@ -199,7 +199,7 @@ const EventTable = () => {
                 className='w-5 h-5'
               />
               <label htmlFor='byInActive' className='ml-2'>
-                Not Active
+                Inactive
               </label>
             </div>
           </div>
@@ -223,38 +223,38 @@ const EventTable = () => {
                     <th
                       scope='col'
                       className='px-3 py-3.5 text-left text-sm font-semibold text-gray-100'>
+                      Message
+                    </th>
+                    <th
+                      scope='col'
+                      className='px-3 py-3.5 text-left text-sm font-semibold text-gray-100'>
                       WeekDay
                     </th>
                     <th
                       scope='col'
                       className='px-3 py-3.5 text-left text-sm font-semibold text-gray-100'>
-                      Start/End Date
+                      Start Date
                     </th>
                     <th
                       scope='col'
                       className='px-3 py-3.5 text-left text-sm font-semibold text-gray-100'>
-                      Start/End Time
+                      End Date
                     </th>
                     <th
                       scope='col'
                       className='px-3 py-3.5 text-left text-sm font-semibold text-gray-100'>
-                      Event Type
+                      Start Time
                     </th>
                     <th
                       scope='col'
                       className='px-3 py-3.5 text-left text-sm font-semibold text-gray-100'>
-                      Message
+                      End Time
                     </th>
                     <th
                       scope='col'
                       className='px-3 py-3.5 text-left text-sm font-semibold text-gray-100'>
                       Status
                     </th>
-                    {/* <th
-                      scope='col'
-                      className='px-3 py-3.5 text-left text-sm font-semibold text-gray-100'>
-                      Created By
-                    </th> */}
                     <th
                       scope='col'
                       className='relative py-3.5 pl-3 pr-4 sm:pr-6'>

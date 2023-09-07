@@ -8,7 +8,7 @@ export type Event = {
   EndTime?: string;
   Type: string;
   Description: string;
-  Message: string;
+  Message?: string;
   Active: boolean;
   CreatedBy: string;
 };
@@ -21,7 +21,8 @@ export type createEventForm = {
   StartTime?: string;
   EndTime?: string;
   Type: string;
-  Message: string;
+  Active: boolean;
+  Message?: string;
   Description: string;
 };
 
