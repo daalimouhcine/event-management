@@ -598,107 +598,105 @@ const CreateEvent: React.FC<CreateEventProps> = ({
                 </div>
               </label>
             </div>
-            {isChecked ? (
-              <div className='w-2/5 relative mt-1'>
+            <div className={`${!isChecked && "hidden"} w-2/5 relative mt-1`}>
+              <input
+                className={`peer h-full w-full border-b ${
+                  errorsEvent.EndDate ? "border-red-200" : "border-gray-200"
+                } bg-transparent pt-4 pb-4 font-sans text-sm font-normal text-gray-700 outline outline-0 transition-all ${
+                  errorsEvent.EndDate
+                    ? "placeholder-shown:border-red-200"
+                    : "placeholder-shown:border-gray-200"
+                } focus:border-green-500 focus:outline-0 disabled:border-0`}
+                placeholder=' '
+                type='date'
+                id='EndDate'
+                {...registerEvent("EndDate", {
+                  required: false,
+                  validate: (value) => validateDate(value, "EndDate"),
+                })}
+                disabled={watchEvent("WeekDay") ? true : false}
+                value={watchEvent("StartDate")}
+                contentEditable={false}
+                readOnly
+              />
+              <label
+                htmlFor='EndDate'
+                className="after:content[' '] pointer-events-none absolute left-0 -top-2 pb-14 flex h-full w-full select-none text-[14px] font-normal leading-tight text-gray-800 transition-all after:absolute after:-bottom-1.5 after:block after:w-full after:scale-x-0 after:border-b-2 after:border-green-500 after:transition-transform after:duration-300 peer-placeholder-shown:text-lg peer-placeholder-shown:leading-[4.25] peer-placeholder-shown:text-gray-800 peer-focus:text-[14px] peer-focus:leading-tight peer-focus:text-green-500 peer-focus:after:scale-x-100 peer-focus:after:border-green-500 peer-disabled:text-gray-500 peer-disabled:peer-placeholder-shown:text-gray-800">
+                End Date
+              </label>
+              {errorsEvent.EndDate && (
+                <p className='absolute bottom-0 translate-y-full left-0 text-xs text-red-500'>
+                  {errorsEvent.EndDate.type === "required"
+                    ? "This field is required"
+                    : errorsEvent.EndDate.message}
+                </p>
+              )}
+            </div>
+            <div
+              className={`${
+                isChecked && "hidden"
+              } w-2/5 flex flex-col gap-7 relative `}>
+              <div className='relative'>
                 <input
                   className={`peer h-full w-full border-b ${
-                    errorsEvent.EndDate ? "border-red-200" : "border-gray-200"
+                    errorsEvent.StartTime ? "border-red-200" : "border-gray-200"
                   } bg-transparent pt-4 pb-4 font-sans text-sm font-normal text-gray-700 outline outline-0 transition-all ${
-                    errorsEvent.EndDate
+                    errorsEvent.StartTime
                       ? "placeholder-shown:border-red-200"
                       : "placeholder-shown:border-gray-200"
                   } focus:border-green-500 focus:outline-0 disabled:border-0`}
                   placeholder=' '
-                  type='date'
-                  id='EndDate'
-                  {...registerEvent("EndDate", {
-                    required: false,
-                    validate: (value) => validateDate(value, "EndDate"),
+                  type='time'
+                  id='StartTime'
+                  {...registerEvent("StartTime", {
+                    required: watchEvent("EndTime") ? true : false,
+                    validate: (value) => validateTime(value!, "StartTime"),
                   })}
-                  disabled={watchEvent("WeekDay") ? true : false}
-                  value={watchEvent("StartDate")}
-                  contentEditable={false}
-                  readOnly
                 />
                 <label
-                  htmlFor='EndDate'
-                  className="after:content[' '] pointer-events-none absolute left-0 -top-2 pb-14 flex h-full w-full select-none text-[14px] font-normal leading-tight text-gray-800 transition-all after:absolute after:-bottom-1.5 after:block after:w-full after:scale-x-0 after:border-b-2 after:border-green-500 after:transition-transform after:duration-300 peer-placeholder-shown:text-lg peer-placeholder-shown:leading-[4.25] peer-placeholder-shown:text-gray-800 peer-focus:text-[14px] peer-focus:leading-tight peer-focus:text-green-500 peer-focus:after:scale-x-100 peer-focus:after:border-green-500 peer-disabled:text-gray-500 peer-disabled:peer-placeholder-shown:text-gray-800">
-                  End Date
+                  htmlFor='StartTime'
+                  className="after:content[' '] pointer-events-none absolute left-0 -top-2 pb-14 flex h-full w-full select-none text-[14px] font-normal leading-tight text-gray-800 transition-all after:absolute after:-bottom-1.5 after:block after:w-full after:scale-x-0 after:border-b-2 after:border-green-500 after:transition-transform after:duration-300 peer-placeholder-shown:text-lg peer-placeholder-shown:leading-[4.25] peer-placeholder-shown:text-gray-800 peer-focus:text-[14px] peer-focus:leading-tight peer-focus:text-green-500 peer-focus:after:scale-x-100 peer-focus:after:border-green-500 peer-disabled:text-transparent peer-disabled:peer-placeholder-shown:text-gray-800">
+                  Start Time
                 </label>
-                {errorsEvent.EndDate && (
+                {errorsEvent.StartTime && (
                   <p className='absolute bottom-0 translate-y-full left-0 text-xs text-red-500'>
-                    {errorsEvent.EndDate.type === "required"
+                    {errorsEvent.StartTime.type === "required"
                       ? "This field is required"
-                      : errorsEvent.EndDate.message}
+                      : errorsEvent.StartTime.message}
                   </p>
                 )}
               </div>
-            ) : (
-              <div className='w-2/5 flex flex-col gap-7 relative '>
-                <div className='relative'>
-                  <input
-                    className={`peer h-full w-full border-b ${
-                      errorsEvent.StartTime
-                        ? "border-red-200"
-                        : "border-gray-200"
-                    } bg-transparent pt-4 pb-4 font-sans text-sm font-normal text-gray-700 outline outline-0 transition-all ${
-                      errorsEvent.StartTime
-                        ? "placeholder-shown:border-red-200"
-                        : "placeholder-shown:border-gray-200"
-                    } focus:border-green-500 focus:outline-0 disabled:border-0`}
-                    placeholder=' '
-                    type='time'
-                    id='StartTime'
-                    {...registerEvent("StartTime", {
-                      required: watchEvent("EndTime") ? true : false,
-                      validate: (value) => validateTime(value!, "StartTime"),
-                    })}
-                  />
-                  <label
-                    htmlFor='StartTime'
-                    className="after:content[' '] pointer-events-none absolute left-0 -top-2 pb-14 flex h-full w-full select-none text-[14px] font-normal leading-tight text-gray-800 transition-all after:absolute after:-bottom-1.5 after:block after:w-full after:scale-x-0 after:border-b-2 after:border-green-500 after:transition-transform after:duration-300 peer-placeholder-shown:text-lg peer-placeholder-shown:leading-[4.25] peer-placeholder-shown:text-gray-800 peer-focus:text-[14px] peer-focus:leading-tight peer-focus:text-green-500 peer-focus:after:scale-x-100 peer-focus:after:border-green-500 peer-disabled:text-transparent peer-disabled:peer-placeholder-shown:text-gray-800">
-                    Start Time
-                  </label>
-                  {errorsEvent.StartTime && (
-                    <p className='absolute bottom-0 translate-y-full left-0 text-xs text-red-500'>
-                      {errorsEvent.StartTime.type === "required"
-                        ? "This field is required"
-                        : errorsEvent.StartTime.message}
-                    </p>
-                  )}
-                </div>
-                <div className=' relative'>
-                  <input
-                    className={`peer h-full w-full border-b ${
-                      errorsEvent.EndTime ? "border-red-200" : "border-gray-200"
-                    } bg-transparent pt-4 pb-4 font-sans text-sm font-normal text-gray-700 outline outline-0 transition-all ${
-                      errorsEvent.EndTime
-                        ? "placeholder-shown:border-red-200"
-                        : "placeholder-shown:border-gray-200"
-                    } focus:border-green-500 focus:outline-0 disabled:border-0`}
-                    placeholder=' '
-                    type='time'
-                    id='EndTime'
-                    {...registerEvent("EndTime", {
-                      required: watchEvent("StartTime") ? true : false,
-                      validate: (value) => validateTime(value!, "EndTime"),
-                    })}
-                  />
-                  <label
-                    htmlFor='EndTime'
-                    className="after:content[' '] pointer-events-none absolute left-0 -top-2 pb-14 flex h-full w-full select-none text-[14px] font-normal leading-tight text-gray-800 transition-all after:absolute after:-bottom-1.5 after:block after:w-full after:scale-x-0 after:border-b-2 after:border-green-500 after:transition-transform after:duration-300 peer-placeholder-shown:text-lg peer-placeholder-shown:leading-[4.25] peer-placeholder-shown:text-gray-800 peer-focus:text-[14px] peer-focus:leading-tight peer-focus:text-green-500 peer-focus:after:scale-x-100 peer-focus:after:border-green-500 peer-disabled:text-transparent peer-disabled:peer-placeholder-shown:text-gray-800">
-                    End Time
-                  </label>
-                  {errorsEvent.EndTime && (
-                    <p className='absolute bottom-0 translate-y-full left-0 text-xs text-red-500'>
-                      {errorsEvent.EndTime.type === "required"
-                        ? "This field is required"
-                        : errorsEvent.EndTime.message}
-                    </p>
-                  )}
-                </div>
+              <div className=' relative'>
+                <input
+                  className={`peer h-full w-full border-b ${
+                    errorsEvent.EndTime ? "border-red-200" : "border-gray-200"
+                  } bg-transparent pt-4 pb-4 font-sans text-sm font-normal text-gray-700 outline outline-0 transition-all ${
+                    errorsEvent.EndTime
+                      ? "placeholder-shown:border-red-200"
+                      : "placeholder-shown:border-gray-200"
+                  } focus:border-green-500 focus:outline-0 disabled:border-0`}
+                  placeholder=' '
+                  type='time'
+                  id='EndTime'
+                  {...registerEvent("EndTime", {
+                    required: watchEvent("StartTime") ? true : false,
+                    validate: (value) => validateTime(value!, "EndTime"),
+                  })}
+                />
+                <label
+                  htmlFor='EndTime'
+                  className="after:content[' '] pointer-events-none absolute left-0 -top-2 pb-14 flex h-full w-full select-none text-[14px] font-normal leading-tight text-gray-800 transition-all after:absolute after:-bottom-1.5 after:block after:w-full after:scale-x-0 after:border-b-2 after:border-green-500 after:transition-transform after:duration-300 peer-placeholder-shown:text-lg peer-placeholder-shown:leading-[4.25] peer-placeholder-shown:text-gray-800 peer-focus:text-[14px] peer-focus:leading-tight peer-focus:text-green-500 peer-focus:after:scale-x-100 peer-focus:after:border-green-500 peer-disabled:text-transparent peer-disabled:peer-placeholder-shown:text-gray-800">
+                  End Time
+                </label>
+                {errorsEvent.EndTime && (
+                  <p className='absolute bottom-0 translate-y-full left-0 text-xs text-red-500'>
+                    {errorsEvent.EndTime.type === "required"
+                      ? "This field is required"
+                      : errorsEvent.EndTime.message}
+                  </p>
+                )}
               </div>
-            )}
+            </div>
           </div>
         </div>
       </form>
