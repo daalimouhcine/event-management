@@ -458,16 +458,6 @@ const CreateEvent: React.FC<CreateEventProps> = ({
                   {...registerEvent("Message", {
                     required: watchEvent("Type") !== "C" ? true : false,
                   })}
-                  disabled={
-                    watchEvent("Type") === "C" || !watchEvent("Type")
-                      ? true
-                      : false
-                  }
-                  value={
-                    watchEvent("Type") === "C" || !watchEvent("Type")
-                      ? ""
-                      : watchEvent("Message") || ""
-                  }
                 />
                 <label
                   htmlFor='Message'

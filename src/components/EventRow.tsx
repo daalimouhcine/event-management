@@ -53,7 +53,16 @@ const EventRow: React.FC<EventRowProps> = ({
         <td
           onClick={() => setOpenDetails(true)}
           className='whitespace-nowrap px-3 py-4 text-sm text-gray-500'>
-          {event.Type === "C" ? "Closure " : event.Message}
+          <p className='w-36 truncate'>{event.Message || ""}</p>
+        </td>
+        <td
+          onClick={() => setOpenDetails(true)}
+          className='whitespace-nowrap px-3 py-4 text-sm text-gray-500'>
+          {event.Type === "C"
+            ? "Closure "
+            : event.Type === "M1"
+            ? "Costume Message 1"
+            : "Costume Message 2"}
         </td>
         <td
           onClick={() => setOpenDetails(true)}
