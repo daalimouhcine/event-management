@@ -225,7 +225,7 @@ const CreateEvent: React.FC<CreateEventProps> = ({
   const validateDate = (date: string, type: string) => {
     if (
       new Date(date) < new Date() &&
-      new Date(date).getDate() !== new Date().getDate()
+      new Date(date).getDate() !== new Date().getDate() && !watchEvent("WeekDay")
     ) {
       return "Start Date cannot be before the current date";
     } else if (type === "StartDate") {
@@ -255,7 +255,7 @@ const CreateEvent: React.FC<CreateEventProps> = ({
         clearErrorsEvent("EndDate");
       }
     }
-    if (type === "EndDate" && !watchEvent("StartDate")) {
+    if (type === "EndDate" && !watchEvent("StartDate") && !watchEvent("WeekDay")) {
       setErrorEvent("StartDate", {
         type: "manual",
         message: "You also need to fill the Start Date",
