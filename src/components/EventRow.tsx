@@ -61,8 +61,8 @@ const EventRow: React.FC<EventRowProps> = ({
           {event.Type === "C"
             ? "Closure "
             : event.Type === "M1"
-            ? "Costume Message 1"
-            : "Costume Message 2"}
+            ? "Custom Message 1"
+            : "Custom Message 2"}
         </td>
         <td
           onClick={() => setOpenDetails(true)}
