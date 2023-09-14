@@ -6,6 +6,11 @@ import axios from "axios";
 import { MagnifyingGlassIcon, XMarkIcon } from "@heroicons/react/20/solid";
 import { useForm } from "react-hook-form";
 
+import { DataTable } from "primereact/datatable";
+import { Column } from "primereact/column";
+import 'primereact/resources/themes/saga-blue/theme.css';
+import 'primereact/resources/primereact.min.css';
+
 const EventTable = () => {
   const [createEventOpen, setCreateEventOpen] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -158,7 +163,21 @@ const EventTable = () => {
           </button>
         </div>
       </div>
-      <div className='mt-8 flex flex-col'>
+
+      <DataTable value={tableData} stripedRows tableStyle={{ minWidth: "100%" }} className="datatable-style" >
+        <Column field='EventName' header='Event Name' style={{ width: "8%" }}></Column>
+        <Column field='Description' header='Description' style={{ width: "10%" }} className="truncate"></Column>
+        <Column field='Message' header='Message' style={{ width: "12%" }} className="!w-36 truncate"></Column>
+        <Column field='Type' header='Type' style={{ width: "8%" }}></Column>
+        <Column field='WeekDay' header='WeekDay' style={{ width: "8%" }}></Column>
+        <Column field='StartDate' header='Start Date' style={{ width: "10%" }}></Column>
+        <Column field='EndDate' header='End Date' style={{ width: "10%" }}></Column>
+        <Column field='Start Time' header='Start Time' style={{ width: "9%" }}></Column>
+        <Column field='EndTime' header='End Time' style={{ width: "9%" }}></Column>
+        <Column field='Status' header='Status' style={{ width: "9%" }}></Column>
+        <Column field='Actions' header='Actions' style={{ width: "5%" }}></Column>
+      </DataTable>
+      {/* <div className='mt-8 flex flex-col'>
         <div className='w-full flex max-md:flex-col gap-5 mb-3'>
           <div className='w-1/2 max-md:w-2/3 max-sm:w-full'>
             <div className='mt-2 relative'>
@@ -302,7 +321,7 @@ const EventTable = () => {
             </div>
           </div>
         </div>
-      </div>
+      </div> */}
     </div>
   );
 };
