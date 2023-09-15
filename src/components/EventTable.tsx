@@ -8,8 +8,10 @@ import { useForm } from "react-hook-form";
 
 import { DataTable } from "primereact/datatable";
 import { Column } from "primereact/column";
-import 'primereact/resources/themes/saga-blue/theme.css';
-import 'primereact/resources/primereact.min.css';
+import "primereact/resources/themes/lara-light-indigo/theme.css";
+import "primereact/resources/primereact.min.css";
+import EventActions from "./EventActions";
+import EventDetails from "./EventDetails";
 
 const EventTable = () => {
   const [createEventOpen, setCreateEventOpen] = useState(false);
@@ -104,6 +106,27 @@ const EventTable = () => {
     reset({ search: "" });
   };
 
+  const statusBodyTemplate = (status: boolean) => {
+    return (
+      <span
+        className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${
+          status ? "bg-green-100 text-green-800" : "bg-red-100 text-red-800"
+        }`}>
+        {status ? "Active" : "Inactive"}
+      </span>
+    );
+  };
+
+  const editEvent = (event: Event) => {
+    setEventToEdit(event);
+  };
+  const cloneEvent = (event: Event) => {
+    setEventToClone(event);
+  };
+
+  const [openDetails, setOpenDetails] = useState(false);
+  const [eventDetails, setEventDetails] = useState<Event | undefined>();
+
   return (
     <div className='[overflow-anchor:none] px-4 sm:px-6 lg:px-8 mt-10'>
       <div className='sm:flex sm:items-center'>
@@ -164,18 +187,90 @@ const EventTable = () => {
         </div>
       </div>
 
-      <DataTable value={tableData} stripedRows tableStyle={{ minWidth: "100%" }} className="datatable-style" >
-        <Column field='EventName' header='Event Name' style={{ width: "8%" }}></Column>
-        <Column field='Description' header='Description' style={{ width: "10%" }} className="truncate"></Column>
-        <Column field='Message' header='Message' style={{ width: "12%" }} className="!w-36 truncate"></Column>
-        <Column field='Type' header='Type' style={{ width: "8%" }}></Column>
-        <Column field='WeekDay' header='WeekDay' style={{ width: "8%" }}></Column>
-        <Column field='StartDate' header='Start Date' style={{ width: "10%" }}></Column>
-        <Column field='EndDate' header='End Date' style={{ width: "10%" }}></Column>
-        <Column field='Start Time' header='Start Time' style={{ width: "9%" }}></Column>
-        <Column field='EndTime' header='End Time' style={{ width: "9%" }}></Column>
-        <Column field='Status' header='Status' style={{ width: "9%" }}></Column>
-        <Column field='Actions' header='Actions' style={{ width: "5%" }}></Column>
+      <EventDetails
+        event={eventDetails}
+        isOpen={openDetails}
+        setReFetch={() => setReFetch(!reFetch)}
+        setOpen={() => setOpenDetails(!openDetails)}
+        setEventToEdit={editEvent}
+        setEventToClone={cloneEvent}
+        setOpenEdit={() => setCreateEventOpen(true)}
+      />
+
+      <DataTable
+        value={tableData}
+        stripedRows
+        paginator
+        rows={5}
+        rowsPerPageOptions={[5, 10, 25, 50]}
+        tableStyle={{ minWidth: "100%" }}
+        className=''>
+        <Column
+          field='EventName'
+          header='Event Name'
+          sortable
+          style={{ maxWidth: "200px" }}
+          className='truncate'></Column>
+        <Column
+          field='Description'
+          header='Description'
+          sortable
+          style={{ maxWidth: "200px" }}
+          className='truncate'></Column>
+        <Column
+          field='Message'
+          header='Message'
+          sortable
+          style={{ maxWidth: "250px" }}
+          className='truncate'></Column>
+        <Column field='Type' header='Type' sortable style={{}}></Column>
+        <Column field='WeekDay' header='WeekDay' sortable style={{}}></Column>
+        <Column
+          field='StartDate'
+          header='Start_Date'
+          sortable
+          style={{}}></Column>
+        <Column field='EndDate' header='End_Date' style={{}}></Column>
+        <Column field='StartTime' header='Start_Time' style={{}}></Column>
+        <Column field='EndTime' header='End_Time' style={{}}></Column>
+        <Column
+          field='Status'
+          header='Status'
+          dataType='boolean'
+          body={(rowData: Event) =>
+            rowData.Active ? (
+              <span className='inline-flex rounded-full bg-green-100 px-2 text-xs font-semibold leading-5 text-green-800'>
+                Active
+              </span>
+            ) : (
+              <span className='inline-flex rounded-full bg-red-100 px-2 text-xs font-semibold leading-5 text-red-800'>
+                Inactive
+              </span>
+            )
+          }
+          sortable
+          style={{}}></Column>
+        <Column
+          field='Actions'
+          header='Actions'
+          body={(rowData: Event) => {
+            return (
+              <EventActions
+                event={rowData}
+                viewDetails={() => {
+                  setEventDetails(rowData);
+                  setOpenDetails(true);
+                }}
+                displayDetails={true}
+                setReFetch={() => setReFetch(!reFetch)}
+                setEventToEdit={editEvent}
+                setEventToClone={cloneEvent}
+                setOpenEdit={() => setCreateEventOpen(true)}
+                index={0}
+              />
+            );
+          }}
+          style={{}}></Column>
       </DataTable>
       {/* <div className='mt-8 flex flex-col'>
         <div className='w-full flex max-md:flex-col gap-5 mb-3'>
