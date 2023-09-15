@@ -34,7 +34,7 @@ export interface EventDetailsProps {
   isOpen: boolean;
   setOpen: () => void;
   setReFetch: () => void;
-  event: Event;
+  event: Event | undefined;
   setEventToEdit: (event: Event) => void;
   setEventToClone: (event: Event) => void;
   setOpenEdit: () => void;
