@@ -11,7 +11,7 @@ export interface CreateEventProps {
 }
 
 export interface EventActionsProps {
-  event: Event;
+  event: Event | undefined;
   viewDetails?: () => void;
   displayDetails: boolean;
   setReFetch: () => void;
