@@ -12,6 +12,7 @@ import "primereact/resources/themes/lara-light-indigo/theme.css";
 import "primereact/resources/primereact.min.css";
 import EventActions from "./EventActions";
 import EventDetails from "./EventDetails";
+import Swal from "sweetalert2";
 
 const EventTable = () => {
   const [createEventOpen, setCreateEventOpen] = useState(false);
@@ -152,43 +153,70 @@ const EventTable = () => {
     );
   };
 
-  const [selectedEvents, setSelectedCustomers] = useState<Event[]>([]);
+  const [selectedEvents, setSelectedEvents] = useState<Event[]>([]);
   const [selectAll, setSelectAll] = useState(false);
 
   const onSelectionChange = (e: any) => {
-    console.log(e.value);
     const value = e.value;
-    setSelectedCustomers(value);
+    setSelectedEvents(value);
     setSelectAll(value.length === tableData.length);
   };
   const onSelectAllChange = (e: any) => {
     const selectAll = e.checked;
 
     if (selectAll) {
-      console.log(true);
-      setSelectedCustomers(tableData);
-
+      setSelectedEvents(tableData);
       setSelectAll(true);
     } else {
-      console.log(false);
-
       setSelectAll(false);
-      setSelectedCustomers([]);
+      setSelectedEvents([]);
     }
   };
 
+  const deleteAll = () => {
+    Swal.fire({
+      title: "Are you sure?",
+      text: "You won't be able to revert this!",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "red",
+      cancelButtonColor: "green",
+      confirmButtonText: "Yes, delete all!",
+    }).then((result) => {
+      if (result.isConfirmed) {
+        selectedEvents.forEach((event) => {
+          axios
+            .delete(
+              `https://1rix0t19h7.execute-api.eu-west-2.amazonaws.com/dev/events/${event.EventID}`
+            )
+            .then(() => {
+              setSelectedEvents([]);
+              setReFetch(!reFetch);
+            })
+            .catch((err) => {
+              console.log(err);
+            });
+        });
+        Swal.fire("Deleted!", "Your file has been deleted.", "success");
+      }
+    });
+  };
+
   return (
-    <div className='px-2 sm:px-4 lg:px-5 mt-10'>
+    <div className='px-2 sm:px-4 lg:px-5 mt-20'>
       <div className='sm:flex sm:items-center'>
         <div className='sm:flex-auto relative'>
           <div
             className={`flex items-center justify-between gap-x-5 px-5 py-3 bg-indigo-500/70 rounded-md absolute bottom-0 transition-all ease-linear duration-300 ${
-              selectedEvents.length ? "left-20" : "-left-full"
+              selectedEvents.length ? "left-0" : "-left-full"
             }`}>
             <p className='text-white font-semibold'>
-              {selectedEvents.length} Events Selected
+              {selectedEvents.length} Event{selectedEvents.length > 1 && "s"}{" "}
+              Selected
             </p>
-            <button className='rounded-md px-3.5 py-1.5 m-1 overflow-hidden relative group cursor-pointer border-2 font-medium border-white hover:border-red-600 transition-colors duration-150 ease-linear shadow-red-600/60 shadow-md  text-white'>
+            <button
+              onClick={() => deleteAll()}
+              className='rounded-md px-3.5 py-1.5 m-1 overflow-hidden relative group cursor-pointer border-2 font-medium border-white hover:border-red-600 transition-colors duration-150 ease-linear shadow-red-600/60 shadow-md  text-white'>
               <span className='absolute w-64 h-0 transition-all duration-300 origin-center rotate-45 -translate-x-20 bg-red-600 top-1/2 group-hover:h-64 group-hover:-translate-y-32 ease'></span>
               <span className='relative text-white transition duration-300 group-hover:text-white ease'>
                 Delete All
@@ -196,16 +224,70 @@ const EventTable = () => {
             </button>
           </div>
         </div>
-        <div className='mt-4 sm:mt-0 sm:ml-16 sm:flex-none max-sm:ml-auto max-sm:w-fit'>
-          <CreateEvent
-            EventNames={EventNames}
-            isOpen={createEventOpen}
-            setOpen={() => setCreateEventOpen(false)}
-            setReFetch={() => setReFetch(!reFetch)}
-            eventToEdit={eventToEdit}
-            eventToClone={eventToClone}
-            removeDefaultEvent={removeEditEvent}
+      </div>
+
+      <EventDetails
+        event={eventDetails}
+        isOpen={openDetails}
+        setReFetch={() => setReFetch(!reFetch)}
+        setOpen={() => setOpenDetails(!openDetails)}
+        setEventToEdit={editEvent}
+        setEventToClone={cloneEvent}
+        setOpenEdit={() => setCreateEventOpen(true)}
+      />
+      <CreateEvent
+        EventNames={EventNames}
+        isOpen={createEventOpen}
+        setOpen={() => setCreateEventOpen(false)}
+        setReFetch={() => setReFetch(!reFetch)}
+        eventToEdit={eventToEdit}
+        eventToClone={eventToClone}
+        removeDefaultEvent={removeEditEvent}
+      />
+
+      <div className='w-full flex justify-between max-md:flex-col gap-5 mb-3'>
+        <div className='w-1/3 mt-2 relative'>
+          <MagnifyingGlassIcon className='absolute w-5 h-5 text-gray-400 left-3 translate-y-1/2' />
+          {searchValue && (
+            <XMarkIcon
+              onClick={() => resetSearch()}
+              className='absolute w-5 h-5 text-gray-400 right-3 translate-y-1/2 cursor-pointer '
+            />
+          )}
+          <input
+            type='text'
+            {...register("search")}
+            id='search'
+            placeholder='Search by name'
+            className='px-5 pl-10 w-full rounded-md border-0 py-2 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6'
           />
+        </div>
+        <div className='max-w-1/3 max-md:w-fit flex max-md:ml-auto gap-x-8 items-center justify-center'>
+          <p className='font-semibold'>Filter by Status:</p>
+          <div className='flex items-center'>
+            <input
+              type='checkbox'
+              {...register("byActive")}
+              id='byActive'
+              className='w-5 h-5'
+            />
+            <label htmlFor='byActive' className='ml-2'>
+              Active
+            </label>
+          </div>
+          <div className='flex items-center'>
+            <input
+              type='checkbox'
+              {...register("byInActive")}
+              id='byInActive'
+              className='w-5 h-5'
+            />
+            <label htmlFor='byInActive' className='ml-2'>
+              Inactive
+            </label>
+          </div>
+        </div>
+        <div className='max-w-1/3'>
           <button
             onClick={() => setCreateEventOpen(true)}
             type='button'
@@ -245,68 +327,11 @@ const EventTable = () => {
           </button>
         </div>
       </div>
-
-      <EventDetails
-        event={eventDetails}
-        isOpen={openDetails}
-        setReFetch={() => setReFetch(!reFetch)}
-        setOpen={() => setOpenDetails(!openDetails)}
-        setEventToEdit={editEvent}
-        setEventToClone={cloneEvent}
-        setOpenEdit={() => setCreateEventOpen(true)}
-      />
-
-      <div className='w-full flex max-md:flex-col gap-5 mb-3'>
-        <div className='w-1/2 max-md:w-2/3 max-sm:w-full'>
-          <div className='mt-2 relative'>
-            <MagnifyingGlassIcon className='absolute w-5 h-5 text-gray-400 left-3 translate-y-1/2' />
-            {searchValue && (
-              <XMarkIcon
-                onClick={() => resetSearch()}
-                className='absolute w-5 h-5 text-gray-400 right-3 translate-y-1/2 cursor-pointer '
-              />
-            )}
-            <input
-              type='text'
-              {...register("search")}
-              id='search'
-              placeholder='Search by name'
-              className='px-5 pl-10 w-full rounded-md border-0 py-2 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6'
-            />
-          </div>
-        </div>
-        <div className='w-1/2 max-md:w-fit flex max-md:ml-auto gap-x-8 items-center justify-center'>
-          <p className='font-semibold'>Filter by Status:</p>
-          <div className='flex items-center'>
-            <input
-              type='checkbox'
-              {...register("byActive")}
-              id='byActive'
-              className='w-5 h-5'
-            />
-            <label htmlFor='byActive' className='ml-2'>
-              Active
-            </label>
-          </div>
-          <div className='flex items-center'>
-            <input
-              type='checkbox'
-              {...register("byInActive")}
-              id='byInActive'
-              className='w-5 h-5'
-            />
-            <label htmlFor='byInActive' className='ml-2'>
-              Inactive
-            </label>
-          </div>
-        </div>
-      </div>
       <DataTable
         value={tableData}
         key='eventID'
         stripedRows
         paginator
-        lazy
         rows={5}
         rowsPerPageOptions={[5, 10, 25, 50]}
         tableStyle={{}}
@@ -358,7 +383,7 @@ const EventTable = () => {
           field='EndDate'
           header='End_Date'
           className='text-sm'
-          style={{minWidth: "104px"}}></Column>
+          style={{ minWidth: "104px" }}></Column>
         <Column
           field='StartTime'
           header='Start_Time'
