@@ -7,7 +7,7 @@ export default function Heading() {
           src='bg-img.png'
           alt=''
         />
-        <h1 className='absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-7xl font-bold text-white mx-auto'>
+        <h1 className='w-full text-center absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-3xl sm:text-5xl lg:text-7xl font-bold text-white'>
           Event Management
         </h1>
       </div>

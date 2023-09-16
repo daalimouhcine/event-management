@@ -196,7 +196,7 @@ const EventTable = () => {
               console.log(err);
             });
         });
-        Swal.fire("Deleted!", "Your file has been deleted.", "success");
+        Swal.fire("Deleted!", "The selected events has been deleted.", "success");
       }
     });
   };
@@ -206,7 +206,7 @@ const EventTable = () => {
       <div className='sm:flex sm:items-center'>
         <div className='sm:flex-auto relative'>
           <div
-            className={`flex items-center justify-between gap-x-5 px-5 py-3 bg-indigo-500/70 rounded-md absolute bottom-0 transition-all ease-linear duration-300 ${
+            className={`flex items-center justify-between gap-x-5 px-5 py-3 max-sm:px-3 max-sm:py-1.5 bg-indigo-500/70 rounded-md absolute bottom-0 max-sm:bottom-3 transition-all ease-linear duration-300 ${
               selectedEvents.length ? "left-0" : "-left-full"
             }`}>
             <p className='text-white font-semibold'>
@@ -244,8 +244,8 @@ const EventTable = () => {
         removeDefaultEvent={removeEditEvent}
       />
 
-      <div className='w-full flex justify-between max-md:flex-col gap-5 mb-5'>
-        <div className='w-1/3 mt-2 relative'>
+      <div className='w-full flex flex-wrap-reverse justify-between gap-5 mb-5'>
+        <div className='w-2/3 sm:w-1/3 mt-2 relative'>
           <MagnifyingGlassIcon className='absolute w-5 h-5 text-gray-400 left-3 translate-y-1/2' />
           {searchValue && (
             <XMarkIcon
@@ -258,10 +258,10 @@ const EventTable = () => {
             {...register("search")}
             id='search'
             placeholder='Search by name'
-            className='px-5 pl-10 w-full rounded-md border-0 py-2 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6'
+            className='px-5 pl-10 w-full rounded-md border-0 py-2 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 text-sm sm:leading-6'
           />
         </div>
-        <div className='max-w-1/3 max-md:w-fit flex max-md:ml-auto gap-x-8 items-center justify-center'>
+        <div className='max-w-1/3 max-md:w-fit flex max-md:ml-auto gap-x-8 max-sm:gap-x-5 items-center justify-center'>
           <p className='font-semibold'>Filter by Status:</p>
           <div className='flex items-center'>
             <input
@@ -270,7 +270,7 @@ const EventTable = () => {
               id='byActive'
               className='w-5 h-5'
             />
-            <label htmlFor='byActive' className='ml-2'>
+            <label htmlFor='byActive' className='ml-2 max-sm:ml-1'>
               Active
             </label>
           </div>
@@ -281,12 +281,12 @@ const EventTable = () => {
               id='byInActive'
               className='w-5 h-5'
             />
-            <label htmlFor='byInActive' className='ml-2'>
+            <label htmlFor='byInActive' className='ml-2 max-sm:ml-1'>
               Inactive
             </label>
           </div>
         </div>
-        <div className='max-w-1/3'>
+        <div className='max-w-1/3 ml-auto'>
           <button
             onClick={() => setCreateEventOpen(true)}
             type='button'
