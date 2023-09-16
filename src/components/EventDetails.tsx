@@ -28,20 +28,17 @@ const EventDetails: React.FC<EventDetailsProps> = ({
       <div className='bg-white h-3 w-28 rounded-full absolute top-2 left-1/2 -translate-x-1/2'></div>
       <div className='w-full flex justify-between items-center'>
         <h3 className='font-bold text-xl lg:text-3xl text-gray-900'>
-          Event Details: {event.EventName || "Name Not assigned"}
+          Event Details: {event?.EventName || "Name Not assigned"}
         </h3>
         <div className='flex gap-x-2 items-center'>
-          <EventActions
-            event={event}
-            displayDetails={false}
+          {/* <EventActions
+            event={event!}
             setReFetch={setReFetch}
             setEventToEdit={editEvent}
             setEventToClone={cloneEvent}
-            setOpenEdit={() => {
-              setOpen();
-              setOpenEdit();
-            }}
-          />
+            setOpenEdit={() => setOpenEdit()}
+            displayDetails={false}
+          /> */}
           <button
             onClick={() => setOpen()}
             className='p-1 lg:p-2 bg-white rounded-lg grid place-items-center shadow-md hover:shadow-2xl transition'>
@@ -56,7 +53,7 @@ const EventDetails: React.FC<EventDetailsProps> = ({
               Status:
             </h4>
             <p className='text-sm lg:text-base text-gray-500'>
-              {event.Active ? "Active" : "Inactive"}
+              {event?.Active ? "Active" : "Inactive"}
             </p>
           </div>
           <div className='max-w-1/4 min-w-fit flex items-center gap-x-3'>
@@ -64,11 +61,11 @@ const EventDetails: React.FC<EventDetailsProps> = ({
               Type:
             </h4>
             <p className='text-sm lg:text-base text-gray-500'>
-              {event.Type === "C"
+              {event?.Type === "C"
                 ? "Closure "
-                : event.Type === "M1"
+                : event?.Type === "M1"
                 ? "Custom Message 1"
-                : event.Type === "M2"
+                : event?.Type === "M2"
                 ? "Custom Messag 2"
                 : "Not assigned"}
             </p>
@@ -78,7 +75,7 @@ const EventDetails: React.FC<EventDetailsProps> = ({
               Message:
             </h4>
             <p className='text-sm lg:text-base text-gray-500'>
-              {event.Message}
+              {event?.Message}
             </p>
           </div>
         </div>
@@ -88,7 +85,7 @@ const EventDetails: React.FC<EventDetailsProps> = ({
               Week Day:
             </h4>
             <p className='text-sm lg:text-base text-gray-500'>
-              {event.WeekDay || "Not assigned"}
+              {event?.WeekDay || "Not assigned"}
             </p>
           </div>
           <div className='max-w-1/5 min-w-fit flex items-center gap-x-3'>
@@ -96,7 +93,7 @@ const EventDetails: React.FC<EventDetailsProps> = ({
               Start Date:
             </h4>
             <p className='text-sm lg:text-base text-gray-500'>
-              {event.StartDate || "Not assigned"}
+              {event?.StartDate || "Not assigned"}
             </p>
           </div>
           <div className='max-w-1/5 min-w-fit flex items-center gap-x-3'>
@@ -104,7 +101,7 @@ const EventDetails: React.FC<EventDetailsProps> = ({
               End Date:
             </h4>
             <p className='text-sm lg:text-base text-gray-500'>
-              {event.EndDate || "Not assigned"}
+              {event?.EndDate || "Not assigned"}
             </p>
           </div>
           <div className='max-w-1/5 min-w-fit flex items-center gap-x-3'>
@@ -112,7 +109,7 @@ const EventDetails: React.FC<EventDetailsProps> = ({
               Start Time:
             </h4>
             <p className='text-sm lg:text-base text-gray-500'>
-              {event.StartTime || "Not assigned"}
+              {event?.StartTime || "Not assigned"}
             </p>
           </div>
           <div className='max-w-1/5 min-w-fit flex items-center gap-x-3'>
@@ -120,7 +117,7 @@ const EventDetails: React.FC<EventDetailsProps> = ({
               End Time:
             </h4>
             <p className='text-sm lg:text-base text-gray-500'>
-              {event.EndTime || "Not assigned"}
+              {event?.EndTime || "Not assigned"}
             </p>
           </div>
         </div>
@@ -130,7 +127,7 @@ const EventDetails: React.FC<EventDetailsProps> = ({
               Created By:
             </h4>
             <p className='text-sm lg:text-base text-gray-500'>
-              {event.CreatedBy}
+              {event?.CreatedBy}
             </p>
           </div>
           <div className='w-3/4 flex items-center gap-x-3'>
@@ -138,7 +135,7 @@ const EventDetails: React.FC<EventDetailsProps> = ({
               Description:
             </h4>
             <p className='text-sm lg:text-base text-gray-500'>
-              {event.Description}
+              {event?.Description}
             </p>
           </div>
         </div>
