@@ -31,14 +31,17 @@ const EventDetails: React.FC<EventDetailsProps> = ({
           Event Details: {event?.EventName || "Name Not assigned"}
         </h3>
         <div className='flex gap-x-2 items-center'>
-          {/* <EventActions
+          <EventActions
             event={event!}
             setReFetch={setReFetch}
             setEventToEdit={editEvent}
             setEventToClone={cloneEvent}
-            setOpenEdit={() => setOpenEdit()}
+            setOpenEdit={() => {
+              setOpen();
+              setOpenEdit();
+            }}
             displayDetails={false}
-          /> */}
+          />
           <button
             onClick={() => setOpen()}
             className='p-1 lg:p-2 bg-white rounded-lg grid place-items-center shadow-md hover:shadow-2xl transition'>

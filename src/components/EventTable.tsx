@@ -245,7 +245,7 @@ const EventTable = () => {
         removeDefaultEvent={removeEditEvent}
       />
 
-      <div className='w-full flex justify-between max-md:flex-col gap-5 mb-3'>
+      <div className='w-full flex justify-between max-md:flex-col gap-5 mb-5'>
         <div className='w-1/3 mt-2 relative'>
           <MagnifyingGlassIcon className='absolute w-5 h-5 text-gray-400 left-3 translate-y-1/2' />
           {searchValue && (
@@ -341,7 +341,10 @@ const EventTable = () => {
         selection={selectedEvents}
         onSelectionChange={onSelectionChange}
         selectAll={selectAll}
-        onSelectAllChange={onSelectAllChange}>
+        onSelectAllChange={onSelectAllChange}
+        cellSelection={false}
+        selectionMode="multiple"
+        >
         <Column selectionMode='multiple' headerStyle={{ width: "3rem" }} />
         <Column
           field='EventName'

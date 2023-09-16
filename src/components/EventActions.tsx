@@ -73,15 +73,6 @@ const EventActions: React.FC<EventActionsProps> = ({
 
   return (
     <>
-      <EventDetails
-        event={event || undefined}
-        isOpen={openDetails}
-        setReFetch={setReFetch}
-        setOpen={() => setOpenDetails(!openDetails)}
-        setEventToEdit={editEvent}
-        setEventToClone={cloneEvent}
-        setOpenEdit={() => setOpenEdit()}
-      />
       <div ref={open ? ref : undefined} className='relative'>
         <button
           onClick={() => setOpen(!open)}
