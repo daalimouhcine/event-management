@@ -106,17 +106,6 @@ const EventTable = () => {
     reset({ search: "" });
   };
 
-  const statusBodyTemplate = (status: boolean) => {
-    return (
-      <span
-        className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${
-          status ? "bg-green-100 text-green-800" : "bg-red-100 text-red-800"
-        }`}>
-        {status ? "Active" : "Inactive"}
-      </span>
-    );
-  };
-
   const editEvent = (event: Event) => {
     setEventToEdit(event);
   };
@@ -127,15 +116,85 @@ const EventTable = () => {
   const [openDetails, setOpenDetails] = useState(false);
   const [eventDetails, setEventDetails] = useState<Event | undefined>();
 
+  const statusBodyTemplate = (event: Event) => {
+    const status = event.Active;
+    return (
+      <span
+        className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${
+          status ? "bg-green-100 text-green-800" : "bg-red-100 text-red-800"
+        }`}>
+        {status ? "Active" : "Inactive"}
+      </span>
+    );
+  };
+  const typeBodyTemplate = (event: Event) => {
+    const type = event.Type;
+    return (
+      <span
+        className='text-sm truncate'
+        title={
+          type === "C"
+            ? "Closure"
+            : type === "M1"
+            ? "Custom Message 1"
+            : type === "M2"
+            ? "Custom Message 2"
+            : "Not assigned"
+        }>
+        {type === "C"
+          ? "Closure"
+          : type === "M1"
+          ? "Custom Message 1"
+          : type === "M2"
+          ? "Custom Message 2"
+          : "Not assigned"}
+      </span>
+    );
+  };
+
+  const [selectedEvents, setSelectedCustomers] = useState<Event[]>([]);
+  const [selectAll, setSelectAll] = useState(false);
+
+  const onSelectionChange = (e: any) => {
+    console.log(e.value);
+    const value = e.value;
+    setSelectedCustomers(value);
+    setSelectAll(value.length === tableData.length);
+  };
+  const onSelectAllChange = (e: any) => {
+    const selectAll = e.checked;
+
+    if (selectAll) {
+      console.log(true);
+      setSelectedCustomers(tableData);
+
+      setSelectAll(true);
+    } else {
+      console.log(false);
+
+      setSelectAll(false);
+      setSelectedCustomers([]);
+    }
+  };
+
   return (
-    <div className='[overflow-anchor:none] px-4 sm:px-6 lg:px-8 mt-10'>
+    <div className='px-2 sm:px-4 lg:px-5 mt-10'>
       <div className='sm:flex sm:items-center'>
-        <div className='sm:flex-auto'>
-          <h1 className='text-xl font-semibold text-gray-900'>Events</h1>
-          <p className='mt-2 text-sm text-gray-700'>
-            A list of all the events including with this details: Id, Name,
-            Start Date, End Date, Status and more.
-          </p>
+        <div className='sm:flex-auto relative'>
+          <div
+            className={`flex items-center justify-between gap-x-5 px-5 py-3 bg-indigo-500/70 rounded-md absolute bottom-0 transition-all ease-linear duration-300 ${
+              selectedEvents.length ? "left-20" : "-left-full"
+            }`}>
+            <p className='text-white font-semibold'>
+              {selectedEvents.length} Events Selected
+            </p>
+            <button className='rounded-md px-3.5 py-1.5 m-1 overflow-hidden relative group cursor-pointer border-2 font-medium border-white hover:border-red-600 transition-colors duration-150 ease-linear shadow-red-600/60 shadow-md  text-white'>
+              <span className='absolute w-64 h-0 transition-all duration-300 origin-center rotate-45 -translate-x-20 bg-red-600 top-1/2 group-hover:h-64 group-hover:-translate-y-32 ease'></span>
+              <span className='relative text-white transition duration-300 group-hover:text-white ease'>
+                Delete All
+              </span>
+            </button>
+          </div>
         </div>
         <div className='mt-4 sm:mt-0 sm:ml-16 sm:flex-none max-sm:ml-auto max-sm:w-fit'>
           <CreateEvent
@@ -197,58 +256,124 @@ const EventTable = () => {
         setOpenEdit={() => setCreateEventOpen(true)}
       />
 
+      <div className='w-full flex max-md:flex-col gap-5 mb-3'>
+        <div className='w-1/2 max-md:w-2/3 max-sm:w-full'>
+          <div className='mt-2 relative'>
+            <MagnifyingGlassIcon className='absolute w-5 h-5 text-gray-400 left-3 translate-y-1/2' />
+            {searchValue && (
+              <XMarkIcon
+                onClick={() => resetSearch()}
+                className='absolute w-5 h-5 text-gray-400 right-3 translate-y-1/2 cursor-pointer '
+              />
+            )}
+            <input
+              type='text'
+              {...register("search")}
+              id='search'
+              placeholder='Search by name'
+              className='px-5 pl-10 w-full rounded-md border-0 py-2 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6'
+            />
+          </div>
+        </div>
+        <div className='w-1/2 max-md:w-fit flex max-md:ml-auto gap-x-8 items-center justify-center'>
+          <p className='font-semibold'>Filter by Status:</p>
+          <div className='flex items-center'>
+            <input
+              type='checkbox'
+              {...register("byActive")}
+              id='byActive'
+              className='w-5 h-5'
+            />
+            <label htmlFor='byActive' className='ml-2'>
+              Active
+            </label>
+          </div>
+          <div className='flex items-center'>
+            <input
+              type='checkbox'
+              {...register("byInActive")}
+              id='byInActive'
+              className='w-5 h-5'
+            />
+            <label htmlFor='byInActive' className='ml-2'>
+              Inactive
+            </label>
+          </div>
+        </div>
+      </div>
       <DataTable
         value={tableData}
+        key='eventID'
         stripedRows
         paginator
+        lazy
         rows={5}
         rowsPerPageOptions={[5, 10, 25, 50]}
-        tableStyle={{ minWidth: "100%" }}
-        className=''>
+        tableStyle={{}}
+        loading={loading}
+        emptyMessage='No Events Found'
+        scrollHeight='500px'
+        selection={selectedEvents}
+        onSelectionChange={onSelectionChange}
+        selectAll={selectAll}
+        onSelectAllChange={onSelectAllChange}>
+        <Column selectionMode='multiple' headerStyle={{ width: "3rem" }} />
         <Column
           field='EventName'
           header='Event Name'
           sortable
           style={{ maxWidth: "200px" }}
-          className='truncate'></Column>
+          className='truncate text-sm'></Column>
         <Column
           field='Description'
           header='Description'
           sortable
           style={{ maxWidth: "200px" }}
-          className='truncate'></Column>
+          className='truncate text-sm'></Column>
         <Column
           field='Message'
           header='Message'
           sortable
           style={{ maxWidth: "250px" }}
-          className='truncate'></Column>
-        <Column field='Type' header='Type' sortable style={{}}></Column>
-        <Column field='WeekDay' header='WeekDay' sortable style={{}}></Column>
+          className='truncate text-sm'></Column>
+        <Column
+          field='Type'
+          header='Type'
+          sortable
+          body={typeBodyTemplate}
+          style={{}}></Column>
+        <Column
+          field='WeekDay'
+          header='WeekDay'
+          sortable
+          className='text-sm'
+          style={{}}></Column>
         <Column
           field='StartDate'
           header='Start_Date'
           sortable
+          style={{}}
+          className='text-sm w-fit'></Column>
+        <Column
+          field='EndDate'
+          header='End_Date'
+          className='text-sm'
+          style={{minWidth: "104px"}}></Column>
+        <Column
+          field='StartTime'
+          header='Start_Time'
+          className='text-sm'
           style={{}}></Column>
-        <Column field='EndDate' header='End_Date' style={{}}></Column>
-        <Column field='StartTime' header='Start_Time' style={{}}></Column>
-        <Column field='EndTime' header='End_Time' style={{}}></Column>
+        <Column
+          field='EndTime'
+          header='End_Time'
+          className='text-sm'
+          style={{}}></Column>
         <Column
           field='Status'
           header='Status'
           dataType='boolean'
-          body={(rowData: Event) =>
-            rowData.Active ? (
-              <span className='inline-flex rounded-full bg-green-100 px-2 text-xs font-semibold leading-5 text-green-800'>
-                Active
-              </span>
-            ) : (
-              <span className='inline-flex rounded-full bg-red-100 px-2 text-xs font-semibold leading-5 text-red-800'>
-                Inactive
-              </span>
-            )
-          }
-          sortable
+          body={statusBodyTemplate}
           style={{}}></Column>
         <Column
           field='Actions'
@@ -270,7 +395,7 @@ const EventTable = () => {
               />
             );
           }}
-          style={{}}></Column>
+          style={{ textAlign: "center" }}></Column>
       </DataTable>
       {/* <div className='mt-8 flex flex-col'>
         <div className='w-full flex max-md:flex-col gap-5 mb-3'>
