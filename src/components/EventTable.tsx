@@ -1,4 +1,3 @@
-import EventRow from "./EventRow";
 import { Event, Search } from "../types";
 import CreateEvent from "./CreateEvent";
 import { useEffect, useState } from "react";
