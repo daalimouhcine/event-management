@@ -11,7 +11,6 @@ import { useClickOutside } from "../hooks/useClickOutside";
 import Swal from "sweetalert2";
 import axios from "axios";
 import { EventActionsProps } from "../interfaces";
-import EventDetails from "./EventDetails";
 
 const EventActions: React.FC<EventActionsProps> = ({
   event,
@@ -69,7 +68,6 @@ const EventActions: React.FC<EventActionsProps> = ({
     setOpenEdit();
   };
 
-  const [openDetails, setOpenDetails] = useState(false);
 
   return (
     <>
