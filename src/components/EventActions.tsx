@@ -74,7 +74,7 @@ const EventActions: React.FC<EventActionsProps> = ({
   return (
     <>
       <EventDetails
-        event={event}
+        event={event || undefined}
         isOpen={openDetails}
         setReFetch={setReFetch}
         setOpen={() => setOpenDetails(!openDetails)}
@@ -110,7 +110,7 @@ const EventActions: React.FC<EventActionsProps> = ({
           <button
             onClick={() => {
               setOpen(false);
-              editEvent(event);
+              editEvent(event!);
             }}
             className='w-full flex items-center justify-center px-3 py-2 text-xs text-gray-700 hover:bg-gray-100 hover:text-gray-900'>
             <span>Edit</span>
@@ -119,7 +119,7 @@ const EventActions: React.FC<EventActionsProps> = ({
           <button
             onClick={() => {
               setOpen(false);
-              cloneEvent(event);
+              cloneEvent(event!);
             }}
             className='w-full flex items-center justify-center px-3 py-2 text-xs text-gray-700 hover:bg-gray-100 hover:text-gray-900'>
             <span>Duplicate</span>
@@ -128,7 +128,7 @@ const EventActions: React.FC<EventActionsProps> = ({
           <button
             onClick={() => {
               setOpen(false);
-              removeEvent(event.EventID!);
+              removeEvent(event?.EventID!);
             }}
             className='w-full flex items-center justify-center px-3 py-2 text-xs text-gray-700 hover:bg-gray-100 hover:text-gray-900'>
             <span>Delete</span>
