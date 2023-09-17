@@ -349,7 +349,7 @@ const CreateEvent: React.FC<CreateEventProps> = ({
           </p>
           <div className='flex flex-col gap-y-8'>
             <div className='flex max-md:flex-col gap-x-5'>
-              <div className='w-3/5 flex gap-x-5'>
+              <div className='w-5/5 md:w-3/5 flex gap-x-5'>
                 <div className='w-3/4 max-md:w-full relative mt-2'>
                   <input
                     className={`peer h-full w-full border-b ${
@@ -412,7 +412,7 @@ const CreateEvent: React.FC<CreateEventProps> = ({
                   </label>
                 </div>
               </div>
-              <div className='w-2/5 max-md:w-full relative mt-2'>
+              <div className='w-2/5 max-md:w-full relative mt-8 md:mt-2'>
                 <select
                   defaultValue=''
                   className={`peer h-full w-full border-b ${
