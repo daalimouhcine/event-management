@@ -23,9 +23,15 @@ const EventTable = () => {
   const [eventToClone, setEventToClone] = useState<Event | undefined>();
   const { register, watch, reset } = useForm<Search>();
   const [tableData, setTableData] = useState<Event[]>(events || []);
+  const [openDetails, setOpenDetails] = useState(false);
+  const [eventDetails, setEventDetails] = useState<Event | undefined>();
+  const [selectedEvents, setSelectedEvents] = useState<Event[]>([]);
+  const [selectAll, setSelectAll] = useState(false);
 
   useEffect(() => {
     setLoading(true);
+    setSelectAll(false);
+    setSelectedEvents([]);
     const getEvents = async () => {
       await axios
         .get(
@@ -113,9 +119,6 @@ const EventTable = () => {
     setEventToClone(event);
   };
 
-  const [openDetails, setOpenDetails] = useState(false);
-  const [eventDetails, setEventDetails] = useState<Event | undefined>();
-
   const statusBodyTemplate = (event: Event) => {
     const status = event.Active;
     return (
@@ -151,9 +154,6 @@ const EventTable = () => {
       </span>
     );
   };
-
-  const [selectedEvents, setSelectedEvents] = useState<Event[]>([]);
-  const [selectAll, setSelectAll] = useState(false);
 
   const onSelectionChange = (e: any) => {
     const value = e.value;
@@ -196,7 +196,11 @@ const EventTable = () => {
               console.log(err);
             });
         });
-        Swal.fire("Deleted!", "The selected events has been deleted.", "success");
+        Swal.fire(
+          "Deleted!",
+          "The selected events has been deleted.",
+          "success"
+        );
       }
     });
   };
@@ -342,8 +346,7 @@ const EventTable = () => {
         selectAll={selectAll}
         onSelectAllChange={onSelectAllChange}
         cellSelection={false}
-        selectionMode="multiple"
-        >
+        selectionMode='multiple'>
         <Column selectionMode='multiple' headerStyle={{ width: "3rem" }} />
         <Column
           field='EventName'
