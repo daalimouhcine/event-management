@@ -356,7 +356,7 @@ const EventTable = () => {
             </label>
           </div>
         </div>
-        <div className='max-w-1/3 ml-auto'>
+        <div className='max-w-1/3 max-md:ml-auto'>
           <button
             onClick={() => setCreateEventOpen(true)}
             type='button'
