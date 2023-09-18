@@ -71,28 +71,94 @@ const EventTable = () => {
   useEffect(() => {
     if (searchValue || byActive || byInActive) {
       const filteredEvents = events.filter((event) => {
+        // if (searchValue && byActive && byInActive) {
+        //   return (
+        //     event.EventName &&
+        //     event.EventName.toLowerCase().includes(searchValue.toLowerCase()) &&
+        //     event.Active === true
+        //   );
+        // } else if (searchValue && byActive) {
+        //   return (
+        //     event.EventName &&
+        //     event.EventName.toLowerCase().includes(searchValue.toLowerCase()) &&
+        //     event.Active === true
+        //   );
+        // } else if (searchValue && byInActive) {
+        //   return (
+        //     event.EventName &&
+        //     event.EventName.toLowerCase().includes(searchValue.toLowerCase()) &&
+        //     !event.Active
+        //   );
+        // } else if (searchValue) {
+        //   return (
+        //     event.EventName &&
+        //     event.EventName.toLowerCase().includes(searchValue.toLowerCase())
+        //   );
+        // } else if (byActive && byInActive) {
+        //   return event.Active === true || !event.Active;
+        // } else if (byActive) {
+        //   return event.Active === true || event.Active;
+        // } else if (byInActive) {
+        //   return event.Active === false || !event.Active;
+        // }
+
+        // make the search not just by event name but also by description and message and type and weekday and createdby like this code:
+        // if (searchValue && byActive && byInActive) {
+        //   return Object.keys(survey).some((key) =>
+        //     survey[key as keyof Survey]!.toString()
+        //       .toLowerCase()
+        //       .includes(searchValue.toLowerCase())
+        //   );
+        // } else if (searchValue && byActive) {
+        //   return Object.keys(survey).some((key) =>
+        //     survey[key as keyof Survey]!.toString()
+        //       .toLowerCase()
+        //       .includes(searchValue.toLowerCase())
+        //   );
+        // } else if (searchValue && byInActive) {
+        //   return Object.keys(survey).some((key) =>
+        //     survey[key as keyof Survey]!.toString()
+        //       .toLowerCase()
+        //       .includes(searchValue.toLowerCase())
+        //   );
+        // } else if (searchValue) {
+        //   return Object.keys(survey).some((key) =>
+        //     survey[key as keyof Survey]!.toString()
+        //       .toLowerCase()
+        //       .includes(searchValue.toLowerCase())
+        //   );
+        // } else if (byActive && byInActive) {
+        //   return survey.surveyActive === true || !survey.surveyActive;
+        // } else if (byActive) {
+        //   return survey.surveyActive === true || survey.surveyActive;
+        // } else if (byInActive) {
+        //   return survey.surveyActive === false || !survey.surveyActive;
+        // }
+        // make the search not just by event name but also by description and message and type and weekday and createdby like this code:
+
         if (searchValue && byActive && byInActive) {
-          return (
-            event.EventName &&
-            event.EventName.toLowerCase().includes(searchValue.toLowerCase()) &&
-            event.Active === true
+          return Object.keys(event).some((key) =>
+            event[key as keyof Event]!.toString()
+              .toLowerCase()
+              .includes(searchValue.toLowerCase())
           );
         } else if (searchValue && byActive) {
-          return (
-            event.EventName &&
-            event.EventName.toLowerCase().includes(searchValue.toLowerCase()) &&
-            event.Active === true
+          return Object.keys(event).some((key) =>
+            event[key as keyof Event]!.toString()
+              .toLowerCase()
+              .includes(searchValue.toLowerCase())
           );
         } else if (searchValue && byInActive) {
-          return (
-            event.EventName &&
-            event.EventName.toLowerCase().includes(searchValue.toLowerCase()) &&
-            !event.Active
+          return Object.keys(event).some((key) =>
+            event[key as keyof Event]!.toString()
+              .toLowerCase()
+              .includes(searchValue.toLowerCase())
           );
         } else if (searchValue) {
-          return (
-            event.EventName &&
-            event.EventName.toLowerCase().includes(searchValue.toLowerCase())
+          return Object.keys(event).some((key) =>
+            event[key as keyof Event]!.toString()
+              .toLowerCase()
+              .includes(searchValue.toLowerCase())
           );
         } else if (byActive && byInActive) {
           return event.Active === true || !event.Active;
@@ -261,7 +327,7 @@ const EventTable = () => {
             type='text'
             {...register("search")}
             id='search'
-            placeholder='Search by name'
+            placeholder='Keyword Search'
             className='px-5 pl-10 w-full rounded-md border-0 py-2 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 text-sm sm:leading-6'
           />
         </div>
