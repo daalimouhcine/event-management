@@ -182,7 +182,9 @@ const CreateEvent: React.FC<CreateEventProps> = ({
           });
           setIsChecked(false);
           setOpen();
-
+          if (eventToEdit || eventToClone) {
+            removeDefaultEvent();
+          }
           Swal.fire(
             "Canceled!",
             "Your operation has been canceled.",
@@ -204,10 +206,6 @@ const CreateEvent: React.FC<CreateEventProps> = ({
       });
       setIsChecked(false);
       setOpen();
-    }
-
-    if (eventToEdit || eventToClone) {
-      removeDefaultEvent();
     }
   };
 
