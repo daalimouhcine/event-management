@@ -18,7 +18,6 @@ export interface EventActionsProps {
   setEventToEdit: (event: Event) => void;
   setEventToClone: (event: Event) => void;
   setOpenEdit: () => void;
-  index?: number;
 }
 
 export interface EventRowProps {

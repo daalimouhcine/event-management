@@ -11,7 +11,6 @@ import "primereact/resources/themes/lara-light-indigo/theme.css";
 import "primereact/resources/primereact.min.css";
 import EventActions from "./EventActions";
 import EventDetails from "./EventDetails";
-import Swal from "sweetalert2";
 
 const EventTable = () => {
   const [createEventOpen, setCreateEventOpen] = useState(false);
@@ -25,13 +24,9 @@ const EventTable = () => {
   const [tableData, setTableData] = useState<Event[]>(events || []);
   const [openDetails, setOpenDetails] = useState(false);
   const [eventDetails, setEventDetails] = useState<Event | undefined>();
-  const [selectedEvents, setSelectedEvents] = useState<Event[]>([]);
-  const [selectAll, setSelectAll] = useState(false);
 
   useEffect(() => {
     setLoading(true);
-    setSelectAll(false);
-    setSelectedEvents([]);
     const getEvents = async () => {
       await axios
         .get(
@@ -124,7 +119,7 @@ const EventTable = () => {
     const status = event.Active;
     return (
       <span
-        className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${
+        className={`px-2 inline-flex text-xs leading-5 font-semibold  ${
           status ? "bg-green-100 text-green-800" : "bg-red-100 text-red-800"
         }`}>
         {status ? "Active" : "Inactive"}
@@ -156,80 +151,8 @@ const EventTable = () => {
     );
   };
 
-  const onSelectionChange = (e: any) => {
-    const value = e.value;
-    setSelectedEvents(value);
-    setSelectAll(value.length === tableData.length);
-  };
-  const onSelectAllChange = (e: any) => {
-    const selectAll = e.checked;
-
-    if (selectAll) {
-      setSelectedEvents(tableData);
-      setSelectAll(true);
-    } else {
-      setSelectAll(false);
-      setSelectedEvents([]);
-    }
-  };
-
-  const deleteAll = () => {
-    Swal.fire({
-      title: "Are you sure?",
-      text: "You won't be able to revert this!",
-      icon: "warning",
-      showCancelButton: true,
-      confirmButtonColor: "red",
-      cancelButtonColor: "green",
-      confirmButtonText: "Yes, delete all!",
-    }).then((result) => {
-      if (result.isConfirmed) {
-        selectedEvents.forEach((event) => {
-          axios
-            .delete(
-              `https://1rix0t19h7.execute-api.eu-west-2.amazonaws.com/dev/events/${event.EventID}`
-            )
-            .then(() => {
-              setSelectedEvents([]);
-              setReFetch(!reFetch);
-            })
-            .catch((err) => {
-              console.log(err);
-            });
-        });
-        Swal.fire(
-          "Deleted!",
-          "The selected events has been deleted.",
-          "success"
-        );
-      }
-    });
-  };
-
   return (
-    <div className='px-2 sm:px-4 lg:px-5 mt-20'>
-      <div className='sm:flex sm:items-center'>
-        <div className='sm:flex-auto relative'>
-          <div
-            className={`flex items-center justify-between gap-x-5 px-5 py-3 max-sm:px-3 max-sm:py-1.5 bg-indigo-500/70 rounded-md absolute bottom-0 max-sm:bottom-3 transition-all ease-linear duration-300 ${
-              selectedEvents.length ? "left-0" : "-left-full"
-            }`}>
-            <p className='text-white font-semibold'>
-              {selectedEvents.length} Event{selectedEvents.length > 1 && "s"}{" "}
-              Selected
-            </p>
-            <button
-              onClick={() => deleteAll()}
-              className='rounded-md px-3.5 py-1.5 m-1 overflow-hidden relative group cursor-pointer border-2 font-medium border-white hover:border-red-600 transition-colors duration-150 ease-linear shadow-red-600/60 shadow-md  text-white'>
-              <span className='absolute w-64 h-0 transition-all duration-300 origin-center rotate-45 -translate-x-20 bg-red-600 top-1/2 group-hover:h-64 group-hover:-translate-y-32 ease'></span>
-              <span className='relative text-white transition duration-300 group-hover:text-white ease'>
-                Delete All
-              </span>
-            </button>
-          </div>
-        </div>
-      </div>
-
+    <div className='px-4 sm:px-6 lg:px-8 mt-10'>
       <EventDetails
         event={eventDetails}
         isOpen={openDetails}
@@ -250,7 +173,7 @@ const EventTable = () => {
       />
 
       <div className='w-full flex flex-wrap-reverse justify-between gap-5 mb-5'>
-        <div className='w-2/3 sm:w-1/3 mt-2 relative'>
+        <div className='w-1/4 max-md:w-2/4 mt-2 relative'>
           <MagnifyingGlassIcon className='absolute w-5 h-5 text-gray-400 left-3 translate-y-1/2' />
           {searchValue && (
             <XMarkIcon
@@ -263,10 +186,10 @@ const EventTable = () => {
             {...register("search")}
             id='search'
             placeholder='Keyword Search'
-            className='px-5 pl-10 w-full rounded-md border-0 py-2 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 text-sm sm:leading-6'
+            className='px-5 pl-10 w-3/3 border-0 py-2 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 text-sm sm:leading-6'
           />
         </div>
-        <div className='max-w-1/3 max-md:w-fit flex max-md:ml-auto gap-x-8 max-sm:gap-x-5 items-center justify-center'>
+        <div className='max-w-2/4  max-md:ml-auto flex gap-x-8 max-sm:gap-x-5 items-center justify-center'>
           <p className='font-semibold'>Filter by Status:</p>
           <div className='flex items-center'>
             <input
@@ -291,43 +214,12 @@ const EventTable = () => {
             </label>
           </div>
         </div>
-        <div className='max-w-1/3 max-md:ml-auto'>
+        <div className='w-1/4 max-md:w-2/4 flex justify-end max-md:ml-auto'>
           <button
             onClick={() => setCreateEventOpen(true)}
             type='button'
-            className='relative inline-flex items-end justify-start py-3 pl-4 pr-12 overflow-hidden font-semibold text-indigo-600 transition-all duration-150 ease-in-out rounded hover:pl-10 hover:pr-6 bg-gray-100 group'>
-            <span className='absolute bottom-0 left-0 w-full h-1 transition-all duration-150 ease-in-out bg-indigo-600 group-hover:h-full'></span>
-            <span className='absolute right-0 pr-4 duration-200 ease-out group-hover:translate-x-12'>
-              <svg
-                className='w-5 h-5 text-green-400'
-                fill='none'
-                stroke='currentColor'
-                viewBox='0 0 24 24'
-                xmlns='http://www.w3.org/2000/svg'>
-                <path
-                  strokeLinecap='round'
-                  strokeLinejoin='round'
-                  strokeWidth='2'
-                  d='M14 5l7 7m0 0l-7 7m7-7H3'></path>
-              </svg>
-            </span>
-            <span className='absolute left-0 pl-2.5 -translate-x-12 group-hover:translate-x-0 ease-out duration-200'>
-              <svg
-                className='w-5 h-5 text-green-400'
-                fill='none'
-                stroke='currentColor'
-                viewBox='0 0 24 24'
-                xmlns='http://www.w3.org/2000/svg'>
-                <path
-                  strokeLinecap='round'
-                  strokeLinejoin='round'
-                  strokeWidth='2'
-                  d='M14 5l7 7m0 0l-7 7m7-7H3'></path>
-              </svg>
-            </span>
-            <span className='relative w-full text-left transition-colors duration-200 ease-in-out group-hover:text-white'>
-              Add Event
-            </span>
+            className=' px-3.5 py-2 m-1 overflow-hidden relative group cursor-pointer border-2 font-medium border-indigo-700 text-indigo-700'>
+            Add Event
           </button>
         </div>
       </div>
@@ -342,13 +234,17 @@ const EventTable = () => {
         loading={loading}
         emptyMessage='No Events Found'
         scrollHeight='500px'
-        selection={selectedEvents}
-        onSelectionChange={onSelectionChange}
-        selectAll={selectAll}
-        onSelectAllChange={onSelectAllChange}
-        cellSelection={false}
-        selectionMode='multiple'>
-        <Column selectionMode='multiple' headerStyle={{ width: "3rem" }} />
+        onRowClick={(event) => {
+          // Change the argument to DataTableRowClickEvent
+          const rowData = event.data as Event;
+          const excludedColumn = "Actions";
+          const target = event.originalEvent.target as HTMLElement;
+          // Check if the click event is not on the excluded column
+          if (!target || !target.classList.contains(excludedColumn)) {
+            setEventDetails(rowData);
+            setOpenDetails(true);
+          }
+        }}>
         <Column
           field='EventName'
           header='Event Name'
@@ -409,6 +305,8 @@ const EventTable = () => {
         <Column
           field='Actions'
           header='Actions'
+          alignHeader={"center"}
+          className='Actions'
           body={(rowData: Event) => {
             return (
               <EventActions
@@ -422,7 +320,6 @@ const EventTable = () => {
                 setEventToEdit={editEvent}
                 setEventToClone={cloneEvent}
                 setOpenEdit={() => setCreateEventOpen(true)}
-                index={0}
               />
             );
           }}

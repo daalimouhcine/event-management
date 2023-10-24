@@ -43,7 +43,7 @@ const CreateEvent: React.FC<CreateEventProps> = ({
       StartTime: eventToEdit?.StartTime || eventToClone?.StartTime || "",
       EndTime: eventToEdit?.EndTime || eventToClone?.EndTime || "",
       Type: eventToEdit?.Type || eventToClone?.Type || "",
-      Active: eventToEdit?.Active || eventToClone?.Active || false,
+      Active: eventToEdit?.Active || false,
       Description: eventToEdit?.Description || eventToClone?.Description || "",
       Message: eventToEdit?.Message || eventToClone?.Message || "",
     });
@@ -64,6 +64,14 @@ const CreateEvent: React.FC<CreateEventProps> = ({
       (data.StartTime && !data.EndTime && !isChecked)
     ) {
       Swal.fire({
+        showClass: {
+          popup: "swal2-noanimation",
+          backdrop: "swal2-noanimation",
+          icon: "swal2-noanimation",
+        },
+        hideClass: {
+          popup: "",
+        },
         position: "center",
         icon: "error",
         title: "Please fill the schedule fields correctly",
@@ -98,6 +106,14 @@ const CreateEvent: React.FC<CreateEventProps> = ({
           setReFetch();
           if (res.data.statusCode == 200) {
             Swal.fire({
+              showClass: {
+                popup: "swal2-noanimation",
+                backdrop: "swal2-noanimation",
+                icon: "swal2-noanimation",
+              },
+              hideClass: {
+                popup: "",
+              },
               position: "center",
               icon: "success",
               title: "Event Edited Successfully",
@@ -106,6 +122,14 @@ const CreateEvent: React.FC<CreateEventProps> = ({
             });
           } else {
             Swal.fire({
+              showClass: {
+                popup: "swal2-noanimation",
+                backdrop: "swal2-noanimation",
+                icon: "swal2-noanimation",
+              },
+              hideClass: {
+                popup: "",
+              },
               position: "center",
               icon: "error",
               title: "Something Went Wrong",
@@ -137,6 +161,14 @@ const CreateEvent: React.FC<CreateEventProps> = ({
           setReFetch();
           if (res.data.statusCode == 200) {
             Swal.fire({
+              showClass: {
+                popup: "swal2-noanimation",
+                backdrop: "swal2-noanimation",
+                icon: "swal2-noanimation",
+              },
+              hideClass: {
+                popup: "",
+              },
               position: "center",
               icon: "success",
               title: res.data.body.message,
@@ -145,6 +177,14 @@ const CreateEvent: React.FC<CreateEventProps> = ({
             });
           } else {
             Swal.fire({
+              showClass: {
+                popup: "swal2-noanimation",
+                backdrop: "swal2-noanimation",
+                icon: "swal2-noanimation",
+              },
+              hideClass: {
+                popup: "",
+              },
               position: "center",
               icon: "error",
               title: "Something Went Wrong",
@@ -160,6 +200,14 @@ const CreateEvent: React.FC<CreateEventProps> = ({
   const cancel = (validation: boolean) => {
     if (validation) {
       Swal.fire({
+        showClass: {
+          popup: "swal2-noanimation",
+          backdrop: "swal2-noanimation",
+          icon: "swal2-noanimation",
+        },
+        hideClass: {
+          popup: "",
+        },
         title: "Are you sure?",
         text: "You won't be able to revert this!",
         icon: "warning",
@@ -185,11 +233,19 @@ const CreateEvent: React.FC<CreateEventProps> = ({
           if (eventToEdit || eventToClone) {
             removeDefaultEvent();
           }
-          Swal.fire(
-            "Canceled!",
-            "Your operation has been canceled.",
-            "success"
-          );
+          Swal.fire({
+            showClass: {
+              popup: "swal2-noanimation",
+              backdrop: "swal2-noanimation",
+              icon: "swal2-noanimation",
+            },
+            hideClass: {
+              popup: "",
+            },
+            title: "Canceled!",
+            text: "Your operation has been canceled.",
+            icon: "success",
+          });
         }
       });
     } else {
@@ -302,12 +358,30 @@ const CreateEvent: React.FC<CreateEventProps> = ({
     }
   };
 
+  const validateActive = () => {
+    if (watchEvent("Active")) {
+      Swal.fire({
+        showClass: {
+          popup: "swal2-noanimation",
+          backdrop: "swal2-noanimation",
+          icon: "swal2-noanimation",
+        },
+        hideClass: {
+          popup: "",
+        },
+        title: "Only one content can be active at a time",
+        text: "If you activate this content, the other active content will be deactivated",
+      });
+      return;
+    }
+  };
+
   return (
     <div
-      className={`h-[90vh] sm:h-[85vh] w-screen sm:w-[90vw] flex flex-col gap-y-3 px-5 py-8 sm:p-10 rounded-t-3xl bg-gray-400 fixed z-30 ${
-        !isOpen ? "-bottom-full" : "-bottom-0"
-      } transition-all ease-out duration-500 left-1/2 -translate-x-1/2 overflow-y-scroll hide-scroll-bar`}>
-      <div className='bg-white h-3 w-28 rounded-full absolute top-2 left-1/2 -translate-x-1/2'></div>
+      className={`max-h-[90vh] h-fit w-screen sm:w-[90vw] flex flex-col gap-y-3 px-5 py-8 sm:p-10 rounded-sm bg-gray-400 fixed z-30 ${
+        !isOpen ? "-top-full" : "top-1/2"
+      } left-1/2 transition-all ease-out duration-100 -translate-x-1/2 -translate-y-1/2 overflow-y-scroll hide-scroll-bar`}>
+      <div className='bg-white h-3 w-28  absolute top-2 left-1/2 -translate-x-1/2'></div>
       <form onSubmit={handleSubmitEvent(onSubmitEvent)}>
         <div className='w-full flex justify-between items-center'>
           <h3 className='font-bold text-xl lg:text-3xl text-gray-900'>
@@ -316,32 +390,18 @@ const CreateEvent: React.FC<CreateEventProps> = ({
           <div className='flex gap-x-2'>
             <button
               type='submit'
-              className='relative px-5 py-2.5 overflow-hidden font-medium text-green-500 bg-gray-100 border border-gray-100 rounded-lg shadow-inner group'>
-              <span className='absolute top-0 left-0 w-0 h-0 transition-all duration-200 border-t-2 border-green-400 group-hover:w-full ease'></span>
-              <span className='absolute bottom-0 right-0 w-0 h-0 transition-all duration-200 border-b-2 border-green-400 group-hover:w-full ease'></span>
-              <span className='absolute top-0 left-0 w-full h-0 transition-all duration-300 delay-200 bg-green-400 group-hover:h-full ease'></span>
-              <span className='absolute bottom-0 left-0 w-full h-0 transition-all duration-300 delay-200 bg-green-400 group-hover:h-full ease'></span>
-              <span className='absolute inset-0 w-full h-full duration-300 delay-300 bg-green-500 opacity-0 group-hover:opacity-100'></span>
-              <span className='relative transition-colors duration-300 delay-200 group-hover:text-white ease'>
-                {eventToEdit ? "Save" : "Create"}
-              </span>
+              className='relative px-5 py-2.5 overflow-hidden font-medium text-green-500 bg-gray-100 border-2 border-gray-100 hover:border-green-500  shadow-inner group'>
+              {eventToEdit ? "Save" : "Create"}
             </button>
             <button
               type='button'
               onClick={() => cancel(true)}
-              className='relative px-5 py-2.5 overflow-hidden font-medium text-red-500 bg-gray-100 border border-gray-100 rounded-lg shadow-inner group'>
-              <span className='absolute top-0 left-0 w-0 h-0 transition-all duration-200 border-t-2 border-red-400 group-hover:w-full ease'></span>
-              <span className='absolute bottom-0 right-0 w-0 h-0 transition-all duration-200 border-b-2 border-red-400 group-hover:w-full ease'></span>
-              <span className='absolute top-0 left-0 w-full h-0 transition-all duration-300 delay-200 bg-red-400 group-hover:h-full ease'></span>
-              <span className='absolute bottom-0 left-0 w-full h-0 transition-all duration-300 delay-200 bg-red-400 group-hover:h-full ease'></span>
-              <span className='absolute inset-0 w-full h-full duration-300 delay-300 bg-red-500 opacity-0 group-hover:opacity-100'></span>
-              <span className='relative transition-colors duration-300 delay-200 group-hover:text-white ease'>
-                Cancel
-              </span>
+              className='relative px-5 py-2.5 overflow-hidden font-medium text-red-500 bg-gray-100 border-2 border-gray-100 hover:border-red-500  shadow-inner group'>
+              Cancel
             </button>
           </div>
         </div>
-        <div className='w-full h-fit flex flex-col gap-y-3 bg-gray-50 rounded-lg p-5 pb-10 mb-20 mt-5'>
+        <div className='w-full h-fit flex flex-col gap-y-3 bg-gray-50  p-5 pb-10 mt-5'>
           <p className='text-gray-800 text-sm font-medium w-fit border-b-2 border-black pb-1'>
             1. Start with setting up your event information
           </p>
@@ -389,18 +449,20 @@ const CreateEvent: React.FC<CreateEventProps> = ({
                       <input
                         type='checkbox'
                         id='Active'
-                        {...registerEvent("Active")}
+                        {...registerEvent("Active", {
+                          onChange: validateActive,
+                        })}
                         className='sr-only'
                       />
-                      <div className='h-5 w-14 rounded-full bg-[#E5E7EB] shadow-inner'></div>
+                      <div className='h-5 w-14  bg-[#E5E7EB] shadow-inner'></div>
                       <div
-                        className={`shadow-md absolute -top-1 flex h-7 w-7 items-center justify-center rounded-full transition-all ease-linear duration-200 ${
+                        className={`shadow-md absolute -top-1 flex h-7 w-7 items-center justify-center  transition-all ease-linear duration-200 ${
                           watchEvent("Active")
                             ? "!bg-white left-1/2"
                             : "bg-white left-0"
                         }`}>
                         <span
-                          className={`active h-4 w-4 rounded-full  ${
+                          className={`active h-4 w-4   ${
                             watchEvent("Active")
                               ? "bg-blue-500"
                               : "bg-[#E5E7EB]"
@@ -584,13 +646,13 @@ const CreateEvent: React.FC<CreateEventProps> = ({
                     onChange={handleCheckboxChange}
                     className='sr-only'
                   />
-                  <div className='h-5 w-14 rounded-full bg-[#E5E7EB] shadow-inner'></div>
+                  <div className='h-5 w-14  bg-[#E5E7EB] shadow-inner'></div>
                   <div
-                    className={`shadow-md absolute -top-1 flex h-7 w-7 items-center justify-center rounded-full transition-all ease-linear duration-200 ${
+                    className={`shadow-md absolute -top-1 flex h-7 w-7 items-center justify-center  transition-all ease-linear duration-200 ${
                       isChecked ? "!bg-white left-1/2" : "bg-white left-0"
                     }`}>
                     <span
-                      className={`active h-4 w-4 rounded-full  ${
+                      className={`active h-4 w-4   ${
                         isChecked ? "bg-blue-500" : "bg-[#E5E7EB]"
                       }`}></span>
                   </div>
