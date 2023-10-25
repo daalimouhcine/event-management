@@ -51,7 +51,7 @@ const EventDetails: React.FC<EventDetailsProps> = ({
       </div>
       <div className='w-full h-fit flex flex-col gap-y-5 bg-gray-50  p-5 mt-5'>
         <div className='flex gap-x-20 gap-y-5 w-full flex-wrap'>
-          <div className='max-w-1/4 min-w-fit'>
+          <div className='w-1/4 min-w-fit'>
             <h4 className='text-lg lg:text-xl font-semibold text-gray-900'>
               Status:
             </h4>
@@ -59,7 +59,7 @@ const EventDetails: React.FC<EventDetailsProps> = ({
               {event?.Active ? "Active" : "Inactive"}
             </p>
           </div>
-          <div className='max-w-1/4 min-w-fit'>
+          <div className='w-1/4 min-w-fit'>
             <h4 className='text-lg lg:text-xl font-semibold text-gray-900'>
               Type:
             </h4>
@@ -97,7 +97,7 @@ const EventDetails: React.FC<EventDetailsProps> = ({
           </p>
         </div>
         <div className='flex gap-x-20 gap-y-5 w-full flex-wrap'>
-          <div className='max-w-1/5 min-w-fit'>
+          <div className='w-1/4 min-w-fit'>
             <h4 className='text-lg lg:text-xl font-semibold text-gray-900'>
               Start Date:
             </h4>
@@ -105,7 +105,7 @@ const EventDetails: React.FC<EventDetailsProps> = ({
               {event?.StartDate || "Not assigned"}
             </p>
           </div>
-          <div className='max-w-1/5 min-w-fit'>
+          <div className='w-1/4 min-w-fit'>
             <h4 className='text-lg lg:text-xl font-semibold text-gray-900'>
               Start Time:
             </h4>
@@ -115,7 +115,7 @@ const EventDetails: React.FC<EventDetailsProps> = ({
           </div>
         </div>
         <div className='flex gap-x-20 gap-y-5 w-full flex-wrap'>
-          <div className='max-w-1/5 min-w-fit'>
+          <div className='w-1/4 min-w-fit'>
             <h4 className='text-lg lg:text-xl font-semibold text-gray-900'>
               End Date:
             </h4>
@@ -123,7 +123,7 @@ const EventDetails: React.FC<EventDetailsProps> = ({
               {event?.EndDate || "Not assigned"}
             </p>
           </div>
-          <div className='max-w-1/5 min-w-fit'>
+          <div className='w-1/4 min-w-fit'>
             <h4 className='text-lg lg:text-xl font-semibold text-gray-900'>
               End Time:
             </h4>
