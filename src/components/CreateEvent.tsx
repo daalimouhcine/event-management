@@ -148,7 +148,7 @@ const CreateEvent: React.FC<CreateEventProps> = ({
         StartTime: !isChecked ? data.StartTime : "",
         EndTime: !isChecked ? data.EndTime : "",
         Type: data.Type,
-        CreatedBy: "Mouhcine Daali",
+        CreatedBy: "Nigel Ryan",
         Description: data.Description,
         Message: data.Message || "",
       };
