@@ -49,8 +49,8 @@ const EventDetails: React.FC<EventDetailsProps> = ({
           </button>
         </div>
       </div>
-      <div className='w-full h-fit flex flex-col gap-y-8 bg-gray-50  p-5 mt-5'>
-        <div className='flex gap-5 justify-between w-full flex-wrap'>
+      <div className='w-full h-fit flex flex-col gap-y-5 bg-gray-50  p-5 mt-5'>
+        <div className='flex gap-x-20 gap-y-5 w-full flex-wrap'>
           <div className='max-w-1/4 min-w-fit flex items-center gap-x-3'>
             <h4 className='text-lg lg:text-xl font-semibold text-gray-900'>
               Status:
@@ -73,16 +73,6 @@ const EventDetails: React.FC<EventDetailsProps> = ({
                 : "Not assigned"}
             </p>
           </div>
-          <div className='w-2/4 flex items-center gap-x-3'>
-            <h4 className='text-lg lg:text-xl font-semibold text-gray-900'>
-              Message:
-            </h4>
-            <p className='text-sm lg:text-base text-gray-500'>
-              {event?.Message}
-            </p>
-          </div>
-        </div>
-        <div className='flex gap-5 justify-between w-full flex-wrap'>
           <div className='max-w-1/5 min-w-fit flex items-center gap-x-3'>
             <h4 className='text-lg lg:text-xl font-semibold text-gray-900'>
               Week Day:
@@ -91,6 +81,14 @@ const EventDetails: React.FC<EventDetailsProps> = ({
               {event?.WeekDay || "Not assigned"}
             </p>
           </div>
+        </div>
+        <div className='w-fit flex items-center gap-x-3'>
+          <h4 className='text-lg lg:text-xl font-semibold text-gray-900'>
+            Message:
+          </h4>
+          <p className='text-sm lg:text-base text-gray-500'>{event?.Message}</p>
+        </div>
+        <div className='flex gap-x-20 gap-y-5 w-full flex-wrap'>
           <div className='max-w-1/5 min-w-fit flex items-center gap-x-3'>
             <h4 className='text-lg lg:text-xl font-semibold text-gray-900'>
               Start Date:
@@ -107,6 +105,8 @@ const EventDetails: React.FC<EventDetailsProps> = ({
               {event?.EndDate || "Not assigned"}
             </p>
           </div>
+        </div>
+        <div className='flex gap-x-20 gap-y-5 w-full flex-wrap'>
           <div className='max-w-1/5 min-w-fit flex items-center gap-x-3'>
             <h4 className='text-lg lg:text-xl font-semibold text-gray-900'>
               Start Time:
@@ -124,7 +124,7 @@ const EventDetails: React.FC<EventDetailsProps> = ({
             </p>
           </div>
         </div>
-        <div className='flex justify-between w-full flex-wrap gap-5'>
+        <div className='flex w-full flex-wrap gap-x-20 gap-y-5'>
           <div className='max-w-1/4 min-w-fit flex items-center gap-x-3'>
             <h4 className='text-lg lg:text-xl font-semibold text-gray-900'>
               Created By:
